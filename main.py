@@ -1,6 +1,11 @@
 import os
 import argparse
+import logging
 from core.bot import TikTokBot
+from config.retry import retry
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
 def parse_args():
     parser = argparse.ArgumentParser(description="TikTok Growth Bot")
@@ -8,18 +13,19 @@ def parse_args():
     parser.add_argument("--max-views", type=int, default=50)
     return parser.parse_args()
 
-if __name__ == "__main__":
+def run_bot():
     args = parse_args()
-
-    # Pass max views as env var so the bot can find it (or refactor bot to accept it as arg)
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
 
     bot = TikTokBot()
     try:
-        print(f"Iniciando en modo {args.mode}...")
-        bot.run_session()
+        logging.info(f"Starting in {args.mode} mode...")
+        retry(bot.run_session)
     except Exception as e:
-        print(f"Error crítico: {str(e)}")
+        logging.critical(f"Critical error: {str(e)}")
     finally:
         bot.driver.quit()
-        print("Sesión finalizada. Revisar logs para detalles.")
+        logging.info("Session ended. Check logs for details.")
+
+if __name__ == "__main__":
+    run_bot()
