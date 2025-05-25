@@ -16,6 +16,27 @@ def run_flask():
 if __name__ == "__main__":
     args = parse_args()
     
+# Pass max views as environment variable
+    os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
+    bot = None
+    try:
+        print(f"Iniciando en modo {args.mode}...")
+        bot = TikTokBot()
+        if not bot.driver:
+            print("Failed to initialize bot - Chrome driver not available")
+            exit(1)
+        bot.run_session()
+    except Exception as e:
+        print(f"Error crítico: {str(e)}")
+    finally:
+        if bot and bot.driver:
+            try:
+                bot.driver.quit()
+            except Exception as cleanup_error:
+                print(f"Error closing driver: {cleanup_error}")
+        print("Sesión finalizada. Revisar logs para detalles.")
+
+
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
 
     # Start Flask app in a separate thread
@@ -23,11 +44,5 @@ if __name__ == "__main__":
     flask_thread.start()
 
     bot = TikTokBot()
-    try:
-        print(f"Iniciando en modo {args.mode}...")
-        bot.run_session()
-    except Exception as e:
-        print(f"Error crítico: {str(e)}")
-    finally:
-        bot.driver.quit()
-        print("Sesión finalizada. Revisar logs para detalles.")
+    
+  
