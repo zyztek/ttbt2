@@ -1,11 +1,8 @@
 import os
 import argparse
-import logging
 from core.bot import TikTokBot
-from config.retry import retry
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+from threading import Thread
+from api.app import app
 
 def parse_args():
     parser = argparse.ArgumentParser(description="TikTok Growth Bot")
@@ -13,19 +10,24 @@ def parse_args():
     parser.add_argument("--max-views", type=int, default=50)
     return parser.parse_args()
 
-def run_bot():
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
+
+if __name__ == "__main__":
     args = parse_args()
+    
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
+
+    # Start Flask app in a separate thread
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
 
     bot = TikTokBot()
     try:
-        logging.info(f"Starting in {args.mode} mode...")
-        retry(bot.run_session)
+        print(f"Iniciando en modo {args.mode}...")
+        bot.run_session()
     except Exception as e:
-        logging.critical(f"Critical error: {str(e)}")
+        print(f"Error crítico: {str(e)}")
     finally:
         bot.driver.quit()
-        logging.info("Session ended. Check logs for details.")
-
-if __name__ == "__main__":
-    run_bot()
+        print("Sesión finalizada. Revisar logs para detalles.")
