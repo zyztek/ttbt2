@@ -5,9 +5,9 @@ from threading import Thread
 from api.app import app
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="TikTok Growth Bot")
-    parser.add_argument("--mode", choices=["safe", "balanced", "aggressive"], default="safe")
-    parser.add_argument("--max-views", type=int, default=50)
+    parser = argparse.ArgumentParser(description="TikTok Bot")
+    parser.add_argument("--mode", choices=["safe", "balanced", "aggressive"], default="balanced")
+    parser.add_argument("--max-views", type=int, default=5000)
     return parser.parse_args()
 
 def run_flask():
