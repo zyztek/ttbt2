@@ -1,0 +1,6 @@
+{
+    "proxies": [
+        "http://proxy1.ejemplo.com:8080",
+        "http://proxy2.ejemplo.com:3128"
+    ]
+}

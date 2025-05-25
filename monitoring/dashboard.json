@@ -1,0 +1,11 @@
+{
+  "dashboard": {
+    "title": "TikTok Bot Monitoring",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Bot Actions per Hour"
+      }
+    ]
+  }
+}

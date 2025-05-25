@@ -1,0 +1,4 @@
+pytest
+pyyaml
+loguru
+flask

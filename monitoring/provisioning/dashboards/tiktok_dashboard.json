@@ -1,0 +1,10 @@
+{
+  "__inputs": [],
+  "title": "TikTok Dashboard",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Views"
+    }
+  ]
+}

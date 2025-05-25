@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TTBT1 Dashboard</title>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f7f7f7; }
+      #status { white-space: pre; background: #fff; padding: 1em; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Status de Bots</h1>
+    <div id="status">Cargando...</div>
+    <script>
+        fetch('/status').then(r => r.json()).then(data => {
+            document.getElementById('status').innerText = JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>
