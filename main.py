@@ -11,6 +11,7 @@ This script handles:
 """
 import os
 import argparse
+import threading # Added
 from core.bot import TikTokBot
 from threading import Thread
 from api.app import app # Flask app for the dashboard
@@ -46,7 +47,7 @@ def parse_args():
     )
     return parser.parse_args()
 
-def run_flask():
+def run_flask(flask_app, shared_status, lock): # Modified signature
     """
     Starts the Flask web server for the bot's dashboard.
 
@@ -56,7 +57,10 @@ def run_flask():
     """
     # Note: Flask's development server is not recommended for production.
     # For production, a more robust WSGI server (e.g., Gunicorn, uWSGI) should be used.
-    app.run(host='0.0.0.0', port=5000)
+    # Pass shared_status and lock to the app context if needed by routes
+    # For example, flask_app.config['SHARED_STATUS'] = shared_status
+    # flask_app.config['STATUS_LOCK'] = lock
+    flask_app.run(host='0.0.0.0', port=5000, debug=False) # debug=False is typical for threaded apps
 
 if __name__ == "__main__":
     # Parse command-line arguments
@@ -67,18 +71,32 @@ if __name__ == "__main__":
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
     logger.debug(f"MAX_VIEWS_PER_HOUR environment variable set to: {args.max_views}")
 
+    # --- Shared status and lock for inter-thread communication ---
+    bot_shared_status = {
+        "status": "initializing", # Overall status: initializing, running, error, stopped
+        "current_user": None,     # Current TikTok account being used
+        "actions_this_session": 0,# Counter for actions in the current run
+        "total_actions_lifetime": 0, # Placeholder for persistent stats
+        "last_error": None,       # Description of the last critical error
+        "mode": args.mode         # Bot's operational mode
+    }
+    status_lock = threading.Lock()
+    logger.info("Shared status dictionary and lock created.")
+
     # Initialize and start the Flask dashboard in a separate thread
     logger.info("Initializing and starting Flask dashboard thread.")
-    flask_thread = Thread(target=run_flask, daemon=True) # Set as daemon to exit with main thread
+    # Pass the main Flask app instance (app), shared status, and lock to the thread
+    flask_thread = Thread(target=run_flask, args=(app, bot_shared_status, status_lock), daemon=True)
     flask_thread.start()
 
     bot = None  # Initialize bot variable to ensure it's available in finally block
     try:
-        # Initialize the TikTokBot
+        # Initialize the TikTokBot, passing shared status and lock
         logger.info(f"Initializing TikTokBot in mode: {args.mode}...")
-        bot = TikTokBot(mode=args.mode)
+        bot = TikTokBot(mode=args.mode, shared_status=bot_shared_status, status_lock=status_lock)
 
         # Check if WebDriver was initialized successfully
+        # The bot's __init__ should update shared_status if WebDriver fails
         if not bot.driver:
             logger.error("Failed to initialize TikTokBot: WebDriver (e.g., Chrome driver) is not available or failed to start.")
             # Consider a more graceful exit or retry mechanism here if appropriate

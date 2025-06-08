@@ -1,7 +1,11 @@
 """
-This module defines the TikTokBot class, which encapsulates the core logic for
-interacting with the TikTok website. This includes managing the WebDriver,
-handling user authentication, and performing various 'organic' user actions.
+This module defines bot-related classes for the TTBT1 framework.
+
+It includes:
+- A generic base `Bot` class providing a foundational structure for bots.
+- The specialized `TikTokBot` class, which encapsulates the core logic for
+  interacting with the TikTok website, including WebDriver management,
+  authentication, and performing 'organic' user actions.
 """
 import os
 import time
@@ -13,15 +17,60 @@ from core.account_manager import CoreAccountManager
 from core.evasion import HumanBehaviorSimulator
 from core.logger import get_logger
 
-# Initialize a logger for this module
+# --- Base Bot Class ---
+class Bot:
+    """
+    A generic base class for bots in the TTBT1 framework.
+
+    This class provides a basic structure for bots, including initialization
+    of common attributes like username, account data, proxy, and fingerprint.
+    Subclasses are expected to implement their own specific `run` logic.
+    This class is not intended for direct Selenium WebDriver interaction by default.
+    """
+    def __init__(self, username, account_data):
+        """
+        Initializes the base Bot.
+
+        Args:
+            username (str): The username associated with this bot instance.
+            account_data (dict): A dictionary containing account-specific data
+                                 (e.g., password, settings).
+        """
+        self.username = username
+        self.account_data = account_data
+        self.proxy = None         # To be assigned by bot runner or specific logic
+        self.fingerprint = None   # To be assigned by bot runner or specific logic
+        # Note: Consider adding a logger here if general Bot instances need logging
+        # self.bot_logger = get_logger(f"Bot.{self.username}") # Renamed to avoid clash
+
+    def assign_proxy(self, proxy_string):
+        """Assigns a proxy to the bot."""
+        self.proxy = proxy_string
+        # if hasattr(self, 'bot_logger'): self.bot_logger.info(f"Assigned proxy: {self.proxy}")
+
+    def assign_fingerprint(self, fingerprint_string):
+        """Assigns a fingerprint to the bot."""
+        self.fingerprint = fingerprint_string
+        # if hasattr(self, 'bot_logger'): self.bot_logger.info(f"Assigned fingerprint: {self.fingerprint}")
+
+    def run(self):
+        """
+        The main execution method for the bot.
+        Subclasses must implement this method to define their specific behavior.
+        """
+        raise NotImplementedError("Subclasses must implement the 'run' method.")
+
+# --- TikTok Specific Bot ---
+
+# Initialize a logger for the TikTokBot module/class
+# This logger is specific to TikTokBot operations.
 logger = get_logger("TikTokBot")
 
 class TikTokBot:
     """
-    The main class for the TikTok Bot.
-
+    The main class for the TikTok Bot, specialized for TikTok interactions.
     This class is responsible for:
-    - Initializing and configuring the Selenium WebDriver.
+    - Initializing and configuring the Selenium WebDriver for TikTok.
     - Managing account credentials via an AccountManager.
     - Handling the authentication process on TikTok.
     - Performing a series of 'organic' actions like watching videos,
@@ -39,30 +88,40 @@ class TikTokBot:
         PASSWORD_FIELD_VALUE (str): Selenium locator value for the password field.
         SUBMIT_BUTTON_BY: Selenium locator strategy for the submit button.
         SUBMIT_BUTTON_VALUE (str): Selenium locator value for the submit button.
+        shared_status (dict, optional): A dictionary for sharing status with other threads.
+        status_lock (threading.Lock, optional): A lock for synchronizing access to shared_status.
     """
-    def __init__(self, mode='balanced'):
+    def __init__(self, mode='balanced', shared_status=None, status_lock=None):
         """
         Initializes the TikTokBot.
 
         Args:
-            mode (str, optional): The operational mode for the bot.
-                                  Defaults to 'balanced'. This mode is passed to
-                                  the HumanBehaviorSimulator.
+            mode (str, optional): The operational mode for the bot. Defaults to 'balanced'.
+            shared_status (dict, optional): Dictionary for inter-thread status sharing.
+            status_lock (threading.Lock, optional): Lock for synchronizing shared_status access.
         """
         # self.logger = get_logger(f"TikTokBot.{mode}") # Alternative: instance-specific logger with mode
         logger.info(f"Initializing TikTokBot with mode: {mode}")
+
+        self.shared_status = shared_status
+        self.status_lock = status_lock
+        self.session_actions_count = 0 # Initialize session action counter
+
+        self._update_shared_status({"mode": mode, "status": "initializing_webdriver"})
         self.driver = self._init_driver()
         self.mode = mode
         self.account_manager = CoreAccountManager() # Manages TikTok account credentials
 
-        # Initialize HumanBehaviorSimulator if driver initialization was successful
         if self.driver:
             self.behavior = HumanBehaviorSimulator(self.driver, mode=self.mode)
+            self._update_shared_status({"status": "initialized_ready"})
         else:
-            # This case should ideally be handled more gracefully,
-            # perhaps by raising an exception if driver is critical.
             logger.error("HumanBehaviorSimulator not initialized due to WebDriver failure.")
             self.behavior = None
+            self._update_shared_status({
+                "status": "error_webdriver_init",
+                "last_error": "WebDriver failed to initialize during bot __init__."
+            })
 
         # Centralized Selectors for the TikTok Login Page
         # These help in maintaining and updating element locators easily.
@@ -89,6 +148,7 @@ class TikTokBot:
         """
         logger.debug("Initializing WebDriver.")
         options = webdriver.ChromeOptions()
+        # Common options for running in automated environments / headless
         options.add_argument("--headless") # Run Chrome in headless mode (no GUI).
         options.add_argument("--disable-gpu") # Disable GPU hardware acceleration. Often needed for headless.
         options.add_argument("--no-sandbox") # Bypass OS security model. Useful in Docker/CI environments.
@@ -121,11 +181,26 @@ class TikTokBot:
         if not account or not account.get("email") or not account.get("password"):
             # Log a warning if no valid account details are found.
             logger.warning("Authentication skipped: No valid account credentials found in AccountManager.")
+            self._update_shared_status({
+                "status": "error_no_account",
+                "current_user": None,
+                "last_error": "No valid account credentials found."
+            })
             return False
 
         logger.info(f"Attempting to authenticate with account: {account.get('email')}")
+        self._update_shared_status({
+            "status": "authenticating",
+            "current_user": account.get('email'),
+            "last_error": None
+        })
+
         if not self.driver or not self.behavior:
             logger.error("Authentication cannot proceed: WebDriver or HumanBehaviorSimulator not initialized.")
+            self._update_shared_status({
+                "status": "error_internal_bot_setup",
+                "last_error": "WebDriver or BehaviorSimulator not ready for auth."
+            })
             return False
 
         try:
@@ -160,38 +235,66 @@ class TikTokBot:
             # logger.warning("Authentication may have failed (still on login page or login-related URL).")
             # return False
             # For now, we assume success if no exceptions occur.
-            logger.info("Authentication process completed (assumed successful if no errors).")
+            logger.info("Authentication process completed.")
+            self._update_shared_status({"status": "authenticated"})
             return True
         except (NoSuchElementException, TimeoutException) as specific_selenium_error:
-            logger.error(f"Authentication failed (Selenium error): Element not found or operation timed out. Details: {specific_selenium_error}")
+            err_msg = f"Selenium error during auth: {specific_selenium_error}"
+            logger.error(f"Authentication failed: {err_msg}")
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
             return False
         except WebDriverException as wd_error:
-            # This can happen if the browser crashes or WebDriver loses connection.
-            logger.error(f"Authentication failed (WebDriver error): {wd_error}")
+            err_msg = f"WebDriver error during auth: {wd_error}"
+            logger.error(f"Authentication failed: {err_msg}")
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
             return False
         except Exception as e:
-            # Catch-all for any other unexpected errors during authentication.
-            logger.exception("An unexpected error occurred during the authentication process:")
+            err_msg = f"Unexpected error during auth: {e}"
+            logger.exception(err_msg)
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
             return False
+
+    def _update_shared_status(self, updates_dict):
+        """Helper method to update the shared status dictionary with thread safety."""
+        if self.shared_status is not None and self.status_lock is not None:
+            with self.status_lock:
+                for key, value in updates_dict.items():
+                    self.shared_status[key] = value
+            logger.trace(f"Shared status updated with: {updates_dict}. Current status: {self.shared_status.get('status')}")
+        else:
+            logger.trace("Shared status or lock not provided; skipping status update.")
+
 
     def run_session(self):
         """
         Orchestrates a single bot session.
 
         This involves attempting to authenticate and, if successful, performing
-        a series of organic actions.
+        a series of organic actions. Updates shared status throughout.
         """
         logger.info("Starting new bot session.")
+        self.session_actions_count = 0 # Reset session action counter
+        self._update_shared_status({
+            "actions_this_session": self.session_actions_count,
+            "status": "session_starting" # Initial status for the session run
+        })
+
         if self.driver is None:
             logger.error("Cannot run session: WebDriver is not initialized.")
+            # This state should have been set in __init__ already if driver failed there
+            # self._update_shared_status({"status": "error_webdriver_not_ready", "last_error": "WebDriver missing at session start."})
             return
 
-        if self._authenticate():
+        if self._authenticate(): # This method now updates status internally
             logger.info("Authentication successful. Proceeding to perform organic actions.")
+            self._update_shared_status({"status": "running_actions"}) # Status after successful auth
             self._perform_organic_actions()
+            self._update_shared_status({"status": "session_complete"}) # If actions loop completes
         else:
             logger.warning("Authentication failed. Organic actions will not be performed this session.")
+            # _authenticate method should have set the appropriate error status.
         logger.info("Bot session finished.")
+
 
     def _perform_organic_actions(self):
         """
@@ -218,10 +321,8 @@ class TikTokBot:
         for i in range(max_views):
             logger.debug(f"Organic action cycle {i+1} of {max_views}.")
 
-            # Simulate watching a video (duration defined in HumanBehaviorSimulator)
             self.behavior.watch_video()
 
-            # Simulate liking a video with a 65% probability
             like_probability = 0.65
             if random.random() < like_probability:
                 logger.debug(f"Attempting to like video (probability: {like_probability*100}%).")
@@ -229,16 +330,16 @@ class TikTokBot:
             else:
                 logger.debug(f"Skipping like for this video (probability: {like_probability*100}%).")
 
-            # Simulate scrolling
             self.behavior.random_scroll()
 
-            # Pause between action cycles to mimic user thinking time or browsing.
-            # Duration of this pause can also be made mode-dependent in HumanBehaviorSimulator.
-            base_sleep_time = random.uniform(8, 15) # Base pause time
-            logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles.")
-            time.sleep(base_sleep_time) # Consider using self.behavior.random_delay for mode-awareness
+            # Update actions count for this session
+            self.session_actions_count += 1
+            self._update_shared_status({"actions_this_session": self.session_actions_count})
 
-            # Optional: Add a check here to see if the bot should terminate early
-            # (e.g., based on external signal, time limit, or error count).
+            base_sleep_time = random.uniform(8, 15)
+            logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles.")
+            time.sleep(base_sleep_time)
+
+            # TODO: Consider if bot needs to check shared_status for a "stop_requested" flag from dashboard
 
         logger.info(f"Completed {max_views} organic action cycles for the session.")
