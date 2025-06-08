@@ -176,12 +176,14 @@ class TikTokBot:
         Retrieves account credentials, navigates to the login page,
         fills in the username and password, and submits the form.
         Uses HumanBehaviorSimulator for typing and clicking to appear more human-like.
+        This method also records and logs its execution time and updates shared status.
 
         Returns:
             bool: True if authentication is believed to be successful, False otherwise.
                   Note: Success is currently inferred by lack of exceptions during the process.
                   A more robust check would verify a post-login state.
         """
+        auth_start_time = time.monotonic() # Start timing
         account = self.account_manager.get_next_account()
         # Ensure account has 'username' and 'password' keys.
         if not account or not account.get("username") or not account.get("password"):
@@ -191,6 +193,9 @@ class TikTokBot:
                 "current_user": None, # Explicitly set current_user to None
                 "last_error": "No valid account credentials (missing username or password) found."
             })
+            auth_duration = time.monotonic() - auth_start_time
+            logger.warning(f"Authentication check failed in {auth_duration:.2f} seconds (no valid account).")
+            self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
             return False
 
         # Use 'username' from the account dictionary
@@ -208,6 +213,9 @@ class TikTokBot:
                 "status": "error_internal_bot_setup",
                 "last_error": "WebDriver or BehaviorSimulator not ready for auth."
             })
+            auth_duration = time.monotonic() - auth_start_time
+            logger.error(f"Authentication check failed in {auth_duration:.2f} seconds (bot not ready).")
+            self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
             return False
 
         try:
@@ -215,6 +223,9 @@ class TikTokBot:
             if not login_url:
                 logger.error("Login URL ('common.login_page_url') not found in selectors configuration.")
                 self._update_shared_status({"status": "error_selector_missing", "last_error": "Login URL missing."})
+                auth_duration = time.monotonic() - auth_start_time
+                logger.error(f"Authentication failed in {auth_duration:.2f} seconds (login URL missing).")
+                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
                 return False
 
             logger.debug(f"Navigating to login page: {login_url}")
@@ -225,20 +236,32 @@ class TikTokBot:
 
             username_selector = login_page_selectors.get("username_field")
             if not username_selector:
-                logger.error("Username field selector ('login_page.username_field') not found in configuration.")
-                self._update_shared_status({"status": "error_selector_missing", "last_error": "Username selector missing."})
+                err_msg = "Username field selector ('login_page.username_field') not found in configuration."
+                logger.error(err_msg)
+                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
+                auth_duration = time.monotonic() - auth_start_time
+                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
                 return False
 
             password_selector = login_page_selectors.get("password_field")
             if not password_selector:
-                logger.error("Password field selector ('login_page.password_field') not found in configuration.")
-                self._update_shared_status({"status": "error_selector_missing", "last_error": "Password selector missing."})
+                err_msg = "Password field selector ('login_page.password_field') not found in configuration."
+                logger.error(err_msg)
+                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
+                auth_duration = time.monotonic() - auth_start_time
+                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
                 return False
 
             submit_button_selector = login_page_selectors.get("submit_button")
             if not submit_button_selector:
-                logger.error("Submit button selector ('login_page.submit_button') not found in configuration.")
-                self._update_shared_status({"status": "error_selector_missing", "last_error": "Submit button selector missing."})
+                err_msg = "Submit button selector ('login_page.submit_button') not found in configuration."
+                logger.error(err_msg)
+                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
+                auth_duration = time.monotonic() - auth_start_time
+                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
                 return False
 
             logger.debug(f"Locating username field using: {username_selector}")
@@ -267,23 +290,27 @@ class TikTokBot:
             # logger.warning("Authentication may have failed (still on login page or login-related URL).")
             # return False
             # For now, we assume success if no exceptions occur.
-            logger.info("Authentication process completed.")
-            self._update_shared_status({"status": "authenticated"})
+            auth_duration = time.monotonic() - auth_start_time
+            logger.info(f"Authentication successful in {auth_duration:.2f} seconds.")
+            self._update_shared_status({"status": "authenticated", "last_auth_duration": round(auth_duration, 2)})
             return True
         except (NoSuchElementException, TimeoutException) as specific_selenium_error:
             err_msg = f"Selenium error during auth: {specific_selenium_error}"
-            logger.error(f"Authentication failed: {err_msg}")
-            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
+            auth_duration = time.monotonic() - auth_start_time
+            logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg, "last_auth_duration": round(auth_duration, 2)})
             return False
         except WebDriverException as wd_error:
             err_msg = f"WebDriver error during auth: {wd_error}"
-            logger.error(f"Authentication failed: {err_msg}")
-            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
+            auth_duration = time.monotonic() - auth_start_time
+            logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg, "last_auth_duration": round(auth_duration, 2)})
             return False
         except Exception as e:
             err_msg = f"Unexpected error during auth: {e}"
-            logger.exception(err_msg)
-            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg})
+            auth_duration = time.monotonic() - auth_start_time
+            logger.exception(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
+            self._update_shared_status({"status": "error_auth_failed", "last_error": err_msg, "last_auth_duration": round(auth_duration, 2)})
             return False
 
     def _update_shared_status(self, updates_dict):
@@ -334,7 +361,7 @@ class TikTokBot:
 
         Actions include watching videos, liking videos (with a certain probability),
         and scrolling. The number of actions (simulated views) is controlled by
-        the `MAX_VIEWS_PER_HOUR` environment variable.
+        the `MAX_VIEWS_PER_HOUR` environment variable. Each cycle's duration is logged.
         """
         if not self.behavior:
             logger.error("Cannot perform organic actions: HumanBehaviorSimulator is not initialized.")
@@ -351,6 +378,7 @@ class TikTokBot:
         logger.info(f"Session configured to perform up to {max_views} view actions.")
 
         for i in range(max_views):
+            cycle_start_time = time.monotonic() # Start timing the cycle
             logger.debug(f"Organic action cycle {i+1} of {max_views}.")
 
             self.behavior.watch_video()
@@ -366,11 +394,17 @@ class TikTokBot:
 
             # Update actions count for this session
             self.session_actions_count += 1
-            self._update_shared_status({"actions_this_session": self.session_actions_count})
 
             base_sleep_time = random.uniform(8, 15)
             logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles.")
             time.sleep(base_sleep_time)
+
+            cycle_duration = time.monotonic() - cycle_start_time
+            logger.debug(f"Action cycle {i+1} completed in {cycle_duration:.2f} seconds.")
+            self._update_shared_status({
+                "actions_this_session": self.session_actions_count, # Update count along with duration
+                "last_action_cycle_duration": round(cycle_duration, 2)
+            })
 
             # TODO: Consider if bot needs to check shared_status for a "stop_requested" flag from dashboard
 

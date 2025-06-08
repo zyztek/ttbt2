@@ -78,7 +78,9 @@ if __name__ == "__main__":
         "actions_this_session": 0,# Counter for actions in the current run
         "total_actions_lifetime": 0, # Placeholder for persistent stats
         "last_error": None,       # Description of the last critical error
-        "mode": args.mode         # Bot's operational mode
+        "mode": args.mode,        # Bot's operational mode, set at startup
+        "last_auth_duration": 0.0, # Duration of the last authentication attempt
+        "last_action_cycle_duration": 0.0 # Duration of the last full action cycle
     }
     status_lock = threading.Lock()
     logger.info("Shared status dictionary and lock created.")

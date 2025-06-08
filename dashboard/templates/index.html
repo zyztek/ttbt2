@@ -1,19 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>TTBT1 Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Status Dashboard</title>
     <style>
-      body { font-family: Arial, sans-serif; background: #f7f7f7; }
-      #status { white-space: pre; background: #fff; padding: 1em; border-radius: 8px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        #dashboard-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #status-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #status-container p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        #status-container strong {
+            color: #555;
+            min-width: 150px; /* Ensure alignment */
+            display: inline-block;
+        }
+        span[id^="s-"] { /* Style for spans with ID starting with 's-' */
+            font-weight: normal;
+            color: #007bff; /* Bootstrap primary blue, for example */
+        }
+        #s-lastError {
+            color: #dc3545; /* Bootstrap danger red */
+            font-weight: bold;
+        }
+        #s-status.error_ { /* Updated to match prefix */
+             color: #dc3545;
+             font-weight: bold;
+        }
+        #s-status.running_actions, #s-status.authenticated, #s-status.session_starting, #s-status.initialized_ready, #s-status.session_complete {
+            color: #28a745; /* Bootstrap success green */
+            font-weight: bold;
+        }
+        #s-status.initializing_webdriver, #s-status.loading_config, #s-status.authenticating  {
+            color: #ffc107; /* Bootstrap warning yellow */
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        details {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #s-rawJson {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap; /* Allows pre to wrap, but preserves whitespace */
+            word-wrap: break-word; /* Ensures long strings break and don't overflow */
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
-    <h1>Status de Bots</h1>
-    <div id="status">Cargando...</div>
+    <div id="dashboard-header">
+        <h1>Bot Status Dashboard</h1>
+    </div>
+
+    <div id="status-container">
+        <p><strong>Bot Status:</strong> <span id="s-status">Loading...</span></p>
+        <p><strong>Mode:</strong> <span id="s-mode">Loading...</span></p>
+        <p><strong>Current Account:</strong> <span id="s-currentUser">Loading...</span></p>
+        <p><strong>Actions in Session:</strong> <span id="s-actionsThisSession">Loading...</span></p>
+        <p><strong>Last Auth Duration:</strong> <span id="s-lastAuthDuration">0.00</span>s</p>
+        <p><strong>Last Action Cycle Duration:</strong> <span id="s-lastActionCycleDuration">0.00</span>s</p>
+        <p><strong>Last Error:</strong> <span id="s-lastError">N/A</span></p>
+        <hr>
+        <p><em>Last Updated: <span id="s-lastUpdated">Never</span></em></p>
+        <p><small>Dashboard Service: <span id="s-dashboardServiceStatus">Loading...</span></small></p>
+    </div>
+
+    <details>
+        <summary>View Raw JSON Data</summary>
+        <pre id="s-rawJson">Loading...</pre>
+    </details>
+
     <script>
-        fetch('/status').then(r => r.json()).then(data => {
-            document.getElementById('status').innerText = JSON.stringify(data, null, 2);
-        });
+        function updateDashboard(data) {
+            // Helper to safely update text content
+            const setText = (id, value, defaultValue = 'N/A') => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerText = value !== undefined && value !== null ? String(value) : defaultValue;
+                }
+            };
+
+            setText('s-status', data.status);
+            setText('s-mode', data.mode);
+            setText('s-currentUser', data.current_user);
+            setText('s-actionsThisSession', data.actions_this_session);
+            setText('s-lastAuthDuration', data.last_auth_duration !== undefined && data.last_auth_duration !== null ? data.last_auth_duration.toFixed(2) + 's' : 'N/A');
+            setText('s-lastActionCycleDuration', data.last_action_cycle_duration !== undefined && data.last_action_cycle_duration !== null ? data.last_action_cycle_duration.toFixed(2) + 's' : 'N/A');
+            setText('s-lastError', data.last_error || 'N/A'); // Explicitly ensure N/A for null/undefined
+            setText('s-dashboardServiceStatus', data.dashboard_service_status);
+
+            const statusElement = document.getElementById('s-status');
+            if (statusElement && data.status) {
+                statusElement.className = ''; // Reset classes
+                // Add class based on status prefix or specific values for styling
+                if (data.status.startsWith('error_')) {
+                    statusElement.classList.add('error_');
+                } else if (['running_actions', 'authenticated', 'session_starting', 'initialized_ready', 'session_complete'].includes(data.status)) {
+                    statusElement.classList.add(data.status);
+                } else if (['initializing_webdriver', 'loading_config', 'authenticating'].includes(data.status)) {
+                     statusElement.classList.add(data.status);
+                }
+            }
+
+            const rawJsonElement = document.getElementById('s-rawJson');
+            if (rawJsonElement) {
+                rawJsonElement.innerText = JSON.stringify(data, null, 2);
+            }
+
+            const lastUpdatedElement = document.getElementById('s-lastUpdated');
+            if (lastUpdatedElement) {
+                lastUpdatedElement.innerText = new Date().toLocaleTimeString();
+            }
+        }
+
+        function fetchStatus() {
+            console.log("Fetching status..."); // For debugging
+            fetch('/status')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Status data received:", data); // For debugging
+                    updateDashboard(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching status:', error);
+                    const statusContainer = document.getElementById('status-container');
+                    if (statusContainer) {
+                        // Display error directly on the dashboard if fetch fails
+                        // Clear previous status to only show the error
+                        statusContainer.innerHTML = `<p><strong>Bot Status:</strong> <span id="s-status" class="error_">Error</span></p>
+                                                     <p><strong>Mode:</strong> <span id="s-mode">N/A</span></p>
+                                                     <p><strong>Current Account:</strong> <span id="s-currentUser">N/A</span></p>
+                                                     <p><strong>Actions in Session:</strong> <span id="s-actionsThisSession">N/A</span></p>
+                                                     <p><strong>Last Auth Duration:</strong> <span id="s-lastAuthDuration">N/A</span></p>
+                                                     <p><strong>Last Action Cycle Duration:</strong> <span id="s-lastActionCycleDuration">N/A</span></p>
+                                                     <p><strong>Last Error:</strong> <span id="s-lastError">${error.message}</span></p>
+                                                     <hr>
+                                                     <p><em>Last Updated: <span id="s-lastUpdated">${new Date().toLocaleTimeString()}</span></em></p>
+                                                     <p><small>Dashboard Service: <span id="s-dashboardServiceStatus">Error fetching</span></small></p>`;
+                    }
+                    const rawJsonElement = document.getElementById('s-rawJson');
+                     if (rawJsonElement) {
+                        rawJsonElement.innerText = `Error fetching status: ${error.message}\n\nCheck if the bot's main application (main.py) is running and the API is accessible.`;
+                    }
+                });
+        }
+
+        // Initial fetch when the page loads
+        document.addEventListener('DOMContentLoaded', fetchStatus);
+
+        // Auto-refresh every 5 seconds
+        setInterval(fetchStatus, 5000);
     </script>
 </body>
 </html>
