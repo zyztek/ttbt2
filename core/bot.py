@@ -16,6 +16,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException,
 from core.account_manager import CoreAccountManager
 from core.evasion import HumanBehaviorSimulator
 from core.logger import get_logger
+from core.config_loader import ConfigLoader # Added
 
 # --- Base Bot Class ---
 class Bot:
@@ -71,8 +72,9 @@ class TikTokBot:
     The main class for the TikTok Bot, specialized for TikTok interactions.
     This class is responsible for:
     - Initializing and configuring the Selenium WebDriver for TikTok.
+    - Loading UI selectors from an external configuration file.
     - Managing account credentials via an AccountManager.
-    - Handling the authentication process on TikTok.
+    - Handling the authentication process on TikTok using loaded selectors.
     - Performing a series of 'organic' actions like watching videos,
       liking content, and scrolling, simulated via HumanBehaviorSimulator.
 
@@ -81,13 +83,7 @@ class TikTokBot:
         mode (str): The operational mode of the bot (e.g., 'safe', 'balanced').
         account_manager (CoreAccountManager): Manages retrieval of account credentials.
         behavior (HumanBehaviorSimulator): Simulates human-like interactions.
-        LOGIN_URL (str): The URL for the TikTok login page.
-        USERNAME_FIELD_BY: Selenium locator strategy for the username field.
-        USERNAME_FIELD_VALUE (str): Selenium locator value for the username field.
-        PASSWORD_FIELD_BY: Selenium locator strategy for the password field.
-        PASSWORD_FIELD_VALUE (str): Selenium locator value for the password field.
-        SUBMIT_BUTTON_BY: Selenium locator strategy for the submit button.
-        SUBMIT_BUTTON_VALUE (str): Selenium locator value for the submit button.
+        selectors (dict): A dictionary of UI selectors loaded from selectors.json.
         shared_status (dict, optional): A dictionary for sharing status with other threads.
         status_lock (threading.Lock, optional): A lock for synchronizing access to shared_status.
     """
@@ -106,9 +102,27 @@ class TikTokBot:
         self.shared_status = shared_status
         self.status_lock = status_lock
         self.session_actions_count = 0 # Initialize session action counter
+        self.selectors = {} # Initialize selectors attribute
 
-        self._update_shared_status({"mode": mode, "status": "initializing_webdriver"})
-        self.driver = self._init_driver()
+        self._update_shared_status({"mode": mode, "status": "loading_config"})
+        self.selectors = ConfigLoader.load_selectors("selectors.json")
+
+        # Critical check for essential selectors after loading
+        if not self.selectors or \
+           not self.selectors.get("common", {}).get("login_page_url") or \
+           not self.selectors.get("login_page", {}).get("username_field") or \
+           not self.selectors.get("login_page", {}).get("password_field") or \
+           not self.selectors.get("login_page", {}).get("submit_button"):
+
+            logger.critical("Essential selectors (login URL, username, password, submit) not found or selectors.json failed to load. TikTokBot cannot operate.")
+            self._update_shared_status({"status": "error_selector_config", "last_error": "Essential selectors missing."})
+            # Ensure driver is None if selectors are missing, even if it was initialized before this check (which it isn't here)
+            self.driver = None
+            self.behavior = None
+            return # Stop further initialization
+
+        self._update_shared_status({"status": "initializing_webdriver"})
+        self.driver = self._init_driver() # Initialize WebDriver
         self.mode = mode
         self.account_manager = CoreAccountManager() # Manages TikTok account credentials
 
@@ -116,24 +130,15 @@ class TikTokBot:
             self.behavior = HumanBehaviorSimulator(self.driver, mode=self.mode)
             self._update_shared_status({"status": "initialized_ready"})
         else:
+            # This path is taken if _init_driver() returns None
             logger.error("HumanBehaviorSimulator not initialized due to WebDriver failure.")
-            self.behavior = None
+            self.behavior = None # Ensure behavior is None if driver is None
+            # _init_driver logs its own errors, shared status updated based on self.driver check
             self._update_shared_status({
                 "status": "error_webdriver_init",
                 "last_error": "WebDriver failed to initialize during bot __init__."
             })
-
-        # Centralized Selectors for the TikTok Login Page
-        # These help in maintaining and updating element locators easily.
-        self.LOGIN_URL = "https://www.tiktok.com/login"
-        self.USERNAME_FIELD_BY = By.NAME
-        self.USERNAME_FIELD_VALUE = "username" # Standard name attribute for username input
-        self.PASSWORD_FIELD_BY = By.NAME
-        self.PASSWORD_FIELD_VALUE = "password" # Standard name attribute for password input
-        self.SUBMIT_BUTTON_BY = By.XPATH
-        # This XPath targets a button element with type="submit".
-        # It's a common pattern but might need adjustment if TikTok's UI changes.
-        self.SUBMIT_BUTTON_VALUE = '//button[@type="submit"]'
+            # No need to quit driver here as it would be None
 
     def _init_driver(self):
         """
@@ -178,20 +183,22 @@ class TikTokBot:
                   A more robust check would verify a post-login state.
         """
         account = self.account_manager.get_next_account()
-        if not account or not account.get("email") or not account.get("password"):
-            # Log a warning if no valid account details are found.
-            logger.warning("Authentication skipped: No valid account credentials found in AccountManager.")
+        # Ensure account has 'username' and 'password' keys.
+        if not account or not account.get("username") or not account.get("password"):
+            logger.warning("Authentication skipped: No valid account credentials (missing username or password) found in AccountManager.")
             self._update_shared_status({
                 "status": "error_no_account",
-                "current_user": None,
-                "last_error": "No valid account credentials found."
+                "current_user": None, # Explicitly set current_user to None
+                "last_error": "No valid account credentials (missing username or password) found."
             })
             return False
 
-        logger.info(f"Attempting to authenticate with account: {account.get('email')}")
+        # Use 'username' from the account dictionary
+        current_username = account.get('username')
+        logger.info(f"Attempting to authenticate with account: {current_username}")
         self._update_shared_status({
             "status": "authenticating",
-            "current_user": account.get('email'),
+            "current_user": current_username,
             "last_error": None
         })
 
@@ -204,25 +211,50 @@ class TikTokBot:
             return False
 
         try:
-            logger.debug(f"Navigating to login page: {self.LOGIN_URL}")
-            self.driver.get(self.LOGIN_URL)
-            self.behavior.random_delay(3, 5) # Wait for page elements to potentially load
+            login_url = self.selectors.get("common", {}).get("login_page_url")
+            if not login_url:
+                logger.error("Login URL ('common.login_page_url') not found in selectors configuration.")
+                self._update_shared_status({"status": "error_selector_missing", "last_error": "Login URL missing."})
+                return False
 
-            # Fill in username/email
-            logger.debug(f"Locating username field using: {self.USERNAME_FIELD_BY}, {self.USERNAME_FIELD_VALUE}")
-            email_field = self.driver.find_element(self.USERNAME_FIELD_BY, self.USERNAME_FIELD_VALUE)
-            self.behavior.human_type(email_field, account['email'])
+            logger.debug(f"Navigating to login page: {login_url}")
+            self.driver.get(login_url)
+            self.behavior.random_delay(3, 5)
+
+            login_page_selectors = self.selectors.get("login_page", {})
+
+            username_selector = login_page_selectors.get("username_field")
+            if not username_selector:
+                logger.error("Username field selector ('login_page.username_field') not found in configuration.")
+                self._update_shared_status({"status": "error_selector_missing", "last_error": "Username selector missing."})
+                return False
+
+            password_selector = login_page_selectors.get("password_field")
+            if not password_selector:
+                logger.error("Password field selector ('login_page.password_field') not found in configuration.")
+                self._update_shared_status({"status": "error_selector_missing", "last_error": "Password selector missing."})
+                return False
+
+            submit_button_selector = login_page_selectors.get("submit_button")
+            if not submit_button_selector:
+                logger.error("Submit button selector ('login_page.submit_button') not found in configuration.")
+                self._update_shared_status({"status": "error_selector_missing", "last_error": "Submit button selector missing."})
+                return False
+
+            logger.debug(f"Locating username field using: {username_selector}")
+            # The element found is still often referred to as 'email_field' or 'username_field' in web forms
+            # but it will be filled with the account's 'username' value.
+            username_input_field = self.driver.find_element(*username_selector)
+            self.behavior.human_type(username_input_field, account['username']) # Use account['username']
             logger.debug("Username field filled.")
 
-            # Fill in password
-            logger.debug(f"Locating password field using: {self.PASSWORD_FIELD_BY}, {self.PASSWORD_FIELD_VALUE}")
-            pass_field = self.driver.find_element(self.PASSWORD_FIELD_BY, self.PASSWORD_FIELD_VALUE)
+            logger.debug(f"Locating password field using: {password_selector}")
+            pass_field = self.driver.find_element(*password_selector)
             self.behavior.human_type(pass_field, account['password'])
             logger.debug("Password field filled.")
 
-            # Click submit button
-            logger.debug(f"Locating submit button using: {self.SUBMIT_BUTTON_BY}, {self.SUBMIT_BUTTON_VALUE}")
-            submit_btn = self.driver.find_element(self.SUBMIT_BUTTON_BY, self.SUBMIT_BUTTON_VALUE)
+            logger.debug(f"Locating submit button using: {submit_button_selector}")
+            submit_btn = self.driver.find_element(*submit_button_selector)
             self.behavior.human_click(submit_btn)
             logger.info("Login form submitted.")
 

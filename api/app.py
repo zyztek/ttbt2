@@ -1,11 +1,17 @@
-from flask import Flask, jsonify, current_app # Added current_app
+from flask import Flask, jsonify, current_app, render_template # Added render_template
 
-app = Flask(__name__)
+# Assuming api/app.py is in the 'api/' directory, and templates are in 'dashboard/templates/'
+# The path '../dashboard/templates' should correctly point to the templates directory
+# relative to the 'api' directory where app.py resides.
+app = Flask(__name__, template_folder='../dashboard/templates')
 
 @app.route("/")
 def index():
-    # Basic endpoint to check if the API is alive
-    return jsonify({"message": "TikTok Bot Dashboard API is running."})
+    """
+    Serves the main dashboard page (index.html).
+    The dashboard will then use JavaScript to fetch data from the /status endpoint.
+    """
+    return render_template("index.html")
 
 @app.route("/status")
 def status():
