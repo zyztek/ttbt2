@@ -16,7 +16,11 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException,
 from core.account_manager import CoreAccountManager
 from core.evasion import HumanBehaviorSimulator
 from core.logger import get_logger
-from core.config_loader import ConfigLoader # Added
+from core.config_loader import ConfigLoader
+from config.settings import ( # Added
+    DEFAULT_BOT_MODE, MAX_VIEWS_FALLBACK,
+    LIKE_PROBABILITY, INTER_ACTION_CYCLE_PAUSE_RANGE_SECS
+)
 
 # --- Base Bot Class ---
 class Bot:
@@ -87,12 +91,13 @@ class TikTokBot:
         shared_status (dict, optional): A dictionary for sharing status with other threads.
         status_lock (threading.Lock, optional): A lock for synchronizing access to shared_status.
     """
-    def __init__(self, mode='balanced', shared_status=None, status_lock=None):
+    def __init__(self, mode=DEFAULT_BOT_MODE, shared_status=None, status_lock=None): # Used DEFAULT_BOT_MODE
         """
         Initializes the TikTokBot.
 
         Args:
-            mode (str, optional): The operational mode for the bot. Defaults to 'balanced'.
+            mode (str, optional): The operational mode for the bot.
+                                  Defaults to `config.settings.DEFAULT_BOT_MODE`.
             shared_status (dict, optional): Dictionary for inter-thread status sharing.
             status_lock (threading.Lock, optional): Lock for synchronizing shared_status access.
         """
@@ -368,12 +373,16 @@ class TikTokBot:
             return
 
         logger.info("Starting to perform organic actions.")
-        # Get max views from environment variable, default to 50 if not set or invalid.
+        # Get max views from environment variable, using MAX_VIEWS_FALLBACK from settings
         try:
-            max_views = int(os.getenv("MAX_VIEWS_PER_HOUR", "50"))
+            max_views_str = os.getenv("MAX_VIEWS_PER_HOUR", str(MAX_VIEWS_FALLBACK))
+            max_views = int(max_views_str)
         except ValueError:
-            logger.warning("Invalid MAX_VIEWS_PER_HOUR value, defaulting to 50.")
-            max_views = 50
+            logger.warning(
+                f"Invalid MAX_VIEWS_PER_HOUR value ('{max_views_str}'). "
+                f"Defaulting to MAX_VIEWS_FALLBACK: {MAX_VIEWS_FALLBACK}."
+            )
+            max_views = MAX_VIEWS_FALLBACK
 
         logger.info(f"Session configured to perform up to {max_views} view actions.")
 
@@ -383,20 +392,23 @@ class TikTokBot:
 
             self.behavior.watch_video()
 
-            like_probability = 0.65
+            # Use LIKE_PROBABILITY from settings
+            like_probability = LIKE_PROBABILITY
             if random.random() < like_probability:
-                logger.debug(f"Attempting to like video (probability: {like_probability*100}%).")
+                logger.debug(f"Attempting to like video (probability: {like_probability*100:.0f}%).")
                 self.behavior.like_video()
             else:
-                logger.debug(f"Skipping like for this video (probability: {like_probability*100}%).")
+                logger.debug(f"Skipping like for this video (probability: {like_probability*100:.0f}%).")
 
             self.behavior.random_scroll()
 
             # Update actions count for this session
             self.session_actions_count += 1
 
-            base_sleep_time = random.uniform(8, 15)
-            logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles.")
+            # Use INTER_ACTION_CYCLE_PAUSE_RANGE_SECS from settings
+            min_pause, max_pause = INTER_ACTION_CYCLE_PAUSE_RANGE_SECS
+            base_sleep_time = random.uniform(min_pause, max_pause)
+            logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles (range: {min_pause}-{max_pause}s).")
             time.sleep(base_sleep_time)
 
             cycle_duration = time.monotonic() - cycle_start_time

@@ -8,6 +8,7 @@ import time
 import random
 from selenium.webdriver.common.by import By
 from core.logger import get_logger
+from config.settings import BEHAVIOR_PROFILES, DEFAULT_BOT_MODE # Added
 
 # Initialize a logger for this module
 logger = get_logger("HumanBehaviorSimulator")
@@ -17,103 +18,89 @@ class HumanBehaviorSimulator:
     Simulates human-like behavior for web automation tasks.
 
     This class provides methods for actions like typing, clicking, scrolling,
-    and introducing delays, all of which can be adjusted based on an operational
-    mode ('safe', 'balanced', 'aggressive') to vary the intensity and speed
-    of interactions.
+    and introducing delays. Behavioral parameters (e.g., delay durations,
+    scroll amounts) are loaded from `config.settings.BEHAVIOR_PROFILES`
+    based on an operational mode ('safe', 'balanced', 'aggressive').
 
     Attributes:
-        driver: The Selenium WebDriver instance used to interact with the browser.
-        mode (str): The current operational mode (e.g., 'safe', 'balanced', 'aggressive'),
-                    which influences the behavior of simulation methods.
-        delay_multipliers (dict): Multipliers for adjusting base delay times per mode.
-        typing_delay_ranges (dict): Min/max character typing delays per mode.
-        video_watch_time_ranges (dict): Min/max video watching durations per mode.
-        scroll_amount_ranges (dict): Min/max scroll distances in pixels per mode.
-        scroll_pause_ranges (dict): Min/max pause durations after scrolling per mode.
-        current_delay_multiplier (float): The delay multiplier for the current mode.
-        current_typing_delay_min (float): Minimum typing delay for the current mode.
-        current_typing_delay_max (float): Maximum typing delay for the current mode.
-        current_video_watch_min (float): Minimum video watch time for the current mode.
-        current_video_watch_max (float): Maximum video watch time for the current mode.
-        current_scroll_min_pixels (int): Minimum scroll distance for the current mode.
-        current_scroll_max_pixels (int): Maximum scroll distance for the current mode.
-        current_scroll_pause_min (float): Minimum post-scroll pause for the current mode.
-        current_scroll_pause_max (float): Maximum post-scroll pause for the current mode.
-        LIKE_BUTTON_SELECTOR_XPATH_PLACEHOLDER (str): A placeholder XPath for a 'like' button.
-                                                      This is for demonstration and likely needs
-                                                      to be updated for a specific website.
+        driver: The Selenium WebDriver instance.
+        mode (str): The current operational mode.
+        # Current behavioral parameters derived from the selected profile:
+        current_delay_multiplier (float): General delay multiplier.
+        current_typing_delay_min (float): Min delay between keystrokes.
+        current_typing_delay_max (float): Max delay between keystrokes.
+        current_space_pause_chance (float): Probability of a longer pause after a space.
+        current_space_pause_min_duration (float): Min duration for space pause.
+        current_space_pause_max_duration (float): Max duration for space pause.
+        current_video_watch_min (float): Min video watch time.
+        current_video_watch_max (float): Max video watch time.
+        current_click_min_delay (float): Min base delay for human_click.
+        current_click_max_delay (float): Max base delay for human_click.
+        current_scroll_min_pixels (int): Min scroll distance.
+        current_scroll_max_pixels (int): Max scroll distance.
+        current_scroll_pause_min (float): Min pause after scrolling.
+        current_scroll_pause_max (float): Max pause after scrolling.
+        LIKE_BUTTON_SELECTOR_XPATH_PLACEHOLDER (str): Placeholder for a like button selector.
     """
     def __init__(self, driver, mode='balanced'):
         """
         Initializes the HumanBehaviorSimulator.
 
+        Behavioral parameters are loaded from `config.settings.BEHAVIOR_PROFILES`
+        based on the provided `mode`.
+
         Args:
             driver: The Selenium WebDriver instance.
             mode (str, optional): The simulation mode ('safe', 'balanced', 'aggressive').
-                                  Defaults to 'balanced'. This mode determines the
-                                  aggressiveness and speed of simulated actions.
+                                  Defaults to 'balanced'.
         """
         self.driver = driver
         self.mode = mode.lower() # Ensure mode is consistently lowercase
-        logger.debug(f"HumanBehaviorSimulator initialized with mode: {self.mode}")
+        logger.info(f"HumanBehaviorSimulator initializing with mode: {self.mode}")
 
-        # --- Mode-specific behavioral parameters ---
-        # These dictionaries define the base values for different actions per mode.
-        # The actual behavior will use values derived from these based on the current `self.mode`.
+        # Fetch the behavior profile for the current mode, or default if mode is invalid
+        current_profile = BEHAVIOR_PROFILES.get(self.mode, BEHAVIOR_PROFILES[DEFAULT_BOT_MODE])
+        if self.mode not in BEHAVIOR_PROFILES:
+            logger.warning(f"Mode '{self.mode}' not found in BEHAVIOR_PROFILES. Using default mode '{DEFAULT_BOT_MODE}'.")
+            self.mode = DEFAULT_BOT_MODE # Update mode to default if it was invalid
 
-        self.delay_multipliers = {
-            'safe': 1.5,    # Slower actions
-            'balanced': 1.0, # Normal actions
-            'aggressive': 0.7 # Faster actions
-        }
-        self.typing_delay_ranges = { # (min_char_delay_seconds, max_char_delay_seconds)
-            'safe': (0.1, 0.25),
-            'balanced': (0.05, 0.15),
-            'aggressive': (0.02, 0.08)
-        }
-        self.video_watch_time_ranges = { # (min_watch_seconds, max_watch_seconds)
-            'safe': (10, 25),
-            'balanced': (5, 15),
-            'aggressive': (3, 8)
-        }
-        self.scroll_amount_ranges = { # (min_pixels, max_pixels)
-            'safe': (200, 500),    # Shorter scrolls
-            'balanced': (300, 700),
-            'aggressive': (500, 1000) # Longer scrolls
-        }
-        self.scroll_pause_ranges = { # (min_pause_after_scroll_seconds, max_pause_after_scroll_seconds)
-            'safe': (1.0, 2.5),
-            'balanced': (0.5, 1.5),
-            'aggressive': (0.2, 0.8)
-        }
+        logger.debug(f"Loading behavior profile for mode: {self.mode}")
 
-        # --- Derive current operational parameters based on mode ---
-        # This section sets up instance attributes for the currently selected mode's
-        # behavior, defaulting to 'balanced' settings if an unknown mode is provided.
+        # Set instance attributes from the loaded profile
+        self.current_delay_multiplier = current_profile['delay_multiplier']
 
-        self.current_delay_multiplier = self.delay_multipliers.get(self.mode, self.delay_multipliers['balanced'])
+        typing_range = current_profile['typing_delay_range_secs']
+        self.current_typing_delay_min = typing_range[0]
+        self.current_typing_delay_max = typing_range[1]
 
-        current_typing_range = self.typing_delay_ranges.get(self.mode, self.typing_delay_ranges['balanced'])
-        self.current_typing_delay_min = current_typing_range[0]
-        self.current_typing_delay_max = current_typing_range[1]
+        self.current_space_pause_chance = current_profile['space_pause_chance']
+        space_pause_duration_range = current_profile['space_pause_duration_range_secs']
+        self.current_space_pause_min_duration = space_pause_duration_range[0]
+        self.current_space_pause_max_duration = space_pause_duration_range[1]
 
-        current_watch_range = self.video_watch_time_ranges.get(self.mode, self.video_watch_time_ranges['balanced'])
-        self.current_video_watch_min = current_watch_range[0]
-        self.current_video_watch_max = current_watch_range[1]
+        video_watch_range = current_profile['video_watch_time_range_secs']
+        self.current_video_watch_min = video_watch_range[0]
+        self.current_video_watch_max = video_watch_range[1]
 
-        current_scroll_amount_range = self.scroll_amount_ranges.get(self.mode, self.scroll_amount_ranges['balanced'])
-        self.current_scroll_min_pixels = current_scroll_amount_range[0]
-        self.current_scroll_max_pixels = current_scroll_amount_range[1]
+        click_delay_range = current_profile['click_base_delay_range_secs']
+        self.current_click_min_delay = click_delay_range[0]
+        self.current_click_max_delay = click_delay_range[1]
 
-        current_scroll_pause_range = self.scroll_pause_ranges.get(self.mode, self.scroll_pause_ranges['balanced'])
-        self.current_scroll_pause_min = current_scroll_pause_range[0]
-        self.current_scroll_pause_max = current_scroll_pause_range[1]
+        scroll_amount_range = current_profile['scroll_amount_range_pixels']
+        self.current_scroll_min_pixels = scroll_amount_range[0]
+        self.current_scroll_max_pixels = scroll_amount_range[1]
 
-        # Placeholder for a 'like' button selector.
-        # This is a generic example and would need to be replaced with an actual,
-        # reliable selector for the target website's like button.
+        scroll_pause_range = current_profile['scroll_pause_duration_range_secs']
+        self.current_scroll_pause_min = scroll_pause_range[0]
+        self.current_scroll_pause_max = scroll_pause_range[1]
+
+        # Placeholder for like button selector (can also be moved to selectors.json if preferred)
         self.LIKE_BUTTON_SELECTOR_XPATH_PLACEHOLDER = "//button[@data-testid='like-button-placeholder']"
-        logger.debug(f"Behavior parameters set for mode '{self.mode}': delay_multiplier={self.current_delay_multiplier}, typing_delay=({self.current_typing_delay_min}-{self.current_typing_delay_max})s, etc.")
+
+        logger.info(f"HumanBehaviorSimulator configured for mode '{self.mode}' using parameters from settings.")
+        logger.debug(f"Effective parameters: DelayMultiplier={self.current_delay_multiplier}, "
+                     f"TypingDelay=({self.current_typing_delay_min}-{self.current_typing_delay_max})s, "
+                     f"SpacePauseChance={self.current_space_pause_chance*100}%, etc.")
 
 
     def random_delay(self, min_seconds, max_seconds):
@@ -156,20 +143,16 @@ class HumanBehaviorSimulator:
         logger.debug(f"Human_type: Typing text '{text[:20]}...' into element. Mode: '{self.mode}'")
         for char_index, char in enumerate(text):
             element.send_keys(char)
-            # Determine delay before typing the next character.
             if char == ' ':
-                # Higher chance of longer pause after a space in 'safe' or 'balanced' modes.
-                if self.mode == 'safe' and random.random() < 0.10: # 10% chance for safe mode
-                    logger.trace("Human_type: Special pause after space (safe mode).")
-                    self.random_delay(0.2, 0.5) # Base delays, will be multiplied by current_delay_multiplier in random_delay.
-                elif self.mode == 'balanced' and random.random() < 0.05: # 5% chance for balanced mode
-                    logger.trace("Human_type: Special pause after space (balanced mode).")
-                    self.random_delay(0.1, 0.3) # Base delays.
+                # Check if a special pause should occur after a space, based on mode's probability
+                if random.random() < self.current_space_pause_chance:
+                    logger.trace(f"Human_type: Performing special space pause (chance: {self.current_space_pause_chance*100}%).")
+                    self.random_delay(self.current_space_pause_min_duration, self.current_space_pause_max_duration)
                 else:
-                    # Default short delay after space if no special pause triggered.
+                    # Standard inter-character delay if no special space pause
                     time.sleep(random.uniform(self.current_typing_delay_min, self.current_typing_delay_max))
             else:
-                # Standard delay for non-space characters.
+                # Standard inter-character delay for non-space characters
                 time.sleep(random.uniform(self.current_typing_delay_min, self.current_typing_delay_max))
 
             if (char_index + 1) % 10 == 0: # Log progress every 10 characters for long text
@@ -180,18 +163,19 @@ class HumanBehaviorSimulator:
         Simulates a human-like click on a web element.
 
         Introduces small, mode-adjusted random delays before and after the click
-        action to make it appear less robotic.
+        action. The base delay range is loaded from `config.settings.BEHAVIOR_PROFILES`
+        for the current mode.
 
         Args:
             element: The Selenium WebElement to click.
         """
         logger.debug(f"Human_click: Attempting to click element. Mode: '{self.mode}'")
-        # Use self.random_delay, which already incorporates the mode-specific multiplier.
-        # These are base delay values; random_delay will adjust them.
-        self.random_delay(0.2, 0.5) # Pre-click delay.
+        # Use self.random_delay, which incorporates the mode-specific multiplier.
+        # The base delays (current_click_min_delay, current_click_max_delay) are from settings.
+        self.random_delay(self.current_click_min_delay, self.current_click_max_delay) # Pre-click delay.
         element.click()
         logger.trace("Human_click: Element clicked.")
-        self.random_delay(0.2, 0.5) # Post-click delay.
+        self.random_delay(self.current_click_min_delay, self.current_click_max_delay) # Post-click delay.
 
     def watch_video(self):
         """

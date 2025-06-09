@@ -17,6 +17,10 @@ from threading import Thread
 from api.app import app # Flask app for the dashboard
 from core.logger import get_logger
 from selenium.common.exceptions import WebDriverException
+from config.settings import ( # Added
+    DEFAULT_BOT_MODE, MAX_VIEWS_DEFAULT_ARG,
+    FLASK_HOST, FLASK_PORT
+)
 
 # Initialize logger for the main runner
 logger = get_logger("main_runner")
@@ -36,14 +40,14 @@ def parse_args():
     parser.add_argument(
         "--mode",
         choices=["safe", "balanced", "aggressive"],
-        default="balanced",
-        help="Operational mode for the bot (default: balanced)."
+        default=DEFAULT_BOT_MODE, # Used settings constant
+        help=f"Operational mode for the bot (default: {DEFAULT_BOT_MODE})."
     )
     parser.add_argument(
         "--max-views",
         type=int,
-        default=5000,
-        help="Maximum number of views to attempt in a session (default: 5000)."
+        default=MAX_VIEWS_DEFAULT_ARG, # Used settings constant
+        help=f"Maximum number of views to attempt in a session (default: {MAX_VIEWS_DEFAULT_ARG})."
     )
     return parser.parse_args()
 
@@ -51,7 +55,7 @@ def run_flask(flask_app, shared_status, lock): # Modified signature
     """
     Starts the Flask web server for the bot's dashboard.
 
-    The server runs on host 0.0.0.0 and port 5000.
+    Host and port are sourced from config.settings.
     This function is intended to be run in a separate thread to avoid blocking
     the main bot operations.
     """
@@ -60,7 +64,8 @@ def run_flask(flask_app, shared_status, lock): # Modified signature
     # Pass shared_status and lock to the app context if needed by routes
     # For example, flask_app.config['SHARED_STATUS'] = shared_status
     # flask_app.config['STATUS_LOCK'] = lock
-    flask_app.run(host='0.0.0.0', port=5000, debug=False) # debug=False is typical for threaded apps
+    logger.info(f"Starting Flask server on {FLASK_HOST}:{FLASK_PORT}")
+    flask_app.run(host=FLASK_HOST, port=FLASK_PORT, debug=False) # Used settings constants
 
 if __name__ == "__main__":
     # Parse command-line arguments
