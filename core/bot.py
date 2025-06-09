@@ -17,7 +17,8 @@ from core.account_manager import CoreAccountManager
 from core.evasion import HumanBehaviorSimulator
 from core.logger import get_logger
 from core.config_loader import ConfigLoader
-from config.settings import ( # Added
+from interactions.engagement import EngagementManager # Added
+from config.settings import (
     DEFAULT_BOT_MODE, MAX_VIEWS_FALLBACK,
     LIKE_PROBABILITY, INTER_ACTION_CYCLE_PAUSE_RANGE_SECS
 )
@@ -87,11 +88,14 @@ class TikTokBot:
         mode (str): The operational mode of the bot (e.g., 'safe', 'balanced').
         account_manager (CoreAccountManager): Manages retrieval of account credentials.
         behavior (HumanBehaviorSimulator): Simulates human-like interactions.
+        engagement_manager (EngagementManager): Manages engagement tracking with users.
         selectors (dict): A dictionary of UI selectors loaded from selectors.json.
         shared_status (dict, optional): A dictionary for sharing status with other threads.
         status_lock (threading.Lock, optional): A lock for synchronizing access to shared_status.
+        proxy (str, optional): Proxy server string (e.g., "http://host:port").
+        fingerprint (str, optional): User-Agent string for browser fingerprinting.
     """
-    def __init__(self, mode=DEFAULT_BOT_MODE, shared_status=None, status_lock=None): # Used DEFAULT_BOT_MODE
+    def __init__(self, mode=DEFAULT_BOT_MODE, shared_status=None, status_lock=None, proxy=None, fingerprint=None): # Added proxy, fingerprint
         """
         Initializes the TikTokBot.
 
@@ -100,14 +104,26 @@ class TikTokBot:
                                   Defaults to `config.settings.DEFAULT_BOT_MODE`.
             shared_status (dict, optional): Dictionary for inter-thread status sharing.
             status_lock (threading.Lock, optional): Lock for synchronizing shared_status access.
+            proxy (str, optional): Proxy server string to be used by the WebDriver.
+            fingerprint (str, optional): User-Agent string for the WebDriver.
         """
         # self.logger = get_logger(f"TikTokBot.{mode}") # Alternative: instance-specific logger with mode
         logger.info(f"Initializing TikTokBot with mode: {mode}")
+
+        self.proxy = proxy # Store proxy
+        self.fingerprint = fingerprint # Store fingerprint
+
+        if self.proxy:
+            logger.info(f"TikTokBot instance configured to use proxy: {self.proxy}")
+        if self.fingerprint:
+            logger.info(f"TikTokBot instance configured to use fingerprint (User-Agent): {self.fingerprint}")
 
         self.shared_status = shared_status
         self.status_lock = status_lock
         self.session_actions_count = 0 # Initialize session action counter
         self.selectors = {} # Initialize selectors attribute
+        self.engagement_manager = EngagementManager()
+        logger.info("EngagementManager initialized for TikTokBot.")
 
         self._update_shared_status({"mode": mode, "status": "loading_config"})
         self.selectors = ConfigLoader.load_selectors("selectors.json")
@@ -149,8 +165,9 @@ class TikTokBot:
         """
         Configures and initializes the Selenium Chrome WebDriver.
 
-        Sets Chrome options for headless browsing, disabling GPU, running in a sandbox,
-        and a specific mobile user-agent to mimic a mobile device.
+        Sets Chrome options for headless browsing, disabling GPU, running in a sandbox.
+        If `self.fingerprint` (User-Agent) and/or `self.proxy` are set for the bot instance,
+        they are applied to the WebDriver options.
 
         Returns:
             webdriver.Chrome or None: The initialized WebDriver instance, or None if
@@ -159,11 +176,27 @@ class TikTokBot:
         logger.debug("Initializing WebDriver.")
         options = webdriver.ChromeOptions()
         # Common options for running in automated environments / headless
-        options.add_argument("--headless") # Run Chrome in headless mode (no GUI).
-        options.add_argument("--disable-gpu") # Disable GPU hardware acceleration. Often needed for headless.
-        options.add_argument("--no-sandbox") # Bypass OS security model. Useful in Docker/CI environments.
-        # Mimic a mobile user agent. TikTok's mobile interface might be simpler or different.
-        options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36")
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+
+        # Apply Fingerprint (User-Agent) if provided
+        if self.fingerprint:
+            options.add_argument(f"user-agent={self.fingerprint}")
+            logger.info(f"WebDriver: Using custom User-Agent: {self.fingerprint}")
+        else:
+            # Fallback to a default generic user-agent if none provided
+            default_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
+            options.add_argument(f"user-agent={default_ua}")
+            logger.info(f"WebDriver: Using default User-Agent: {default_ua}")
+
+        # Apply Proxy if provided
+        if self.proxy:
+            logger.info(f"WebDriver: Attempting to configure with proxy: {self.proxy}")
+            options.add_argument(f'--proxy-server={self.proxy}')
+            # Note: Advanced proxy configurations (e.g., SOCKS, authenticated proxies)
+            # might require different or more complex setup (e.g., using extensions).
+            # This setup assumes a direct HTTP/HTTPS proxy format supported by --proxy-server.
 
         try:
             driver = webdriver.Chrome(options=options)
@@ -364,12 +397,13 @@ class TikTokBot:
         """
         Performs a loop of simulated organic user actions on TikTok.
 
-        Actions include watching videos, liking videos (with a certain probability),
-        and scrolling. The number of actions (simulated views) is controlled by
-        the `MAX_VIEWS_PER_HOUR` environment variable. Each cycle's duration is logged.
+        Actions include watching videos, liking videos (conditionally, based on prior engagement
+        and probability), and scrolling. The number of actions (simulated views) is
+        controlled by the `MAX_VIEWS_PER_HOUR` environment variable. Each cycle's
+        duration is logged. Engagement with conceptual user IDs is tracked.
         """
-        if not self.behavior:
-            logger.error("Cannot perform organic actions: HumanBehaviorSimulator is not initialized.")
+        if not self.behavior: # Should also check for self.engagement_manager if it's critical
+            logger.error("Cannot perform organic actions: HumanBehaviorSimulator or other components not initialized.")
             return
 
         logger.info("Starting to perform organic actions.")
@@ -392,13 +426,36 @@ class TikTokBot:
 
             self.behavior.watch_video()
 
-            # Use LIKE_PROBABILITY from settings
+            # Conceptual User ID for engagement tracking
+            # In a real scenario, this ID would be extracted from the video/page data.
+            conceptual_author_id = f"sim_user_{i % 5}" # Cycles through 5 simulated user IDs
+            logger.debug(f"Processing content from conceptual author: '{conceptual_author_id}'.")
+
+            # Like logic using EngagementManager
             like_probability = LIKE_PROBABILITY
-            if random.random() < like_probability:
-                logger.debug(f"Attempting to like video (probability: {like_probability*100:.0f}%).")
-                self.behavior.like_video()
+            if conceptual_author_id:
+                if not self.engagement_manager.has_engaged(conceptual_author_id):
+                    if random.random() < like_probability:
+                        logger.info(
+                            f"Attempting to like video from user '{conceptual_author_id}' (first engagement). "
+                            f"Probability: {like_probability*100:.0f}%."
+                        )
+                        self.behavior.like_video() # Actual like attempt
+                        self.engagement_manager.engage_user(conceptual_author_id) # Record engagement
+                    else:
+                        logger.debug(
+                            f"Skipping like for video from user '{conceptual_author_id}' due to probability roll "
+                            f"(first engagement attempt)."
+                        )
+                else:
+                    # User already engaged. For now, we'll log and NOT re-like.
+                    # Future: Implement re-engagement rules (e.g., different probability, time-based).
+                    logger.debug(f"Skipping like for video from user '{conceptual_author_id}' (already engaged).")
             else:
-                logger.debug(f"Skipping like for this video (probability: {like_probability*100:.0f}%).")
+                # Fallback if no author_id (should not happen with placeholder, but good for robustness)
+                logger.debug("No author ID for current video; liking based on general probability without engagement tracking.")
+                if random.random() < like_probability:
+                    self.behavior.like_video()
 
             self.behavior.random_scroll()
 
