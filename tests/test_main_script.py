@@ -1,211 +1,174 @@
+# tests/test_main_script.py
 import os
-import sys
 import json
 import tempfile
 import shutil
-import argparse
-import runpy
+import pytest # Ensure pytest is imported if used directly for fixtures/raises
 from unittest import mock
+import argparse # Should be from main, or mocked if testing main.parse_args standalone
+import sys # For sys.argv and sys.exit mocking
+import builtins # For print mocking
 
-import pytest
+# Assuming main.py is in root and core is accessible
+# This import might need to be within test functions if main itself is modified by runpy
+import main
 
-# Custom exception for testing sys.exit scenarios (No longer needed)
-# class TestAbortException(Exception):
-#     pass
-
-# Assuming main.py is in the parent directory or accessible via PYTHONPATH
-# For robust testing, it's better if main.py can be imported as a module
-# For this exercise, we'll assume it's importable or use runpy.
-
-# If main.py can be imported directly (e.g. it's in PYTHONPATH or installed)
-# from main import parse_args, run_flask # Assuming run_flask can be imported for Thread target check
-# For this exercise, we will mock these or test them via side effects of running main.
+# Dummy definitions if not imported from elsewhere, for tests that need them
+# class DummyProxyManager:
+#     def get_random_active_proxy(self): return "proxyZ"
+# class DummyFingerprintManager:
+#     def get_fingerprint(self): return "fpW"
 
 def create_temp_file(directory, filename, content):
     path = os.path.join(directory, filename)
-    # Ensure content is written as a string if it's JSON
+    # Ensure content is string if opening in text mode, or open in binary if content is bytes
     with open(path, "w", encoding="utf-8") as f:
-        if isinstance(content, (dict, list)):
-            json.dump(content, f)
-        else:
-            f.write(content)
+        json.dump(content, f)
     return path
 
 @pytest.fixture
-def temp_env_for_main():
+def temp_env(): # Renamed from temp_env_for_main for consistency if this is the only one
     base_dir = tempfile.mkdtemp()
-    # Minimal structure, main.py doesn't directly use proxies/fingerprints files
-    # but relies on AccountManager which might, so we ensure paths are writable if needed by other components.
-    os.makedirs(os.path.join(base_dir, "proxies"), exist_ok=True)
-    os.makedirs(os.path.join(base_dir, "fingerprints"), exist_ok=True)
+    proxies_dir = os.path.join(base_dir, "proxies")
+    fingerprints_dir = os.path.join(base_dir, "fingerprints")
+    os.makedirs(proxies_dir, exist_ok=True)
+    os.makedirs(fingerprints_dir, exist_ok=True)
 
-    # Create a dummy accounts.json as TikTokBot tries to instantiate AccountManager
-    # which might try to load a default file.
+    # Create a dummy accounts.json as TikTokBot instantiates AccountManager
+    # which might try to load a default file if not given a path.
+    # main.py's TikTokBot() call doesn't pass a path to AccountManager.
     create_temp_file(base_dir, "accounts.json", {"dummy_user": {"password": "dummy_password"}})
 
-    yield base_dir
+    yield base_dir # Provide just the base_dir as the fixture value
     shutil.rmtree(base_dir)
 
-# Tests for parse_args
-# To test parse_args directly, we would need to import it from main.
-# If direct import is an issue, we test its effects via main script execution.
-# For now, let's assume we can import main's parse_args or we test its side effects.
+# Tests for main.parse_args()
+def test_parse_args_defaults():
+    # Temporarily clear sys.argv or pass specific args for parse_args
+    with mock.patch.object(sys, 'argv', ['main.py']):
+        args = main.parse_args()
+    assert args.mode == "balanced"
+    assert args.max_views == 5000
 
-@mock.patch('argparse.ArgumentParser.parse_args')
-def test_parse_args_defaults(mock_parse_args):
-    # This test requires 'main.parse_args' to be importable or tested differently.
-    # For now, we'll simulate its expected default Namespace object.
-    # This also means we need to import 'parse_args' from 'main'
-    try:
-        from main import parse_args
-        mock_parse_args.return_value = argparse.Namespace(mode='balanced', max_views=5000)
-        args = parse_args()
-        assert args.mode == 'balanced'
-        assert args.max_views == 5000
-    except ImportError:
-        pytest.skip("Skipping direct parse_args test as main.py components are not directly importable.")
+def test_parse_args_custom():
+    with mock.patch.object(sys, 'argv', ['main.py', '--mode', 'aggressive', '--max-views', '100']):
+        args = main.parse_args()
+    assert args.mode == "aggressive"
+    assert args.max_views == 100
 
-
-@mock.patch('argparse.ArgumentParser.parse_args')
-def test_parse_args_custom(mock_parse_args):
-    try:
-        from main import parse_args
-        mock_parse_args.return_value = argparse.Namespace(mode='safe', max_views=100)
-        args = parse_args() # This call is now to the actual parse_args
-        assert args.mode == 'safe'
-        assert args.max_views == 100
-    except ImportError:
-        pytest.skip("Skipping direct parse_args test as main.py components are not directly importable.")
-
+# Tests for main.main_script_logic(args)
+@mock.patch('main.Thread')
+@mock.patch('main.app.run') # Mock Flask app.run
 @mock.patch('main.TikTokBot')
-@mock.patch('main.Thread') # Mocking Thread from main's context
-@mock.patch('main.app.run') # Mocking app.run from main's context
-@mock.patch.dict(os.environ, {}, clear=True) # Clear os.environ for this test
-def test_main_script_execution_success(mock_app_run, mock_thread_class, mock_tiktok_bot_class, monkeypatch, temp_env_for_main):
-    base_dir = temp_env_for_main
-    monkeypatch.chdir(base_dir)
+def test_main_script_execution_success(mock_tiktok_bot, mock_app_run, mock_thread, temp_env, monkeypatch):
+    base_dir = temp_env # Use the fixture
+    monkeypatch.chdir(base_dir) # Change current working directory to temp_dir
 
-    # Simulate command-line arguments
-    test_argv = ['main.py', '--mode', 'safe', '--max-views', '150']
-    monkeypatch.setattr(sys, 'argv', test_argv)
-
-    # Mock TikTokBot instance and its methods/attributes
     mock_bot_instance = mock.MagicMock()
-    mock_bot_instance.driver = mock.MagicMock() # Simulate a present driver
-    mock_tiktok_bot_class.return_value = mock_bot_instance
+    mock_bot_instance.driver = mock.MagicMock() # Ensure driver is not None
+    mock_tiktok_bot.return_value = mock_bot_instance
 
-    # Mock Thread instance
-    mock_thread_instance = mock.MagicMock()
-    mock_thread_class.return_value = mock_thread_instance
+    # Mock args that would come from parse_args()
+    mock_args = argparse.Namespace(mode="test_mode", max_views=123)
 
-    # Run main.py as a script
-    # runpy.run_module('main', run_name='__main__', alter_sys=True)
-    # Instead of runpy, to ensure mocks on main.TikTokBot etc. work, we need to make main importable
-    # or structure main.py to have a main() function that we call.
-    # For now, let's assume main.py can be imported and has a main_function() or similar
-    # If not, this test needs adjustment.
-    # Given the structure of main.py, direct import and execution of __name__ == "__main__"
-    # is tricky with mocks. We'll try runpy.
+    with mock.patch.dict(os.environ, {}, clear=True): # Clear os.environ for predictable test
+         main.main_script_logic(mock_args)
 
-    # To make runpy work with mocks on 'main.XYZ', ensure 'main' is in sys.modules *before* runpy
-    # and that it's the *actual* module we want to run, not a mock itself.
-    # However, the functions/classes are mocked *within* 'main' (e.g. 'main.TikTokBot')
-
-    # Let's try importing main and calling a hypothetical main_logic() function
-    # if main.py was structured like:
-    # def main_logic(): ... ; if __name__ == "__main__": main_logic()
-    # For now, we'll use runpy and see if mocks are effective.
-    # It's common for runpy to not play perfectly with mocks applied to modules it loads as __main__
-    # if those mocks are applied from the test's module context.
-    # A robust way is to ensure 'main.py' is importable and call its main function.
-
-    # Simplification: If main.py is not easily importable or callable as a function,
-    # we can't directly assert calls on mocks like `mock_tiktok_bot_class.assert_called_once()`.
-    # We would have to check side effects (like print statements or file outputs).
-
-    # Let's assume we've made main.py importable and it has a `main_script_function`
-    # For this exercise, we'll proceed as if runpy allows effective mocking.
-
-    # Due to challenges in reliably mocking parts of a script run with runpy
-    # when mocks are defined in the test module, this part is simplified.
-    # In a real scenario, main.py would be refactored to be more testable (e.g., main logic in a function).
-
-    # For this exercise, we'll assume that if main.py is imported, the __name__ == "__main__" block runs.
-    # This is often not the case; it runs if the file itself is run as a script.
-    # We use runpy to simulate script execution.
-
-    # Clear sys.modules to ensure main is freshly loaded by runpy
-    # No longer using runpy, directly calling the main logic function
-    # if 'main' in sys.modules:
-    #     del sys.modules['main']
-
-    # Import and call the main logic function
-    try:
-        from main import main_script_logic, parse_args
-        # We need to parse args because main_script_logic expects it
-        # The sys.argv is already monkeypatched
-        args = parse_args()
-        main_script_logic(args)
-    except ImportError as e:
-        pytest.fail(f"Failed to import main_script_logic or parse_args from main: {e}")
-
-    mock_tiktok_bot_class.assert_called_once()
+    mock_tiktok_bot.assert_called_once_with()
     mock_bot_instance.run_session.assert_called_once()
-    assert os.environ['MAX_VIEWS_PER_HOUR'] == '150'
+    mock_bot_instance.driver.quit.assert_called_once() # From finally block
+    assert os.environ["MAX_VIEWS_PER_HOUR"] == "123"
 
-    # Check Thread instantiation (target should be main.run_flask)
-    # This requires run_flask to be accessible/importable or to mock by string path if needed.
-    # For simplicity, we assume 'main.run_flask' is the intended target name.
-    # If run_flask is not directly importable, one might need to mock 'main.run_flask'.
-
-    # The target for Thread is `run_flask` which is a global in main.py.
-    # We cannot directly assert `target=main.run_flask` unless `run_flask` is imported here.
-    # Instead, we check if Thread was called, and its start method.
-    mock_thread_class.assert_called_once() # Check if Thread() was called
-    mock_thread_instance.start.assert_called_once()
-
-    mock_app_run.assert_not_called() # app.run() is called in the thread, not main flow
+    # Check Flask thread
+    mock_thread.assert_called_once_with(target=main.run_flask)
+    mock_thread.return_value.start.assert_called_once()
 
 
-@mock.patch('main.TikTokBot')
-@mock.patch('main.Thread') # Mocking Thread from main's context
-@mock.patch('main.app.run') # Mocking app.run from main's context
+@mock.patch('builtins.print')
 @mock.patch('sys.exit') # Mock sys.exit
-@mock.patch('builtins.print') # Mock print to check output
-@mock.patch.dict(os.environ, {}, clear=True)
-
-def test_main_script_bot_driver_failure(mock_print, mock_sys_exit, mock_app_run, mock_thread_class, mock_tiktok_bot_class, monkeypatch, temp_env_for_main):
-    base_dir = temp_env_for_main
+@mock.patch('main.Thread') # Mock Thread to prevent it from starting
+@mock.patch('main.app.run') # Mock Flask app.run
+@mock.patch('main.TikTokBot')
+def test_main_script_bot_driver_failure(mock_tiktok_bot, mock_app_run, mock_thread, mock_sys_exit, mock_print, temp_env, monkeypatch):
+    base_dir = temp_env
     monkeypatch.chdir(base_dir)
 
-    test_argv = ['main.py'] # Default args
-    monkeypatch.setattr(sys, 'argv', test_argv)
+    mock_bot_instance = mock.MagicMock()
+    mock_bot_instance.driver = None # Simulate driver initialization failure
+    mock_tiktok_bot.return_value = mock_bot_instance
+
+    mock_args = argparse.Namespace(mode="test_mode", max_views=456)
+
+    # Configure sys.exit to raise an exception that can be caught by pytest.raises
+    mock_sys_exit.side_effect = SystemExit(1)
+
+    with pytest.raises(SystemExit) as e_info:
+        main.main_script_logic(mock_args)
+
+    assert e_info.value.code == 1
+    mock_tiktok_bot.assert_called_once_with()
+    mock_print.assert_any_call("Failed to initialize bot - Chrome driver not available")
+    mock_sys_exit.assert_called_once_with(1)
+
+    # Ensure Flask part is not reached
+    mock_thread.assert_not_called()
+
+
+@mock.patch('main.app.run')
+def test_run_flask_uses_env_host(mock_app_run):
+    with mock.patch.dict(os.environ, {'FLASK_HOST': '0.0.0.0'}): # Use clear=True if needed
+        main.run_flask()
+    mock_app_run.assert_called_once_with(host='0.0.0.0', port=5000)
+
+@mock.patch('main.app.run')
+def test_run_flask_uses_default_host(mock_app_run):
+    # Ensure FLASK_HOST is not set for this test
+    with mock.patch.dict(os.environ, {}, clear=True):
+        main.run_flask()
+    mock_app_run.assert_called_once_with(host='127.0.0.1', port=5000)
+
+
+@mock.patch('builtins.print')
+@mock.patch('main.Thread') # Mock Thread to prevent it from starting
+@mock.patch('main.app.run') # Mock Flask app.run
+@mock.patch('main.TikTokBot')
+def test_main_script_logic_run_session_exception(mock_tiktok_bot, mock_app_run, mock_thread, mock_print, temp_env, monkeypatch):
+    base_dir = temp_env
+    monkeypatch.chdir(base_dir)
 
     mock_bot_instance = mock.MagicMock()
-    mock_bot_instance.driver = None # Simulate driver failure
-    mock_tiktok_bot_class.return_value = mock_bot_instance
+    mock_bot_instance.driver = mock.MagicMock() # Driver exists
+    mock_bot_instance.run_session.side_effect = Exception("Test_Session_Exception")
+    mock_tiktok_bot.return_value = mock_bot_instance
 
-    # No longer using runpy
-    # if 'main' in sys.modules:
-    #    del sys.modules['main']
-    # runpy.run_module('main', run_name='__main__', alter_sys=True)
+    mock_args = argparse.Namespace(mode="test_mode", max_views=10)
 
-    mock_sys_exit.side_effect = SystemExit(1) # Make mock_sys_exit raise SystemExit(1)
+    main.main_script_logic(mock_args)
 
-    with pytest.raises(SystemExit) as e_info: # Expect SystemExit
-        try:
-            from main import main_script_logic, parse_args
-            args = parse_args()
-            main_script_logic(args)
-        except ImportError as e_imp: # Changed variable name for clarity
-            pytest.fail(f"Failed to import main_script_logic or parse_args from main: {e_imp}")
+    mock_print.assert_any_call("Error crítico: Test_Session_Exception")
+    mock_bot_instance.driver.quit.assert_called_once() # Should still be called in finally
+    mock_print.assert_any_call("Sesión de bot principal finalizada.")
+    mock_thread.assert_called_once() # Flask should still start
 
-    assert e_info.value.code == 1 # Check the exit code
-    mock_tiktok_bot_class.assert_called_once()
-    # Check for the specific print message indicating driver failure
-    mock_print.assert_any_call("Failed to initialize bot - Chrome driver not available")
-    mock_sys_exit.assert_called_once_with(1) # Check if exit(1) was called
 
-    # Flask part should not be reached if exit happens
-    mock_thread_class.assert_not_called()
-    mock_app_run.assert_not_called()
+@mock.patch('builtins.print')
+@mock.patch('main.Thread') # Mock Thread
+@mock.patch('main.app.run') # Mock Flask
+@mock.patch('main.TikTokBot')
+def test_main_script_logic_driver_quit_exception(mock_tiktok_bot, mock_app_run, mock_thread, mock_print, temp_env, monkeypatch):
+    base_dir = temp_env
+    monkeypatch.chdir(base_dir)
+
+    mock_bot_instance = mock.MagicMock()
+    mock_bot_instance.driver = mock.MagicMock() # Driver exists
+    mock_bot_instance.driver.quit.side_effect = Exception("Test_Quit_Exception")
+    mock_tiktok_bot.return_value = mock_bot_instance
+
+    mock_args = argparse.Namespace(mode="test_mode", max_views=10)
+
+    main.main_script_logic(mock_args)
+
+    mock_bot_instance.driver.quit.assert_called_once()
+    mock_print.assert_any_call("Error closing driver: Test_Quit_Exception")
+    mock_print.assert_any_call("Sesión de bot principal finalizada.")
+    mock_thread.assert_called_once() # Flask should still start
