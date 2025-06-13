@@ -1,3 +1,4 @@
+import os # Added import
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -15,4 +16,5 @@ def status():
     })
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)  # Use port 5000 for development
+    # Changed to use FLASK_HOST environment variable, default to 127.0.0.1
+    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=5000)

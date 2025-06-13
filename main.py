@@ -1,4 +1,5 @@
 import os
+import sys # Added import
 import argparse
 from core.bot import TikTokBot
 from threading import Thread
@@ -11,38 +12,41 @@ def parse_args():
     return parser.parse_args()
 
 def run_flask():
-    app.run(host='0.0.0.0', port=5000)
+    # Changed to use FLASK_HOST environment variable, default to 127.0.0.1
+    app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=5000)
 
-if __name__ == "__main__":
-    args = parse_args()
-    
-# Pass max views as environment variable
+def main_script_logic(args):
+    # Pass max views as environment variable
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
-    bot = None
+    bot = None # Initialize bot to None for broader scope
+
     try:
         print(f"Iniciando en modo {args.mode}...")
+        # Single bot initialization
         bot = TikTokBot()
         if not bot.driver:
             print("Failed to initialize bot - Chrome driver not available")
-            exit(1)
+            # Consider using sys.exit(1) for clearer exit status
+            sys.exit(1) # Changed to sys.exit(1)
         bot.run_session()
     except Exception as e:
         print(f"Error crítico: {str(e)}")
     finally:
-        if bot and bot.driver:
+        if bot and hasattr(bot, 'driver') and bot.driver: # Check hasattr for driver
             try:
                 bot.driver.quit()
             except Exception as cleanup_error:
                 print(f"Error closing driver: {cleanup_error}")
-        print("Sesión finalizada. Revisar logs para detalles.")
+        # Clarify end of bot session
+        print("Sesión de bot principal finalizada.")
 
-
-    os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
-
-    # Start Flask app in a separate thread
+    # Start Flask app after bot session
+    print("Iniciando servidor Flask...")
     flask_thread = Thread(target=run_flask)
+    # flask_thread.daemon = True # Optional: make it a daemon thread
     flask_thread.start()
+    # print("Servidor Flask iniciado en un hilo separado.") # Optional
 
-    bot = TikTokBot()
-    
-  
+if __name__ == "__main__":
+    parsed_args = parse_args()
+    main_script_logic(parsed_args)

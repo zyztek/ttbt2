@@ -1,0 +1,12 @@
+************* Module core.bot
+core/bot.py:37:47: C0303: Trailing whitespace (trailing-whitespace)
+core/bot.py:64:0: C0301: Line too long (161/100) (line-too-long)
+core/bot.py:125:0: C0304: Final newline missing (missing-final-newline)
+core/bot.py:36:9: W0511: TODO: AccountManager debería idealmente recibir un filepath o configuración. (fixme)
+core/bot.py:97:15: W0718: Catching too general exception Exception (broad-exception-caught)
+************* Module core.account_manager
+core/account_manager.py:36:0: C0303: Trailing whitespace (trailing-whitespace)
+core/account_manager.py:78:0: C0304: Final newline missing (missing-final-newline)
+
+------------------------------------------------------------------
+Your code has been rated at 9.05/10 (previous run: 6.81/10, +2.25)

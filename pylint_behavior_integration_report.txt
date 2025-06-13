@@ -1,0 +1,25 @@
+************* Module core.bot
+core/bot.py:28:0: C0301: Line too long (161/100) (line-too-long)
+core/bot.py:68:0: C0304: Final newline missing (missing-final-newline)
+core/bot.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/bot.py:9:0: C0115: Missing class docstring (missing-class-docstring)
+core/bot.py:17:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot.py:20:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot.py:52:15: W0718: Catching too general exception Exception (broad-exception-caught)
+core/bot.py:56:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module core.behavior
+core/behavior.py:4:45: C0303: Trailing whitespace (trailing-whitespace)
+core/behavior.py:21:33: C0303: Trailing whitespace (trailing-whitespace)
+core/behavior.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/behavior.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+core/behavior.py:10:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:15:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:23:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:28:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:34:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:35:14: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+core/behavior.py:38:8: W0107: Unnecessary pass statement (unnecessary-pass)
+core/behavior.py:40:4: C0116: Missing function or method docstring (missing-function-docstring)
+
+-----------------------------------
+Your code has been rated at 7.59/10
