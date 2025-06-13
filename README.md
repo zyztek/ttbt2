@@ -171,6 +171,36 @@ Incluye [GitHub Actions](.github/workflows/ci.yml) para tests automáticos con p
 
 ---
 
+## Estado del Proyecto y Registro de Depuración
+
+Este proyecto fue sometido a un proceso de inspección y depuración intensivo. A continuación, se presenta un resumen del proceso y el estado actual.
+
+### Resumen del Proceso de Depuración
+
+*   **Solicitud Inicial**: Inspección general del código, identificación de problemas y depuración.
+*   **Hallazgos Clave**:
+    *   Dependencias no fijadas (unpinned) en `requirements.txt` (ej. `flask`, `pyyaml`, `loguru`, `pytest`), lo que podría ocultar vulnerabilidades o causar problemas de compatibilidad.
+    *   Numerosas advertencias de Pylint: Puntuación inicial baja (3.53/10), errores críticos de importación (ej. `selenium`, `loguru`, `flask`, `utilities.database`, `core.evasion`), falta de docstrings y problemas de estilo.
+    *   Error de sintaxis en `tests/test_main_script.py` debido a una línea de importación condicional compleja.
+    *   Al añadir `pytest-cov` e intentar ejecutar la suite de tests completa, se encontraron 9 fallos iniciales. Estos se debían principalmente a constructores de clases que no coincidían con las llamadas en los tests y a errores lógicos tanto en los tests como en el código fuente.
+    *   Ausencia del fichero `core/__init__.py`, lo que impedía que Pylint (y potencialmente Python en algunos contextos) reconociera el directorio `core` como un paquete, causando errores de importación para módulos dentro de `core`.
+*   **Acciones Tomadas**:
+    *   Se fijaron las versiones de las dependencias en `requirements.txt` (ej. `pytest==8.4.0`, `pyyaml==6.0.2`, `loguru==0.7.3`, `flask==3.1.1`) y se verificó la seguridad de estas versiones con la herramienta `safety` (resultado: 0 vulnerabilidades).
+    *   Se añadieron `selenium` y `pytest-cov` a `requirements.txt` para facilitar las pruebas de navegador y la medición de cobertura de código, respectivamente.
+    *   Se corrigieron los errores críticos de importación mediante la corrección de rutas de importación, la adición del fichero `core/__init__.py`, y el cambio de nombre de la clase `CoreAccountManager` a `AccountManager` para que coincidiera con las expectativas de importación.
+    *   No se encontró la definición de la clase `HumanBehaviorSimulator`. El código relacionado en `core/bot.py` que utilizaba esta clase fue comentado temporalmente para permitir el progreso en otras áreas. Este sigue siendo un problema pendiente.
+    *   Se corrigió el error de sintaxis en `tests/test_main_script.py` eliminando la línea problemática.
+    *   Se abordaron sistemáticamente los 9 fallos de tests. Esto implicó la refactorización de componentes del núcleo (`AccountManager`, `TikTokBot`, `BotEngine`, `Evasion`, `ConfigLoader`) y de los scripts de prueba para alinear las interfaces (constructores, métodos) y la lógica subyacente. Por ejemplo, se ajustaron los constructores para que aceptaran los argumentos correctos, se implementaron métodos faltantes en clases dummy y reales, y se corrigió la lógica de carga de ficheros YAML y el manejo de errores en los tests.
+*   **Estado Actual**:
+    *   Los 22 tests existentes en la suite ahora pasan satisfactoriamente.
+    *   La cobertura de código del proyecto es del 70% según la última ejecución de `pytest-cov`.
+*   **Problemas Pendientes / Próximos Pasos**:
+    *   Resolver el problema de la clase `HumanBehaviorSimulator` faltante en `core/bot.py` (investigar su origen o implementar una versión funcional si es necesaria).
+    *   Mejorar la cobertura de tests, especialmente para módulos con baja o nula cobertura como `core/logger.py`, `core/evasion_system.py` (o eliminar este último si ya no es relevante tras las refactorizaciones), `main.py`, y `todo_app.py`.
+    *   Atender las advertencias restantes de Pylint y Bandit para mejorar la calidad y seguridad del código.
+
+---
+
 ## Licencia
 
 MIT. Ver [LICENSE](LICENSE).
