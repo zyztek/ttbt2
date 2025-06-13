@@ -61,7 +61,12 @@ class TikTokBot:
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
-        options.add_argument("user-agent=Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36")
+        user_agent_string = (
+            "user-agent=Mozilla/5.0 (Linux; Android 10; SM-G981B) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 "
+            "Mobile Safari/537.36"
+        )
+        options.add_argument(user_agent_string)
         return webdriver.Chrome(options=options)
 
     def _authenticate(self):

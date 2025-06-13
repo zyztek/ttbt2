@@ -24,7 +24,9 @@ class EvasionSystem:
         # Add anti-bot evasion tricks here
         if self.driver:
             try:
-                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                js_script = ("Object.defineProperty(navigator, 'webdriver', "
+                             "{get: () => undefined})")
+                self.driver.execute_script(js_script)
                 print("[EVASION_SYSTEM] Applied webdriver hiding trick.")
             except Exception as e:
                 print(f"[EVASION_SYSTEM] Error applying webdriver hiding trick: {e}")

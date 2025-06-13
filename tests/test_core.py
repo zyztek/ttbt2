@@ -12,7 +12,7 @@ from selenium.common.exceptions import NoSuchElementException # Added
 from core.account_manager import AccountManager
 from core.bot import TikTokBot
 from core.bot_engine import BotEngine
-from core.config_loader import ConfigLoader
+from core.config_loader import load_config # Changed from ConfigLoader
 from core.behavior import HumanBehaviorSimulator # Needed for spec in mock
 
 # It's good practice to group tests in classes if using unittest.TestCase structure
@@ -363,7 +363,7 @@ def test_config_loader_json_and_yaml():
     with tempfile.NamedTemporaryFile("w+", suffix=".json", delete=False) as jf:
         json.dump(data, jf)
         jf.seek(0)
-        loaded = ConfigLoader.load(jf.name)
+        loaded = load_config(jf.name) # Changed from ConfigLoader.load
         assert loaded == data
     os.remove(jf.name)
     try:
@@ -371,7 +371,7 @@ def test_config_loader_json_and_yaml():
         with tempfile.NamedTemporaryFile("w+", suffix=".yml", delete=False) as yf:
             yaml.safe_dump(data, yf)
             yf.seek(0)
-            loaded = ConfigLoader.load(yf.name)
+            loaded = load_config(yf.name) # Changed from ConfigLoader.load
             assert loaded == data
         os.remove(yf.name)
     except ImportError:

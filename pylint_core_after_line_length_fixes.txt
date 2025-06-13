@@ -1,0 +1,45 @@
+************* Module core.logger
+core/logger.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/logger.py:10:0: C0116: Missing function or method docstring (missing-function-docstring)
+core/logger.py:2:0: C0411: standard import "os" should be placed before third party import "loguru.logger" (wrong-import-order)
+************* Module core.evasion_system
+core/evasion_system.py:31:19: W0718: Catching too general exception Exception (broad-exception-caught)
+core/evasion_system.py:5:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module core.bot
+core/bot.py:36:9: W0511: TODO: AccountManager debería idealmente recibir un filepath o configuración. (fixme)
+core/bot.py:102:15: W0718: Catching too general exception Exception (broad-exception-caught)
+************* Module core.bot_engine
+core/bot_engine.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/bot_engine.py:3:0: C0115: Missing class docstring (missing-class-docstring)
+core/bot_engine.py:10:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot_engine.py:29:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module core.config_loader
+core/config_loader.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/config_loader.py:5:0: C0115: Missing class docstring (missing-class-docstring)
+core/config_loader.py:7:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/config_loader.py:5:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+core/config_loader.py:2:0: W0611: Unused import os (unused-import)
+************* Module core.behavior
+core/behavior.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/behavior.py:6:0: C0115: Missing class docstring (missing-class-docstring)
+core/behavior.py:10:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:15:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:23:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:28:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:34:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/behavior.py:35:14: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+core/behavior.py:43:15: W0718: Catching too general exception Exception (broad-exception-caught)
+core/behavior.py:41:18: W1309: Using an f-string that does not have any interpolated variables (f-string-without-interpolation)
+core/behavior.py:46:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module core.plugin_manager
+core/plugin_manager.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/plugin_manager.py:5:0: C0115: Missing class docstring (missing-class-docstring)
+core/plugin_manager.py:9:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/plugin_manager.py:20:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/plugin_manager.py:20:4: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+************* Module core.evasion
+core/evasion.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/evasion.py:7:0: C0115: Missing class docstring (missing-class-docstring)
+
+------------------------------------------------------------------
+Your code has been rated at 8.39/10 (previous run: 8.28/10, +0.11)
