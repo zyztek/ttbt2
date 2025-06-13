@@ -1,4 +1,4 @@
-class CoreAccountManager:
+class AccountManager:
     def __init__(self):
         self.accounts = []
 

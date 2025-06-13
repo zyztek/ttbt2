@@ -1,0 +1,20 @@
+************* Module test_main_script
+tests/test_main_script.py:34:0: C0301: Line too long (106/100) (line-too-long)
+tests/test_main_script.py:57:0: C0304: Final newline missing (missing-final-newline)
+tests/test_main_script.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tests/test_main_script.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_main_script.py:18:0: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_main_script.py:28:0: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_main_script.py:28:47: W0621: Redefining name 'temp_env' from outer scope (line 18) (redefined-outer-name)
+tests/test_main_script.py:39:4: C0415: Import outside toplevel (sys) (import-outside-toplevel)
+tests/test_main_script.py:45:11: W0718: Catching too general exception Exception (broad-exception-caught)
+tests/test_main_script.py:32:4: W0612: Unused variable 'accounts_path' (unused-variable)
+tests/test_main_script.py:33:4: W0612: Unused variable 'proxies_path' (unused-variable)
+tests/test_main_script.py:34:4: W0612: Unused variable 'fingerprints_path' (unused-variable)
+tests/test_main_script.py:48:0: C0116: Missing function or method docstring (missing-function-docstring)
+tests/test_main_script.py:48:49: W0621: Redefining name 'temp_env' from outer scope (line 18) (redefined-outer-name)
+tests/test_main_script.py:52:4: C0415: Import outside toplevel (sys) (import-outside-toplevel)
+tests/test_main_script.py:56:11: W0718: Catching too general exception Exception (broad-exception-caught)
+
+-----------------------------------
+Your code has been rated at 5.90/10

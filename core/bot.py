@@ -3,14 +3,14 @@ import time
 import random
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from utilities.database import AccountManager
-from core.evasion import HumanBehaviorSimulator
+from core.account_manager import AccountManager
+# from core.evasion import HumanBehaviorSimulator
 
 class TikTokBot:
     def __init__(self):
         self.driver = self._init_driver()
         self.account_manager = AccountManager()
-        self.behavior = HumanBehaviorSimulator(self.driver)
+        # self.behavior = HumanBehaviorSimulator(self.driver)
 
     def _init_driver(self):
         options = webdriver.ChromeOptions()
@@ -27,18 +27,18 @@ class TikTokBot:
             return False
         try:
             self.driver.get("https://www.tiktok.com/login")
-            self.behavior.random_delay(3, 5)
+            # self.behavior.random_delay(3, 5)
 
             # Llenar campos de login
             email_field = self.driver.find_element(By.NAME, "username")
-            self.behavior.human_type(email_field, account['email'])
+            # self.behavior.human_type(email_field, account['email'])
 
             pass_field = self.driver.find_element(By.NAME, "password")
-            self.behavior.human_type(pass_field, account['password'])
+            # self.behavior.human_type(pass_field, account['password'])
 
             # Enviar formulario
             submit_btn = self.driver.find_element(By.XPATH, '//button[@type="submit"]')
-            self.behavior.human_click(submit_btn)
+            # self.behavior.human_click(submit_btn)
 
             return True
         except Exception as e:
@@ -52,9 +52,9 @@ class TikTokBot:
     def _perform_organic_actions(self):
         max_views = int(os.getenv("MAX_VIEWS_PER_HOUR", "50"))
         for _ in range(max_views):
-            self.behavior.watch_video()
+            # self.behavior.watch_video()
             # 65% de probabilidad de like
-            if random.random() < 0.65:
-                self.behavior.like_video()
-            self.behavior.random_scroll()
+            # if random.random() < 0.65: # This line itself is fine
+                # self.behavior.like_video()
+            # self.behavior.random_scroll()
             time.sleep(random.uniform(8, 15))

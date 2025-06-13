@@ -1,0 +1,20 @@
+************* Module core.bot
+core/bot.py:20:0: C0301: Line too long (161/100) (line-too-long)
+core/bot.py:60:0: C0304: Final newline missing (missing-final-newline)
+core/bot.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/bot.py:9:0: C0115: Missing class docstring (missing-class-docstring)
+core/bot.py:44:15: W0718: Catching too general exception Exception (broad-exception-caught)
+core/bot.py:33:12: W0612: Unused variable 'email_field' (unused-variable)
+core/bot.py:36:12: W0612: Unused variable 'pass_field' (unused-variable)
+core/bot.py:40:12: W0612: Unused variable 'submit_btn' (unused-variable)
+core/bot.py:48:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot.py:9:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module core.account_manager
+core/account_manager.py:11:0: C0304: Final newline missing (missing-final-newline)
+core/account_manager.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/account_manager.py:1:0: C0115: Missing class docstring (missing-class-docstring)
+core/account_manager.py:5:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/account_manager.py:8:4: C0116: Missing function or method docstring (missing-function-docstring)
+
+-----------------------------------
+Your code has been rated at 6.81/10

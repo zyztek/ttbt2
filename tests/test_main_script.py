@@ -38,7 +38,6 @@ def test_main_runs_without_errors(monkeypatch, temp_env):
     # Importar aquí para asegurar que se usa el entorno temporal
     import sys
     sys.path.insert(0, os.getcwd())
-    from main import main as main_entrypoint if hasattr(__import__('main'), 'main') else None
 
     # Ejecuta el script principal (no debe lanzar error)
     try:

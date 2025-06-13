@@ -1,0 +1,55 @@
+************* Module logger
+core/logger.py:11:0: C0304: Final newline missing (missing-final-newline)
+core/logger.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/logger.py:10:0: C0116: Missing function or method docstring (missing-function-docstring)
+core/logger.py:2:0: C0411: standard import "os" should be placed before third party import "loguru.logger" (wrong-import-order)
+************* Module evasion_system
+core/evasion_system.py:7:0: C0304: Final newline missing (missing-final-newline)
+core/evasion_system.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/evasion_system.py:1:0: C0115: Missing class docstring (missing-class-docstring)
+core/evasion_system.py:5:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/evasion_system.py:1:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module bot
+core/bot.py:20:0: C0301: Line too long (161/100) (line-too-long)
+core/bot.py:60:0: C0304: Final newline missing (missing-final-newline)
+core/bot.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/bot.py:6:0: E0401: Unable to import 'utilities.database' (import-error)
+core/bot.py:7:0: E0401: Unable to import 'core.evasion' (import-error)
+core/bot.py:9:0: C0115: Missing class docstring (missing-class-docstring)
+core/bot.py:44:15: W0718: Catching too general exception Exception (broad-exception-caught)
+core/bot.py:48:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot.py:9:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module bot_engine
+core/bot_engine.py:6:0: C0304: Final newline missing (missing-final-newline)
+core/bot_engine.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/bot_engine.py:1:0: C0115: Missing class docstring (missing-class-docstring)
+core/bot_engine.py:5:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/bot_engine.py:1:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module account_manager
+core/account_manager.py:11:0: C0304: Final newline missing (missing-final-newline)
+core/account_manager.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/account_manager.py:1:0: C0115: Missing class docstring (missing-class-docstring)
+core/account_manager.py:5:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/account_manager.py:8:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module config_loader
+core/config_loader.py:11:0: C0304: Final newline missing (missing-final-newline)
+core/config_loader.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/config_loader.py:4:0: C0115: Missing class docstring (missing-class-docstring)
+core/config_loader.py:6:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/config_loader.py:8:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+core/config_loader.py:4:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+core/config_loader.py:2:0: W0611: Unused import os (unused-import)
+************* Module plugin_manager
+core/plugin_manager.py:22:0: C0304: Final newline missing (missing-final-newline)
+core/plugin_manager.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/plugin_manager.py:5:0: C0115: Missing class docstring (missing-class-docstring)
+core/plugin_manager.py:9:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/plugin_manager.py:20:4: C0116: Missing function or method docstring (missing-function-docstring)
+core/plugin_manager.py:20:4: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+************* Module evasion
+core/evasion.py:33:0: C0304: Final newline missing (missing-final-newline)
+core/evasion.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+core/evasion.py:7:0: C0115: Missing class docstring (missing-class-docstring)
+
+-----------------------------------
+Your code has been rated at 5.48/10
