@@ -1,7 +1,7 @@
 import time
 import random
 # Assuming selenium's By is needed for some interactions if methods were more complex
-# from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By # Uncommented import
 
 class HumanBehaviorSimulator:
     def __init__(self, driver):
@@ -32,10 +32,16 @@ class HumanBehaviorSimulator:
         self.random_delay(watch_time, watch_time) # Use random_delay for actual sleep
 
     def like_video(self):
-        print(f"[SIM_BEHAVIOR] 'Liking video'.")
-        # Placeholder: In a real scenario, this would find and click a like button.
-        # e.g., self.driver.find_element(By.XPATH, "//button[@aria-label='like']").click()
-        pass
+        print(f"[SIM_BEHAVIOR] Attempting to 'Like video'.")
+        try:
+            # Hypothetical XPath for a like button
+            like_button_xpath = "//button[@aria-label='like' or @data-testid='like-button']"
+            like_button = self.driver.find_element(By.XPATH, like_button_xpath)
+            like_button.click()
+            print(f"[SIM_BEHAVIOR] Clicked 'like' button.")
+            self.random_delay(0.5, 1.5) # Small delay after action
+        except Exception as e:
+            print(f"[SIM_BEHAVIOR] Could not 'like' video: {e}")
 
     def random_scroll(self):
         scroll_amount = random.randint(200, 800)

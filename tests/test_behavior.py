@@ -43,17 +43,34 @@ class TestHumanBehaviorSimulator(unittest.TestCase):
         # Check that random_delay was called with the value from random.uniform
         mock_random_delay.assert_called_once_with(15.0, 15.0)
 
-    def test_like_video(self):
-        # Test that it runs without error and potentially prints (if we capture stdout)
-        # For now, just ensure it can be called.
-        try:
-            self.simulator.like_video()
-        except Exception as e:
-            self.fail(f"like_video raised an exception {e}")
-        # If we wanted to check print output:
-        # with mock.patch('builtins.print') as mock_print:
-        #     self.simulator.like_video()
-        #     mock_print.assert_called_with("[SIM_BEHAVIOR] 'Liking video'.")
+    @mock.patch.object(HumanBehaviorSimulator, 'random_delay') # Mock random_delay
+    def test_like_video_success(self, mock_random_delay):
+        mock_like_button = mock.Mock()
+        self.mock_driver.find_element.return_value = mock_like_button
+
+        self.simulator.like_video()
+
+        self.mock_driver.find_element.assert_called_once_with(
+            mock.ANY, # Using mock.ANY for By.XPATH as it's tricky to import By directly in test string
+            "//button[@aria-label='like' or @data-testid='like-button']"
+        )
+        mock_like_button.click.assert_called_once()
+        mock_random_delay.assert_called_once_with(0.5, 1.5)
+
+    @mock.patch.object(HumanBehaviorSimulator, 'random_delay') # Mock random_delay
+    def test_like_video_failure_no_button(self, mock_random_delay):
+        # Simulate find_element raising an exception (e.g., NoSuchElementException)
+        self.mock_driver.find_element.side_effect = Exception("Element not found")
+
+        self.simulator.like_video() # Should not raise an error due to try-except
+
+        self.mock_driver.find_element.assert_called_once_with(
+            mock.ANY,
+            "//button[@aria-label='like' or @data-testid='like-button']"
+        )
+        # click() should not have been called on the button
+        # random_delay should not have been called if it failed before that
+        mock_random_delay.assert_not_called()
 
 if __name__ == '__main__':
     unittest.main()
