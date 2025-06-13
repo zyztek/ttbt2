@@ -5,9 +5,9 @@ import os
 import json
 import tempfile
 from core.account_manager import AccountManager
-from core.bot import Bot
+from core.bot import TikTokBot
 from core.bot_engine import BotEngine
-from core.config_loader import load_config
+from core.config_loader import ConfigLoader
 
 def test_account_manager_load_accounts():
     data = {"usera": {"pass": "123"}, "userb": {"pass": "456"}}
@@ -23,7 +23,7 @@ def test_account_manager_file_not_found():
     assert manager.accounts == {}
 
 def test_bot_assign_proxy_and_fingerprint():
-    bot = Bot("userx", {"pass": "xyz"})
+    bot = TikTokBot("userx", {"pass": "xyz"})
     bot.assign_proxy("proxyX")
     bot.assign_fingerprint("fpY")
     assert bot.proxy == "proxyX"
@@ -48,7 +48,7 @@ def test_config_loader_json_and_yaml():
     with tempfile.NamedTemporaryFile("w+", suffix=".json", delete=False) as jf:
         json.dump(data, jf)
         jf.seek(0)
-        loaded = load_config(jf.name)
+        loaded = ConfigLoader.load(jf.name)
         assert loaded == data
     os.remove(jf.name)
     try:
@@ -56,7 +56,7 @@ def test_config_loader_json_and_yaml():
         with tempfile.NamedTemporaryFile("w+", suffix=".yml", delete=False) as yf:
             yaml.safe_dump(data, yf)
             yf.seek(0)
-            loaded = load_config(yf.name)
+            loaded = ConfigLoader.load(yf.name)
             assert loaded == data
         os.remove(yf.name)
     except ImportError:

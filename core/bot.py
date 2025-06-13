@@ -7,10 +7,18 @@ from core.account_manager import AccountManager
 # from core.evasion import HumanBehaviorSimulator
 
 class TikTokBot:
-    def __init__(self):
+    def __init__(self, _email=None, _account_details=None):
         self.driver = self._init_driver()
-        self.account_manager = AccountManager()
+        self.account_manager = AccountManager() # This should take a filepath now
+        self.proxy = None
+        self.fingerprint = None
         # self.behavior = HumanBehaviorSimulator(self.driver)
+
+    def assign_proxy(self, proxy_value):
+        self.proxy = proxy_value
+
+    def assign_fingerprint(self, fingerprint_value):
+        self.fingerprint = fingerprint_value
 
     def _init_driver(self):
         options = webdriver.ChromeOptions()

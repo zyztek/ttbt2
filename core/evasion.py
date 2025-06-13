@@ -31,3 +31,17 @@ class Evasion:
         if not self.proxies:
             return None
         return random.choice(self.proxies)
+
+    def apply_evasion(self, bot):
+        """
+        Aplica un nuevo fingerprint y proxy a un bot.
+        :param bot: Instancia del bot al que se aplicará la evasión.
+        """
+        fp = self.rotate_fingerprint()
+        px = self.rotate_proxy()
+
+        if fp: # Ensure a fingerprint was returned
+            bot.assign_fingerprint(fp)
+
+        if px: # Ensure a proxy was returned
+            bot.assign_proxy(px)
