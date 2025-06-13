@@ -341,6 +341,31 @@ class TestAccountManagerMethods: # Using pytest-style class
         # Verify it's non-destructive and repeatable for current implementation
         assert manager.get_next_account() == expected
 
+    @mock.patch('core.account_manager.os.path.exists') # Corrected patch target
+    @mock.patch('builtins.open', new_callable=mock.mock_open)
+    def test_init_io_error_on_open(self, mock_open, mock_os_path_exists):
+        mock_os_path_exists.return_value = True # File exists
+        mock_open.side_effect = IOError("Simulated file read error") # open() itself raises IOError
+
+        manager = AccountManager('dummy_path.json')
+
+        mock_os_path_exists.assert_called_once_with('dummy_path.json')
+        mock_open.assert_called_once_with('dummy_path.json', 'r', encoding='utf-8')
+        assert manager.accounts == {} # Should default to empty on IOError
+
+    def test_get_next_account_accounts_is_not_dict_but_not_empty(self):
+        # This test is to cover the final 'return None' in get_next_account,
+        # which occurs if self.accounts is not a dict but also not empty
+        # (an unlikely state with current methods, but tests completeness).
+        with mock.patch('core.account_manager.os.path.exists', return_value=False):
+             manager = AccountManager() # Initializes self.accounts as {}
+
+        # Manually set accounts to an unexpected non-empty, non-dict type
+        manager.accounts = ["not_a_dict_account_list_item"]
+
+        result = manager.get_next_account()
+        assert result is None
+
 # Keep other tests as standalone functions if they don't fit TestTikTokBot or other classes
 # Or create other test classes for them (e.g., TestAccountManager, TestBotEngine)
 
@@ -376,3 +401,142 @@ def test_config_loader_json_and_yaml():
         os.remove(yf.name)
     except ImportError:
         pass
+
+# New tests for load_config FileNotFoundError
+@mock.patch('builtins.open') # Patch open globally for the test
+def test_load_config_json_file_not_found(mock_open_func):
+    mock_open_func.side_effect = FileNotFoundError("Simulated File Not Found")
+    result = load_config("dummy.json")
+    assert result == {}
+    mock_open_func.assert_called_once_with("dummy.json", "r", encoding="utf-8")
+
+@mock.patch('builtins.open') # Patch open globally for the test
+def test_load_config_yaml_file_not_found(mock_open_func):
+    mock_open_func.side_effect = FileNotFoundError("Simulated File Not Found")
+    result = load_config("dummy.yaml")
+    assert result == {}
+    mock_open_func.assert_called_once_with("dummy.yaml", "r", encoding="utf-8")
+
+def test_load_config_unknown_extension():
+    # No need to mock open, as it shouldn't be called if extension is not matched.
+    result = load_config("somefile.txt")
+    assert result == {}
+
+# --- New tests for BotEngine ---
+
+@mock.patch('builtins.print')
+@mock.patch('core.bot_engine.TikTokBot') # To prevent actual TikTokBot instantiation
+def test_bot_engine_initialize_bots_accounts_not_dict(mock_tiktok_bot, mock_print):
+    # Dummy managers
+    mock_proxy_manager = mock.Mock()
+    mock_fingerprint_manager = mock.Mock()
+
+    accounts_list = ["not_a_dict"] # Pass a list instead of a dict
+    engine = BotEngine(accounts_list, mock_proxy_manager, mock_fingerprint_manager)
+    engine.initialize_bots()
+
+    assert engine.bots == [] # Bots list should remain empty
+    mock_print.assert_called_with("Accounts data is not in the expected dictionary format.")
+    mock_tiktok_bot.assert_not_called() # TikTokBot should not have been instantiated
+
+@mock.patch('core.bot_engine.TikTokBot')
+def test_bot_engine_initialize_bots_no_proxy(mock_tiktok_bot_class):
+    mock_bot_instance = mock.MagicMock(spec=TikTokBot)
+    mock_tiktok_bot_class.return_value = mock_bot_instance
+
+    accounts = {"bot1": {"pass": "a"}}
+    mock_proxy_manager = mock.Mock()
+    mock_proxy_manager.get_random_active_proxy.return_value = None # Simulate no proxy
+    mock_fingerprint_manager = mock.Mock()
+    mock_fingerprint_manager.get_fingerprint.return_value = "fpTest"
+
+    engine = BotEngine(accounts, mock_proxy_manager, mock_fingerprint_manager)
+    engine.initialize_bots()
+
+    assert len(engine.bots) == 1
+    mock_tiktok_bot_class.assert_called_once_with(_email="bot1", _account_details={"pass": "a"})
+    mock_bot_instance.assign_proxy.assert_not_called() # Proxy assignment should not be called
+    mock_bot_instance.assign_fingerprint.assert_called_once_with("fpTest")
+
+@mock.patch('core.bot_engine.TikTokBot')
+def test_bot_engine_initialize_bots_no_fingerprint(mock_tiktok_bot_class):
+    mock_bot_instance = mock.MagicMock(spec=TikTokBot)
+    mock_tiktok_bot_class.return_value = mock_bot_instance
+
+    accounts = {"bot1": {"pass": "a"}}
+    mock_proxy_manager = mock.Mock()
+    mock_proxy_manager.get_random_active_proxy.return_value = "proxyTest"
+    mock_fingerprint_manager = mock.Mock()
+    mock_fingerprint_manager.get_fingerprint.return_value = None # Simulate no fingerprint
+
+    engine = BotEngine(accounts, mock_proxy_manager, mock_fingerprint_manager)
+    engine.initialize_bots()
+
+    assert len(engine.bots) == 1
+    mock_tiktok_bot_class.assert_called_once_with(_email="bot1", _account_details={"pass": "a"})
+    mock_bot_instance.assign_proxy.assert_called_once_with("proxyTest")
+    mock_bot_instance.assign_fingerprint.assert_not_called() # Fingerprint assignment should not be called
+
+@mock.patch('core.bot_engine.TikTokBot') # Mock TikTokBot to control its instances
+def test_bot_engine_run_method_calls_run_session(mock_tiktok_bot_class):
+    # Create mock instances for TikTokBot that will be "created" by initialize_bots
+    mock_bot_instance1 = mock.MagicMock(spec=TikTokBot)
+    mock_bot_instance2 = mock.MagicMock(spec=TikTokBot)
+
+    # Configure the mock TikTokBot class to return these instances sequentially
+    mock_tiktok_bot_class.side_effect = [mock_bot_instance1, mock_bot_instance2]
+
+    accounts = {"bot1": {"pass": "a"}, "bot2": {"pass": "b"}}
+    mock_proxy_manager = mock.Mock()
+    mock_proxy_manager.get_random_active_proxy.return_value = "proxyTest"
+    mock_fingerprint_manager = mock.Mock()
+    mock_fingerprint_manager.get_fingerprint.return_value = "fpTest"
+
+    engine = BotEngine(accounts, mock_proxy_manager, mock_fingerprint_manager)
+
+    # Call run, which should call initialize_bots, then run_session on each bot
+    engine.run()
+
+    assert mock_tiktok_bot_class.call_count == 2 # Two bots initialized
+    assert len(engine.bots) == 2
+
+    mock_bot_instance1.run_session.assert_called_once()
+    mock_bot_instance2.run_session.assert_called_once()
+
+@mock.patch('builtins.print')
+@mock.patch('core.bot_engine.TikTokBot')
+def test_bot_engine_run_method_initializes_if_bots_empty(mock_tiktok_bot_class, mock_print):
+    mock_bot_instance = mock.MagicMock(spec=TikTokBot)
+    mock_tiktok_bot_class.return_value = mock_bot_instance
+
+    accounts = {"bot1": {"pass": "a"}}
+    mock_proxy_manager = mock.Mock()
+    mock_proxy_manager.get_random_active_proxy.return_value = "proxyTest"
+    mock_fingerprint_manager = mock.Mock()
+    mock_fingerprint_manager.get_fingerprint.return_value = "fpTest"
+
+    engine = BotEngine(accounts, mock_proxy_manager, mock_fingerprint_manager)
+    # Do not call engine.initialize_bots() here explicitly
+
+    engine.run() # run() should call initialize_bots()
+
+    assert len(engine.bots) == 1
+    mock_tiktok_bot_class.assert_called_once() # Should be called by initialize_bots within run
+    engine.bots[0].run_session.assert_called_once()
+
+@mock.patch('builtins.print')
+@mock.patch('core.bot_engine.TikTokBot')
+def test_bot_engine_run_method_handles_initialize_bots_failure(mock_tiktok_bot_class, mock_print):
+    # Dummy managers
+    mock_proxy_manager = mock.Mock()
+    mock_fingerprint_manager = mock.Mock()
+
+    accounts_list = ["not_a_dict"] # Pass a list instead of a dict
+    engine = BotEngine(accounts_list, mock_proxy_manager, mock_fingerprint_manager)
+
+    engine.run() # This will call initialize_bots, which will print and return
+
+    assert engine.bots == [] # Bots list should remain empty
+    mock_print.assert_any_call("Accounts data is not in the expected dictionary format.")
+    # Ensure run_session is not called on any bot since self.bots is empty
+    # (This is implicitly tested by not having any bots to iterate over)

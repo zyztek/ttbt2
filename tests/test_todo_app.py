@@ -2,8 +2,11 @@ from unittest import mock
 import json # For json.JSONDecodeError if needed for specific error testing
 import os # For os.path.exists
 
+# import runpy # No longer using runpy
+from io import StringIO # Added
+
 # Assuming todo_app.py is in the root directory or PYTHONPATH is set
-from todo_app import TodoApp
+from todo_app import TodoApp, main_cli # Import main_cli
 
 class TestTodoApp:
 
@@ -173,3 +176,94 @@ class TestTodoApp:
         mock_print.assert_called_with("Invalid index.")
 
 # Pytest will discover TestTodoApp class. No need for if __name__ == '__main__': unittest.main()
+
+
+# It's often cleaner to have a dedicated test class for CLI tests
+class TestTodoAppCLI:
+
+    @mock.patch('todo_app.TodoApp') # Mock the TodoApp class itself
+    @mock.patch('builtins.input')
+    @mock.patch('builtins.print')
+    def test_cli_add_and_list_and_exit(self, mock_print, mock_input, mock_todo_app_class):
+        mock_app_instance = mock.MagicMock()
+        mock_todo_app_class.return_value = mock_app_instance
+
+        # Simulate user inputs: 1 (add), task, 2 (list), 5 (exit)
+        # This test as originally designed is a bit complex for a single test
+        # due to multiple user interactions in a loop.
+        # The provided example was simplified to test 'add'.
+        # We'll stick to the simplified version from the prompt.
+
+        # Test 'add'
+        # Re-patch input for this specific scenario
+        with mock.patch('builtins.input', side_effect=['1', 'CLI Task Add', '5']):
+            # We need to ensure that when runpy imports todo_app, our mock_todo_app_class is used.
+            # This requires the mock to be active *before* runpy.run_module.
+            # The class-level mock_todo_app_class should handle this if it's patching 'todo_app.TodoApp'
+
+            # This requires the mock to be active *before* runpy.run_module.
+            # The class-level mock_todo_app_class should handle this if it's patching 'todo_app.TodoApp'
+
+            # Call main_cli directly
+            try:
+                main_cli()
+            except StopIteration: # mock_input.side_effect will run out
+                pass
+            # SystemExit should not occur if '5' just breaks the loop
+
+            mock_app_instance.add_todo.assert_called_with("CLI Task Add")
+
+    @mock.patch('todo_app.TodoApp')
+    @mock.patch('builtins.input', side_effect=['2', '5']) # List then Exit
+    @mock.patch('builtins.print')
+    def test_cli_list(self, mock_print, mock_input, mock_todo_app_class):
+        mock_app_instance = mock.MagicMock()
+        mock_todo_app_class.return_value = mock_app_instance
+        try:
+            main_cli()
+        except StopIteration: pass
+        mock_app_instance.list_todos.assert_called_once()
+
+    @mock.patch('todo_app.TodoApp')
+    @mock.patch('builtins.input', side_effect=['3', '1', '5']) # Complete, task 1, then Exit
+    @mock.patch('builtins.print')
+    def test_cli_complete(self, mock_print, mock_input, mock_todo_app_class):
+        mock_app_instance = mock.MagicMock()
+        mock_todo_app_class.return_value = mock_app_instance
+        try:
+            main_cli()
+        except StopIteration: pass
+        mock_app_instance.list_todos.assert_any_call() # Called before asking for index
+        mock_app_instance.complete_todo.assert_called_once_with(0) # index is 1-based input - 1
+
+    @mock.patch('todo_app.TodoApp')
+    @mock.patch('builtins.input', side_effect=['4', '1', '5']) # Delete, task 1, then Exit
+    @mock.patch('builtins.print')
+    def test_cli_delete(self, mock_print, mock_input, mock_todo_app_class):
+        mock_app_instance = mock.MagicMock()
+        mock_todo_app_class.return_value = mock_app_instance
+        try:
+            main_cli()
+        except StopIteration: pass
+        mock_app_instance.list_todos.assert_any_call() # Called before asking for index
+        mock_app_instance.delete_todo.assert_called_once_with(0)
+
+    @mock.patch('todo_app.TodoApp') # Mock the class to prevent its __init__ from running
+    @mock.patch('builtins.input', side_effect=['6', '5']) # Invalid choice, then Exit
+    @mock.patch('builtins.print')
+    def test_cli_invalid_choice(self, mock_print, mock_input, mock_todo_app_class):
+        mock_app_instance = mock.MagicMock()
+        mock_todo_app_class.return_value = mock_app_instance # Ensure TodoApp() returns our mock
+        try:
+            main_cli()
+        except StopIteration: pass # Expected as input runs out
+        # SystemExit should not occur with 'break'
+
+        # Check if "Invalid choice." was printed.
+        invalid_choice_printed = False
+        if mock_print.call_args_list: # Ensure print was called at all
+            for call_arg_list in mock_print.call_args_list:
+                if "Invalid choice." in call_arg_list[0][0]:
+                    invalid_choice_printed = True
+                    break
+        assert invalid_choice_printed, "Expected 'Invalid choice.' message not printed."

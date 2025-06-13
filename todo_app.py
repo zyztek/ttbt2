@@ -46,7 +46,7 @@ class TodoApp:
         else:
             print("Invalid index.")
 
-if __name__ == "__main__":
+def main_cli():
     app = TodoApp()
     while True:
         print("\nTo-Do List Application")
@@ -62,15 +62,32 @@ if __name__ == "__main__":
         elif choice == '2':
             app.list_todos()
         elif choice == '3':
-            app.list_todos()
-            idx = int(input("Enter task number to mark as done: ")) - 1
-            app.complete_todo(idx)
+            try: # Added try-except for robust input parsing
+                app.list_todos()
+                idx_input = input("Enter task number to mark as done: ")
+                if not idx_input.isdigit():
+                    print("Invalid input. Please enter a number.")
+                    continue
+                idx = int(idx_input) - 1
+                app.complete_todo(idx)
+            except ValueError:
+                print("Invalid input. Please enter a number.")
         elif choice == '4':
-            app.list_todos()
-            idx = int(input("Enter task number to delete: ")) - 1
-            app.delete_todo(idx)
+            try: # Added try-except for robust input parsing
+                app.list_todos()
+                idx_input = input("Enter task number to delete: ")
+                if not idx_input.isdigit():
+                    print("Invalid input. Please enter a number.")
+                    continue
+                idx = int(idx_input) - 1
+                app.delete_todo(idx)
+            except ValueError:
+                print("Invalid input. Please enter a number.")
         elif choice == '5':
             print("Goodbye!")
-            break
+            break # Use break to exit loop, sys.exit not strictly needed here
         else:
             print("Invalid choice.")
+
+if __name__ == "__main__":
+    main_cli()
