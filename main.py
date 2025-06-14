@@ -1,5 +1,12 @@
+"""
+Punto de entrada principal para el TikTok Bot.
+
+Este script inicializa y ejecuta una sesión del TikTokBot, configurando su
+comportamiento a través de argumentos de línea de comandos. También inicia un
+servidor Flask en un hilo separado para exponer una API (definida en api.app).
+"""
 import os
-import sys # Added import
+import sys
 import argparse
 from core.bot import TikTokBot
 from threading import Thread
@@ -12,10 +19,27 @@ def parse_args():
     return parser.parse_args()
 
 def run_flask():
+    """
+    Inicia el servidor de desarrollo Flask para la API.
+
+    El host es configurable mediante la variable de entorno FLASK_HOST,
+    con '127.0.0.1' como valor predeterminado. El puerto está fijado en 5000.
+    """
     # Changed to use FLASK_HOST environment variable, default to 127.0.0.1
     app.run(host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=5000)
 
 def main_script_logic(args):
+    """
+    Orquesta la lógica principal del bot y el inicio del servidor API.
+
+    Utiliza los argumentos parseados para configurar el entorno del bot (ej. MAX_VIEWS_PER_HOUR),
+    luego inicializa una instancia de TikTokBot y ejecuta su sesión. Maneja la inicialización
+    y limpieza del driver del bot. Finalmente, inicia el servidor Flask API en un hilo separado.
+
+    Args:
+        args (argparse.Namespace): Objeto con los argumentos parseados de la línea de comandos,
+                                   esperado tener atributos como `mode` y `max_views`.
+    """
     # Pass max views as environment variable
     os.environ["MAX_VIEWS_PER_HOUR"] = str(args.max_views)
     bot = None # Initialize bot to None for broader scope
