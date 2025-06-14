@@ -1,14 +1,42 @@
-import os # Added import
+"""
+Módulo API para el TikTok Bot.
+
+Define una aplicación Flask que expone endpoints para monitorear y potencialmente
+controlar la actividad del bot. Actualmente, proporciona un endpoint de estado
+básico y una ruta índice.
+"""
+import os
 from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
+    """
+    Ruta índice de la API.
+
+    Retorna un mensaje JSON simple indicando que la API del TikTok Bot está en
+    funcionamiento.
+
+    Returns:
+        Response: Un objeto de respuesta Flask con contenido JSON.
+                  Ej: {"status": "TikTok Bot API running"}
+    """
     return jsonify({"status": "TikTok Bot API running"})
 
 @app.route("/status")
 def status():
+    """
+    Ruta de estado de la API.
+
+    Retorna un objeto JSON con información sobre el estado actual del bot o bots.
+    Actualmente, los datos son estáticos y sirven como ejemplo. En una implementación
+    completa, estos datos se obtendrían dinámicamente del sistema del bot.
+
+    Returns:
+        Response: Un objeto de respuesta Flask con contenido JSON.
+                  Ej: {"bots_running": 3, "active_users": []}
+    """
     # Add any status checks or data gathering here
     return jsonify({
         "bots_running": 3,  # Example static value, replace with actual logic
