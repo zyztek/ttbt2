@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 19 items / 14 deselected / 5 selected
+
+tests/test_core.py .....                                                 [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.10.17-final-0 _______________
+
+Name                      Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+core/__init__.py              0      0   100%
+core/account_manager.py      20      1    95%   78
+core/behavior.py             37     26    30%   8, 11-13, 16-20, 24-26, 30-32, 35-44, 47-50
+core/bot.py                  55     40    27%   35-40, 44, 48, 60-70, 82-104, 112-113, 123-130
+core/bot_engine.py           25     20    20%   5-8, 11-27, 30-34
+core/config_loader.py        17     13    24%   20-34
+core/evasion.py              20     20     0%   5-47
+core/evasion_system.py       12     12     0%   5-34
+core/logger.py                8      8     0%   1-11
+core/plugin_manager.py       19     19     0%   1-22
+-------------------------------------------------------
+TOTAL                       213    159    25%
+======================= 5 passed, 14 deselected in 0.48s =======================

@@ -1,0 +1,68 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 9 items / 8 deselected / 1 selected
+
+tests/test_main_script.py  * Serving Flask app 'api.app'
+ * Debug mode: off
+F                                              [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_main_dunder_main_execution ________________________
+
+mock_parse_args = <MagicMock name='parse_args' id='140438193552208'>
+mock_main_script_logic = <MagicMock name='main_script_logic' id='140438181985584'>
+
+    @mock.patch('main.main_script_logic')
+    @mock.patch('main.parse_args')
+    def test_main_dunder_main_execution(mock_parse_args, mock_main_script_logic):
+        # This test ensures the if __name__ == "__main__": block is executed
+        # when main.py is run as a script.
+
+        mock_args_instance = mock.Mock()
+        mock_parse_args.return_value = mock_args_instance
+
+        # Execute main.py as if it's the main script
+        # No try-except needed here if mocks prevent actual app run
+        # Clear sys.modules to ensure main is freshly loaded by runpy,
+        # especially if other tests might have imported 'main' already.
+        if 'main' in sys.modules:
+            del sys.modules['main']
+
+        # Store original sys.argv and restore it later if necessary,
+        # though for this test, it's about controlling what 'main.py' sees.
+        original_argv = sys.argv
+        try:
+            sys.argv = ['main.py'] # Simulate running 'python main.py' with no extra args
+            runpy.run_module('main', run_name='__main__')
+        finally:
+            sys.argv = original_argv # Restore original argv
+
+>       mock_parse_args.assert_called_once()
+
+tests/test_main_script.py:310:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='parse_args' id='140438193552208'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'parse_args' to have been called once. Called 0 times.
+
+/usr/lib/python3.10/unittest/mock.py:908: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Iniciando en modo balanced...
+No se encontró ninguna cuenta válida en la base de datos.
+Sesión de bot principal finalizada.
+Iniciando servidor Flask...
+=========================== short test summary info ============================
+FAILED tests/test_main_script.py::test_main_dunder_main_execution - Assertion...
+======================= 1 failed, 8 deselected in 4.63s ========================

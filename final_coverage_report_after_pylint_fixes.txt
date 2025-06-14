@@ -1,0 +1,49 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 49 items
+
+tests/test_behavior.py ......                                            [ 12%]
+tests/test_core.py ...................                                   [ 51%]
+tests/test_data_loader.py .....                                          [ 61%]
+tests/test_evasion.py ....                                               [ 69%]
+tests/test_evasion_system.py ..                                          [ 73%]
+tests/test_logger.py ...                                                 [ 79%]
+tests/test_main_script.py ....                                           [ 87%]
+tests/test_plugin_manager.py .                                           [ 89%]
+tests/test_proxies_and_fingerprints.py .....                             [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.10.17-final-0 _______________
+
+Name                                     Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------
+api/app.py                                  11      3    73%   8, 13, 20
+core/__init__.py                             0      0   100%
+core/account_manager.py                     20      1    95%   78
+core/behavior.py                            37      0   100%
+core/bot.py                                 54      0   100%
+core/bot_engine.py                          25      6    76%   13-14, 30-34
+core/config_loader.py                       16      3    81%   17-21
+core/evasion.py                             20      0   100%
+core/evasion_system.py                      11      3    73%   29-32
+core/logger.py                               8      0   100%
+core/plugin_manager.py                      19      1    95%   11
+data/data_loader.py                         19      1    95%   33
+fingerprints/fingerprint_manager.py          8      0   100%
+main.py                                     37      6    84%   16, 33, 38-39, 51-52
+proxies/proxy_manager.py                    11      0   100%
+tests/test_behavior.py                      47      1    98%   76
+tests/test_core.py                         241      3    99%   109, 377-378
+tests/test_data_loader.py                   45      4    91%   22-23, 47-48
+tests/test_evasion.py                       34      0   100%
+tests/test_evasion_system.py                14      1    93%   22
+tests/test_logger.py                        32      1    97%   75
+tests/test_main_script.py                   98      8    92%   31, 65-66, 77-78, 149-150, 201
+tests/test_plugin_manager.py                12      0   100%
+tests/test_proxies_and_fingerprints.py      25      0   100%
+todo_app.py                                 65     65     0%   1-76
+----------------------------------------------------------------------
+TOTAL                                      909    107    88%
+============================== 49 passed in 6.24s ==============================

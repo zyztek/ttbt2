@@ -1,10 +1,18 @@
 """
-This module defines the HumanBehaviorSimulator class, which is responsible for
-emulating human-like interactions with web elements. These simulations aim to
-make automated actions appear more natural and help evade basic bot detection
-mechanisms.
+Módulo de evasión de detección centrado en datos (fingerprints y proxies).
+
+Este módulo proporciona la clase `Evasion`, que gestiona la rotación de
+identidades de navegador (fingerprints) y direcciones IP (proxies) para
+ayudar a los bots a evitar la detección basada en patrones de estos elementos.
+
+Se diferencia de `core.evasion_system`, que se enfoca en modificar
+directamente el estado del driver del navegador para ocultar indicadores
+de automatización (ej. `navigator.webdriver`).
 """
-import time
+# Módulo de evasión para el framework TTBT1
+# Proporciona utilidades para rotar fingerprints y proxies.
+# Todos los comentarios están en español.
+
 import random
 from selenium.webdriver.common.by import By
 from core.logger import get_logger
@@ -94,80 +102,23 @@ class HumanBehaviorSimulator:
         self.current_scroll_pause_min = scroll_pause_range[0]
         self.current_scroll_pause_max = scroll_pause_range[1]
 
-        # Placeholder for like button selector (can also be moved to selectors.json if preferred)
-        self.LIKE_BUTTON_SELECTOR_XPATH_PLACEHOLDER = "//button[@data-testid='like-button-placeholder']"
+class Evasion:
+    """
+    Gestiona y rota listas de fingerprints y proxies para un bot.
 
-        logger.info(f"HumanBehaviorSimulator configured for mode '{self.mode}' using parameters from settings.")
-        logger.debug(f"Effective parameters: DelayMultiplier={self.current_delay_multiplier}, "
-                     f"TypingDelay=({self.current_typing_delay_min}-{self.current_typing_delay_max})s, "
-                     f"SpacePauseChance={self.current_space_pause_chance*100}%, etc.")
-
-
-    def random_delay(self, min_seconds, max_seconds):
+    Esta clase mantiene colecciones de fingerprints (perfiles de navegador)
+    y proxies (direcciones IP). Ofrece métodos para seleccionar aleatoriamente
+    un elemento de cada colección y para aplicar estos elementos a una instancia
+    de bot dada, asumiendo que el bot tiene métodos `assign_fingerprint` y
+    `assign_proxy`.
+    """
+    def __init__(self, fingerprints, proxies):
         """
-        Introduces a random delay, adjusted by the current mode's multiplier.
-
-        The base `min_seconds` and `max_seconds` are scaled by `self.current_delay_multiplier`.
-        Ensures delays are not negative and that `min_seconds` is less than `max_seconds`.
+        Inicializa la instancia de Evasion con listas de fingerprints y proxies.
 
         Args:
-            min_seconds (float): Base minimum delay in seconds.
-            max_seconds (float): Base maximum delay in seconds.
-        """
-        # Apply the mode-specific multiplier to the base delay range.
-        adj_min = min_seconds * self.current_delay_multiplier
-        adj_max = max_seconds * self.current_delay_multiplier
-
-        # Ensure delays are practical and valid.
-        adj_min = max(0.01, adj_min) # Prevent zero or negative minimum delays.
-        adj_max = max(adj_min + 0.01, adj_max) # Ensure max is always greater than min.
-
-        delay = random.uniform(adj_min, adj_max)
-        logger.trace(f"Performing random_delay: base=({min_seconds:.2f}-{max_seconds:.2f})s, mode='{self.mode}', multiplier={self.current_delay_multiplier:.2f}, adjusted=({adj_min:.2f}-{adj_max:.2f})s, actual_delay={delay:.2f}s")
-        time.sleep(delay)
-
-    def human_type(self, element, text):
-        """
-        Simulates human-like typing into a web element.
-
-        Types characters one by one with small, randomized delays between each.
-        The delay duration is determined by `self.current_typing_delay_min` and
-        `self.current_typing_delay_max`.
-        Includes a chance for a longer pause after spaces, dependent on the mode,
-        to mimic more natural typing rhythm.
-
-        Args:
-            element: The Selenium WebElement to type into.
-            text (str): The text to type.
-        """
-        logger.debug(f"Human_type: Typing text '{text[:20]}...' into element. Mode: '{self.mode}'")
-        for char_index, char in enumerate(text):
-            element.send_keys(char)
-            if char == ' ':
-                # Check if a special pause should occur after a space, based on mode's probability
-                if random.random() < self.current_space_pause_chance:
-                    logger.trace(f"Human_type: Performing special space pause (chance: {self.current_space_pause_chance*100}%).")
-                    self.random_delay(self.current_space_pause_min_duration, self.current_space_pause_max_duration)
-                else:
-                    # Standard inter-character delay if no special space pause
-                    time.sleep(random.uniform(self.current_typing_delay_min, self.current_typing_delay_max))
-            else:
-                # Standard inter-character delay for non-space characters
-                time.sleep(random.uniform(self.current_typing_delay_min, self.current_typing_delay_max))
-
-            if (char_index + 1) % 10 == 0: # Log progress every 10 characters for long text
-                 logger.trace(f"Human_type: Typed {char_index + 1}/{len(text)} characters.")
-
-    def human_click(self, element):
-        """
-        Simulates a human-like click on a web element.
-
-        Introduces small, mode-adjusted random delays before and after the click
-        action. The base delay range is loaded from `config.settings.BEHAVIOR_PROFILES`
-        for the current mode.
-
-        Args:
-            element: The Selenium WebElement to click.
+            fingerprints (list): Una lista de fingerprints (ej. strings o dicts) disponibles.
+            proxies (list): Una lista de proxies (ej. strings de 'ip:port') disponibles.
         """
         logger.debug(f"Human_click: Attempting to click element. Mode: '{self.mode}'")
         # Use self.random_delay, which incorporates the mode-specific multiplier.
@@ -334,7 +285,12 @@ class HumanBehaviorSimulator:
 
     def like_video(self):
         """
-        Simulates liking a video.
+        Selecciona aleatoriamente un fingerprint de la lista `self.fingerprints`.
+
+        Returns:
+            str/dict/any or None: Un fingerprint de la lista, o None si la lista
+                                  `self.fingerprints` está vacía. El tipo exacto
+                                  depende de cómo se almacenen los fingerprints.
         """
         logger.debug(f"Attempting to simulate liking a video (Mode: {self.mode}).")
         try:
@@ -349,9 +305,34 @@ class HumanBehaviorSimulator:
 
     def random_scroll(self):
         """
-        Simulates a random scroll action, adjusted by mode.
+        Selecciona aleatoriamente un proxy de la lista `self.proxies`.
+
+        Returns:
+            str or None: Una cadena de proxy (ej. 'ip:port') de la lista, o None
+                         si la lista `self.proxies` está vacía.
         """
-        scroll_amount = random.randint(self.current_scroll_min_pixels, self.current_scroll_max_pixels)
-        logger.debug(f"Simulating random scroll of {scroll_amount} pixels (Mode: {self.mode}). Pause range: {self.current_scroll_pause_min}-{self.current_scroll_pause_max}s (before multiplier)")
-        self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
-        self.random_delay(self.current_scroll_pause_min, self.current_scroll_pause_max)
+        if not self.proxies:
+            return None
+        return random.choice(self.proxies)
+
+    def apply_evasion(self, bot):
+        """
+        Aplica un fingerprint y un proxy rotados a la instancia de bot proporcionada.
+
+        Obtiene un nuevo fingerprint llamando a `self.rotate_fingerprint()` y un
+        nuevo proxy llamando a `self.rotate_proxy()`. Luego, si estos valores
+        no son None, los asigna al bot utilizando los métodos `bot.assign_fingerprint()`
+        y `bot.assign_proxy()`.
+
+        Args:
+            bot: Una instancia de un objeto bot que se espera tenga los métodos
+                 `assign_fingerprint(fp)` y `assign_proxy(px)`.
+        """
+        fp = self.rotate_fingerprint()
+        px = self.rotate_proxy()
+
+        if fp: # Ensure a fingerprint was returned
+            bot.assign_fingerprint(fp)
+
+        if px: # Ensure a proxy was returned
+            bot.assign_proxy(px)

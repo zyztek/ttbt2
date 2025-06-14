@@ -1,0 +1,153 @@
+
+
++===========================================================================================================================================================================================+
+
+
+DEPRECATED: this command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.
+
+
+We highly encourage switching to the new `scan` command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.
+
+
++===========================================================================================================================================================================================+
+
+
+{
+    "report_meta": {
+        "scan_target": "files",
+        "scanned": [
+            "requirements.txt"
+        ],
+        "scanned_full_path": [
+            "/app/requirements.txt"
+        ],
+        "target_languages": [
+            "python"
+        ],
+        "policy_file": null,
+        "policy_file_source": "local",
+        "audit_and_monitor": false,
+        "api_key": false,
+        "account": "",
+        "local_database_path": null,
+        "safety_version": "3.5.2",
+        "timestamp": "2025-06-13 11:41:50",
+        "packages_found": 4,
+        "vulnerabilities_found": 0,
+        "vulnerabilities_ignored": 0,
+        "remediations_recommended": 0,
+        "telemetry": {
+            "safety_options": {
+                "files": {
+                    "-r": 1
+                },
+                "output": {
+                    "--output": 1
+                }
+            },
+            "safety_version": "3.5.2",
+            "safety_source": "cli",
+            "os_type": "Linux",
+            "os_release": "6.8.0",
+            "os_description": "Linux-6.8.0-x86_64-with-glibc2.39",
+            "python_version": "3.10.17",
+            "safety_command": "check"
+        },
+        "git": {
+            "branch": "",
+            "tag": "",
+            "commit": "57bf334614b9aaf729098ca75dc566014e19bbd4",
+            "dirty": "False",
+            "origin": "https://github.com/zyztek-ia/ttbt2"
+        },
+        "project": null,
+        "json_version": "1.1",
+        "remediations_attempted": 0,
+        "remediations_completed": 0,
+        "remediation_mode": "NON_INTERACTIVE"
+    },
+    "scanned_packages": {
+        "pytest": {
+            "name": "pytest",
+            "version": "8.4.0",
+            "requirements": [
+                {
+                    "raw": "pytest==8.4.0",
+                    "extras": [],
+                    "marker": null,
+                    "name": "pytest",
+                    "specifier": "==8.4.0",
+                    "url": null,
+                    "found": "/app/requirements.txt"
+                }
+            ]
+        },
+        "pyyaml": {
+            "name": "pyyaml",
+            "version": "6.0.2",
+            "requirements": [
+                {
+                    "raw": "pyyaml==6.0.2",
+                    "extras": [],
+                    "marker": null,
+                    "name": "pyyaml",
+                    "specifier": "==6.0.2",
+                    "url": null,
+                    "found": "/app/requirements.txt"
+                }
+            ]
+        },
+        "loguru": {
+            "name": "loguru",
+            "version": "0.7.3",
+            "requirements": [
+                {
+                    "raw": "loguru==0.7.3",
+                    "extras": [],
+                    "marker": null,
+                    "name": "loguru",
+                    "specifier": "==0.7.3",
+                    "url": null,
+                    "found": "/app/requirements.txt"
+                }
+            ]
+        },
+        "flask": {
+            "name": "flask",
+            "version": "3.1.1",
+            "requirements": [
+                {
+                    "raw": "flask==3.1.1",
+                    "extras": [],
+                    "marker": null,
+                    "name": "flask",
+                    "specifier": "==3.1.1",
+                    "url": null,
+                    "found": "/app/requirements.txt"
+                }
+            ]
+        }
+    },
+    "affected_packages": {},
+    "announcements": [],
+    "vulnerabilities": [],
+    "ignored_vulnerabilities": [],
+    "remediations": {},
+    "remediations_results": {
+        "vulnerabilities_fixed": [],
+        "remediations_applied": {},
+        "remediations_skipped": {}
+    }
+}
+
+
++===========================================================================================================================================================================================+
+
+
+DEPRECATED: this command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.
+
+
+We highly encourage switching to the new `scan` command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.
+
+
++===========================================================================================================================================================================================+

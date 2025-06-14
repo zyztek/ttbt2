@@ -1,0 +1,73 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 9 items
+
+tests/test_main_script.py ........F                                      [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_main_dunder_main_execution ________________________
+
+mock_parse_args = <MagicMock name='parse_args' id='139883773649744'>
+mock_main_script_logic = <MagicMock name='main_script_logic' id='139883773641680'>
+
+    @mock.patch('main.main_script_logic')
+    @mock.patch('main.parse_args')
+    def test_main_dunder_main_execution(mock_parse_args, mock_main_script_logic):
+        # This test ensures the if __name__ == "__main__": block is executed
+        # when main.py is run as a script.
+
+        mock_args_instance = mock.Mock()
+        mock_parse_args.return_value = mock_args_instance
+
+        # Execute main.py as if it's the main script
+        # No try-except needed here if mocks prevent actual app run
+        # Clear sys.modules to ensure main is freshly loaded by runpy,
+        # especially if other tests might have imported 'main' already.
+        if 'main' in sys.modules:
+            del sys.modules['main']
+
+>       runpy.run_module('main', run_name='__main__')
+
+tests/test_main_script.py:301:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/lib/python3.10/runpy.py:227: in run_module
+    return _run_code(code, {}, init_globals, run_name, mod_spec)
+/usr/lib/python3.10/runpy.py:86: in _run_code
+    exec(code, run_globals)
+main.py:51: in <module>
+    parsed_args = parse_args()
+main.py:12: in parse_args
+    return parser.parse_args()
+/usr/lib/python3.10/argparse.py:1848: in parse_args
+    self.error(msg % ' '.join(argv))
+/usr/lib/python3.10/argparse.py:2606: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='pytest', usage=None, description='TikTok Bot', formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = 'pytest: error: unrecognized arguments: --cov=main --cov-report=term-missing tests/test_main_script.py\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+/usr/lib/python3.10/argparse.py:2593: SystemExit
+----------------------------- Captured stderr call -----------------------------
+usage: pytest [-h] [--mode {safe,balanced,aggressive}] [--max-views MAX_VIEWS]
+pytest: error: unrecognized arguments: --cov=main --cov-report=term-missing tests/test_main_script.py
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.10.17-final-0 _______________
+
+Name      Stmts   Miss  Cover   Missing
+---------------------------------------
+main.py      37      1    97%   52
+---------------------------------------
+TOTAL        37      1    97%
+=========================== short test summary info ============================
+FAILED tests/test_main_script.py::test_main_dunder_main_execution - SystemExi...
+========================= 1 failed, 8 passed in 1.22s ==========================

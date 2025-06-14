@@ -1,0 +1,9 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 30 items / 27 deselected / 3 selected
+
+tests/test_core.py ...                                                   [100%]
+
+======================= 3 passed, 27 deselected in 2.65s =======================

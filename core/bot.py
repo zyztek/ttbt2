@@ -1,4 +1,9 @@
 """
+Módulo principal del bot para TikTok.
+
+Este módulo define la clase TikTokBot, que encapsula la lógica para interactuar
+con la plataforma TikTok, incluyendo la inicialización del driver de Selenium,
+autenticación, y la ejecución de acciones orgánicas simulando comportamiento humano.
 This module defines bot-related classes for the TTBT1 framework.
 
 It includes:
@@ -12,6 +17,34 @@ import time
 import random
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from core.account_manager import AccountManager
+from core.behavior import HumanBehaviorSimulator
+
+class TikTokBot:
+    """
+    Clase principal para el bot de TikTok.
+
+    Gestiona la interacción con TikTok, incluyendo la configuración del navegador,
+    autenticación de cuenta, y la ejecución de acciones en la plataforma.
+    Utiliza AccountManager para la gestión de cuentas y HumanBehaviorSimulator
+    para simular interacciones humanas realistas.
+    """
+    def __init__(self, _email=None, _account_details=None):
+        """
+        Inicializa una instancia de TikTokBot.
+
+        Args:
+            _email (str, optional): Email de la cuenta a utilizar. No se usa directamente
+                                   en esta versión pero se mantiene por compatibilidad con tests.
+            _account_details (dict, optional): Detalles de la cuenta. No se usa directamente
+                                             en esta versión.
+        """
+        self.driver = self._init_driver()
+        # TODO: AccountManager debería idealmente recibir un filepath o configuración.
+        self.account_manager = AccountManager()
+        self.proxy = None
+        self.fingerprint = None
+        self.behavior = HumanBehaviorSimulator(self.driver)
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from core.account_manager import CoreAccountManager
 from core.evasion import HumanBehaviorSimulator
@@ -161,67 +194,47 @@ class TikTokBot:
             })
             # No need to quit driver here as it would be None
 
+    def assign_proxy(self, proxy_value):
+        """Asigna un valor de proxy al bot."""
+        self.proxy = proxy_value
+
+    def assign_fingerprint(self, fingerprint_value):
+        """Asigna un valor de fingerprint al bot."""
+        self.fingerprint = fingerprint_value
+
     def _init_driver(self):
         """
-        Configures and initializes the Selenium Chrome WebDriver.
+        Inicializa el driver de Selenium (Chrome) con opciones específicas.
 
-        Sets Chrome options for headless browsing, disabling GPU, running in a sandbox.
-        If `self.fingerprint` (User-Agent) and/or `self.proxy` are set for the bot instance,
-        they are applied to the WebDriver options.
+        Configura el navegador para operar en modo headless, con un user-agent
+        móvil y deshabilita la GPU y el sandbox para compatibilidad en servidores.
 
         Returns:
-            webdriver.Chrome or None: The initialized WebDriver instance, or None if
-                                      initialization fails.
+            selenium.webdriver.Chrome: Instancia del driver de Chrome configurado.
         """
-        logger.debug("Initializing WebDriver.")
         options = webdriver.ChromeOptions()
         # Common options for running in automated environments / headless
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
-
-        # Apply Fingerprint (User-Agent) if provided
-        if self.fingerprint:
-            options.add_argument(f"user-agent={self.fingerprint}")
-            logger.info(f"WebDriver: Using custom User-Agent: {self.fingerprint}")
-        else:
-            # Fallback to a default generic user-agent if none provided
-            default_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
-            options.add_argument(f"user-agent={default_ua}")
-            logger.info(f"WebDriver: Using default User-Agent: {default_ua}")
-
-        # Apply Proxy if provided
-        if self.proxy:
-            logger.info(f"WebDriver: Attempting to configure with proxy: {self.proxy}")
-            options.add_argument(f'--proxy-server={self.proxy}')
-            # Note: Advanced proxy configurations (e.g., SOCKS, authenticated proxies)
-            # might require different or more complex setup (e.g., using extensions).
-            # This setup assumes a direct HTTP/HTTPS proxy format supported by --proxy-server.
-
-        try:
-            driver = webdriver.Chrome(options=options)
-            logger.info("WebDriver initialized successfully.")
-            return driver
-        except WebDriverException as e:
-            # Log detailed error if WebDriver fails to initialize (e.g., chromedriver not in PATH)
-            logger.error(f"Failed to initialize WebDriver: {e}")
-            return None
+        user_agent_string = (
+            "user-agent=Mozilla/5.0 (Linux; Android 10; SM-G981B) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 "
+            "Mobile Safari/537.36"
+        )
+        options.add_argument(user_agent_string)
+        return webdriver.Chrome(options=options)
 
     def _authenticate(self):
         """
-        Handles the authentication process for a TikTok account.
+        Autentica el bot en TikTok utilizando una cuenta del AccountManager.
 
-        Retrieves account credentials, navigates to the login page,
-        fills in the username and password, and submits the form.
-        Uses HumanBehaviorSimulator for typing and clicking to appear more human-like.
-        This method also records and logs its execution time and updates shared status.
+        Navega a la página de login, introduce las credenciales y envía el formulario.
+        Utiliza HumanBehaviorSimulator para las interacciones.
 
         Returns:
-            bool: True if authentication is believed to be successful, False otherwise.
-                  Note: Success is currently inferred by lack of exceptions during the process.
-                  A more robust check would verify a post-login state.
+            bool: True si la autenticación fue exitosa, False en caso contrario.
         """
-        auth_start_time = time.monotonic() # Start timing
         account = self.account_manager.get_next_account()
         # Ensure account has 'username' and 'password' keys.
         if not account or not account.get("username") or not account.get("password"):
@@ -257,67 +270,19 @@ class TikTokBot:
             return False
 
         try:
-            login_url = self.selectors.get("common", {}).get("login_page_url")
-            if not login_url:
-                logger.error("Login URL ('common.login_page_url') not found in selectors configuration.")
-                self._update_shared_status({"status": "error_selector_missing", "last_error": "Login URL missing."})
-                auth_duration = time.monotonic() - auth_start_time
-                logger.error(f"Authentication failed in {auth_duration:.2f} seconds (login URL missing).")
-                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
-                return False
+            self.driver.get("https://www.tiktok.com/login")
+            self.behavior.random_delay(3, 5) # Uncommented
 
-            logger.debug(f"Navigating to login page: {login_url}")
-            self.driver.get(login_url)
-            self.behavior.random_delay(3, 5)
+            # Llenar campos de login
+            email_field = self.driver.find_element(By.NAME, "username")
+            self.behavior.human_type(email_field, account['email']) # Uncommented
 
-            login_page_selectors = self.selectors.get("login_page", {})
+            pass_field = self.driver.find_element(By.NAME, "password")
+            self.behavior.human_type(pass_field, account['password']) # Uncommented
 
-            username_selector = login_page_selectors.get("username_field")
-            if not username_selector:
-                err_msg = "Username field selector ('login_page.username_field') not found in configuration."
-                logger.error(err_msg)
-                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
-                auth_duration = time.monotonic() - auth_start_time
-                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
-                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
-                return False
-
-            password_selector = login_page_selectors.get("password_field")
-            if not password_selector:
-                err_msg = "Password field selector ('login_page.password_field') not found in configuration."
-                logger.error(err_msg)
-                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
-                auth_duration = time.monotonic() - auth_start_time
-                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
-                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
-                return False
-
-            submit_button_selector = login_page_selectors.get("submit_button")
-            if not submit_button_selector:
-                err_msg = "Submit button selector ('login_page.submit_button') not found in configuration."
-                logger.error(err_msg)
-                self._update_shared_status({"status": "error_selector_missing", "last_error": err_msg})
-                auth_duration = time.monotonic() - auth_start_time
-                logger.error(f"Authentication failed in {auth_duration:.2f} seconds. Reason: {err_msg}")
-                self._update_shared_status({"last_auth_duration": round(auth_duration, 2)})
-                return False
-
-            logger.debug(f"Locating username field using: {username_selector}")
-            # The element found is still often referred to as 'email_field' or 'username_field' in web forms
-            # but it will be filled with the account's 'username' value.
-            username_input_field = self.driver.find_element(*username_selector)
-            self.behavior.human_type(username_input_field, account['username']) # Use account['username']
-            logger.debug("Username field filled.")
-
-            logger.debug(f"Locating password field using: {password_selector}")
-            pass_field = self.driver.find_element(*password_selector)
-            self.behavior.human_type(pass_field, account['password'])
-            logger.debug("Password field filled.")
-
-            logger.debug(f"Locating submit button using: {submit_button_selector}")
-            submit_btn = self.driver.find_element(*submit_button_selector)
-            self.behavior.human_click(submit_btn)
-            logger.info("Login form submitted.")
+            # Enviar formulario
+            submit_btn = self.driver.find_element(By.XPATH, '//button[@type="submit"]')
+            self.behavior.human_click(submit_btn) # Uncommented
 
             # It's crucial to add a post-login check here.
             # For example, wait for a specific element on the home page or check if the URL changed.
@@ -364,27 +329,11 @@ class TikTokBot:
 
     def run_session(self):
         """
-        Orchestrates a single bot session.
+        Ejecuta una sesión completa del bot.
 
-        This involves attempting to authenticate and, if successful, performing
-        a series of organic actions. Updates shared status throughout.
+        Intenta autenticar y, si tiene éxito, realiza acciones orgánicas.
         """
-        logger.info("Starting new bot session.")
-        self.session_actions_count = 0 # Reset session action counter
-        self._update_shared_status({
-            "actions_this_session": self.session_actions_count,
-            "status": "session_starting" # Initial status for the session run
-        })
-
-        if self.driver is None:
-            logger.error("Cannot run session: WebDriver is not initialized.")
-            # This state should have been set in __init__ already if driver failed there
-            # self._update_shared_status({"status": "error_webdriver_not_ready", "last_error": "WebDriver missing at session start."})
-            return
-
-        if self._authenticate(): # This method now updates status internally
-            logger.info("Authentication successful. Proceeding to perform organic actions.")
-            self._update_shared_status({"status": "running_actions"}) # Status after successful auth
+        if self._authenticate():
             self._perform_organic_actions()
             self._update_shared_status({"status": "session_complete"}) # If actions loop completes
         else:
@@ -395,86 +344,17 @@ class TikTokBot:
 
     def _perform_organic_actions(self):
         """
-        Performs a loop of simulated organic user actions on TikTok.
+        Realiza acciones orgánicas en TikTok después de la autenticación.
 
-        Actions include watching videos, liking videos (conditionally, based on prior engagement
-        and probability), and scrolling. The number of actions (simulated views) is
-        controlled by the `MAX_VIEWS_PER_HOUR` environment variable. Each cycle's
-        duration is logged. Engagement with conceptual user IDs is tracked.
+        Simula ver videos, dar 'like' y hacer scroll, con pausas aleatorias
+        para imitar el comportamiento humano. El número de videos a ver se
+        controla mediante la variable de entorno MAX_VIEWS_PER_HOUR.
         """
-        if not self.behavior: # Should also check for self.engagement_manager if it's critical
-            logger.error("Cannot perform organic actions: HumanBehaviorSimulator or other components not initialized.")
-            return
-
-        logger.info("Starting to perform organic actions.")
-        # Get max views from environment variable, using MAX_VIEWS_FALLBACK from settings
-        try:
-            max_views_str = os.getenv("MAX_VIEWS_PER_HOUR", str(MAX_VIEWS_FALLBACK))
-            max_views = int(max_views_str)
-        except ValueError:
-            logger.warning(
-                f"Invalid MAX_VIEWS_PER_HOUR value ('{max_views_str}'). "
-                f"Defaulting to MAX_VIEWS_FALLBACK: {MAX_VIEWS_FALLBACK}."
-            )
-            max_views = MAX_VIEWS_FALLBACK
-
-        logger.info(f"Session configured to perform up to {max_views} view actions.")
-
-        for i in range(max_views):
-            cycle_start_time = time.monotonic() # Start timing the cycle
-            logger.debug(f"Organic action cycle {i+1} of {max_views}.")
-
-            self.behavior.watch_video()
-
-            # Conceptual User ID for engagement tracking
-            # In a real scenario, this ID would be extracted from the video/page data.
-            conceptual_author_id = f"sim_user_{i % 5}" # Cycles through 5 simulated user IDs
-            logger.debug(f"Processing content from conceptual author: '{conceptual_author_id}'.")
-
-            # Like logic using EngagementManager
-            like_probability = LIKE_PROBABILITY
-            if conceptual_author_id:
-                if not self.engagement_manager.has_engaged(conceptual_author_id):
-                    if random.random() < like_probability:
-                        logger.info(
-                            f"Attempting to like video from user '{conceptual_author_id}' (first engagement). "
-                            f"Probability: {like_probability*100:.0f}%."
-                        )
-                        self.behavior.like_video() # Actual like attempt
-                        self.engagement_manager.engage_user(conceptual_author_id) # Record engagement
-                    else:
-                        logger.debug(
-                            f"Skipping like for video from user '{conceptual_author_id}' due to probability roll "
-                            f"(first engagement attempt)."
-                        )
-                else:
-                    # User already engaged. For now, we'll log and NOT re-like.
-                    # Future: Implement re-engagement rules (e.g., different probability, time-based).
-                    logger.debug(f"Skipping like for video from user '{conceptual_author_id}' (already engaged).")
-            else:
-                # Fallback if no author_id (should not happen with placeholder, but good for robustness)
-                logger.debug("No author ID for current video; liking based on general probability without engagement tracking.")
-                if random.random() < like_probability:
-                    self.behavior.like_video()
-
-            self.behavior.random_scroll()
-
-            # Update actions count for this session
-            self.session_actions_count += 1
-
-            # Use INTER_ACTION_CYCLE_PAUSE_RANGE_SECS from settings
-            min_pause, max_pause = INTER_ACTION_CYCLE_PAUSE_RANGE_SECS
-            base_sleep_time = random.uniform(min_pause, max_pause)
-            logger.debug(f"Pausing for {base_sleep_time:.2f} seconds between action cycles (range: {min_pause}-{max_pause}s).")
-            time.sleep(base_sleep_time)
-
-            cycle_duration = time.monotonic() - cycle_start_time
-            logger.debug(f"Action cycle {i+1} completed in {cycle_duration:.2f} seconds.")
-            self._update_shared_status({
-                "actions_this_session": self.session_actions_count, # Update count along with duration
-                "last_action_cycle_duration": round(cycle_duration, 2)
-            })
-
-            # TODO: Consider if bot needs to check shared_status for a "stop_requested" flag from dashboard
-
-        logger.info(f"Completed {max_views} organic action cycles for the session.")
+        max_views = int(os.getenv("MAX_VIEWS_PER_HOUR", "50"))
+        for _ in range(max_views):
+            self.behavior.watch_video() # Uncommented
+            # 65% de probabilidad de like
+            if random.random() < 0.65: # This line itself is fine
+                self.behavior.like_video() # Uncommented
+            self.behavior.random_scroll() # Uncommented
+            time.sleep(random.uniform(8, 15))

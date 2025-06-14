@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 20 items / 14 deselected / 6 selected
+
+tests/test_core.py ....../usr/local/lib/python3.10/dist-packages/coverage/inorout.py:509: CoverageWarning: Module core/account_manager was never imported. (module-not-imported)
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+/usr/local/lib/python3.10/dist-packages/coverage/control.py:915: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/home/swebot/.local/lib/python3.10/site-packages/pytest_cov/plugin.py:358: CovReportWarning: Failed to generate report: No data to report.
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)
+
+WARNING: Failed to generate report: No data to report.
+
+                                                                         [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.10.17-final-0 _______________
+
+======================= 6 passed, 14 deselected in 0.40s =======================

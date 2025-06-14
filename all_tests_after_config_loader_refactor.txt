@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.17, pytest-8.4.0, pluggy-1.5.0
+rootdir: /app
+plugins: cov-6.2.1, anyio-4.9.0, json-report-1.5.0, metadata-3.1.1
+collected 59 items
+
+tests/test_behavior.py ......                                            [ 10%]
+tests/test_core.py ...................                                   [ 42%]
+tests/test_data_loader.py .....                                          [ 50%]
+tests/test_evasion.py ....                                               [ 57%]
+tests/test_evasion_system.py ..                                          [ 61%]
+tests/test_logger.py ...                                                 [ 66%]
+tests/test_main_script.py ....                                           [ 72%]
+tests/test_plugin_manager.py .                                           [ 74%]
+tests/test_proxies_and_fingerprints.py .....                             [ 83%]
+tests/test_todo_app.py ..........                                        [100%]
+
+============================== 59 passed in 9.12s ==============================

@@ -34,20 +34,42 @@ def test_data_loader_file_not_found():
     assert loader.data == {}
 
 def test_data_loader_invalid_json():
-    with tempfile.NamedTemporaryFile("w+", suffix=".json", delete=False) as f:
+    with tempfile.NamedTemporaryFile("wb+", suffix=".json", delete=False) as f: # Changed "w+" to "wb+"
         f.write("{invalido: ,}".encode("utf-8"))
         f.seek(0)
         loader = DataLoader(f.name)
         assert loader.data == {}
     os.remove(f.name)
 
+def test_data_loader_yaml_file_not_found():
+    # This test assumes DataLoader's __init__ calls load_data,
+    # and load_data uses os.path.exists before trying to open,
+    # or handles FileNotFoundError directly in its try-except.
+    # The DataLoader's load_data method already handles FileNotFoundError.
+
+    loader = DataLoader("non_existent.yaml") # Path that doesn't exist
+    assert loader.data == {}
+
+def test_data_loader_unknown_extension():
+    # This test also relies on DataLoader's load_data returning {} for unknown extensions.
+    # Create a dummy file to ensure it's not a FileNotFoundError, but an extension issue.
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as tmp_file:
+        tmp_file.write("some data")
+        filepath = tmp_file.name
+
+    loader = DataLoader(filepath)
+    assert loader.data == {}
+
+    os.remove(filepath) # Cleanup
+
 def test_data_loader_invalid_yaml():
     try:
         import yaml
     except ImportError:
         return
-    with tempfile.NamedTemporaryFile("w+", suffix=".yml", delete=False) as f:
-        f.write(b":- { esto no es yaml")
+    with tempfile.NamedTemporaryFile("wb+", suffix=".yml", delete=False) as f: # Changed "w+" to "wb+"
+        # Using a truly invalid YAML structure
+        f.write("key: [unclosed_bracket".encode("utf-8"))
         f.seek(0)
         loader = DataLoader(f.name)
         assert loader.data == {}

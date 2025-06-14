@@ -1,0 +1,6 @@
+************* Module core.config_loader
+core/config_loader.py:5:0: C0301: Line too long (102/100) (line-too-long)
+core/config_loader.py:5:0: W0611: Unused import os (unused-import)
+
+-----------------------------------
+Your code has been rated at 8.82/10

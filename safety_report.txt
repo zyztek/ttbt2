@@ -1,0 +1,105 @@
+
+
++===========================================================================================================================================================================================+
+
+
+DEPRECATED: this command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.
+
+
+We highly encourage switching to the new `scan` command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.
+
+
++===========================================================================================================================================================================================+
+
+
++==============================================================================+
+
+                                   /$$$$$$            /$$
+                                  /$$__  $$          | $$
+               /$$$$$$$  /$$$$$$ | $$  \__//$$$$$$  /$$$$$$   /$$   /$$
+              /$$_____/ |____  $$| $$$$   /$$__  $$|_  $$_/  | $$  | $$
+             |  $$$$$$   /$$$$$$$| $$_/  | $$$$$$$$  | $$    | $$  | $$
+              \____  $$ /$$__  $$| $$    | $$_____/  | $$ /$$| $$  | $$
+              /$$$$$$$/|  $$$$$$$| $$    |  $$$$$$$  |  $$$$/|  $$$$$$$
+             |_______/  \_______/|__/     \_______/   \___/   \____  $$
+                                                              /$$  | $$
+                                                             |  $$$$$$/
+      by safetycli.com                                        \______/
+
++==============================================================================+
+
+ ANNOUNCEMENTS
+
+  * Warning: pytest, pyyaml, loguru and flask are unpinned. Safety by default
+    does not report on potential vulnerabilities in unpinned packages. It is
+    recommended to pin your dependencies unless this is a library meant for
+    distribution. To learn more about reporting these, specifier range
+    handling, and options for scanning unpinned packages visit
+    https://docs.pyup.io/docs/safety-range-specs
+
++==============================================================================+
+
+ REPORT
+
+  Safety v3.5.2 is scanning for Vulnerabilities...
+  Scanning dependencies in your files:
+
+  -> requirements.txt
+
+  Using open-source vulnerability database
+  Found and scanned 4 packages
+  Timestamp 2025-06-13 11:38:04
+  0 vulnerabilities reported
+  9 vulnerabilities ignored
+
++==============================================================================+
+ VULNERABILITIES FOUND
++==============================================================================+
+
+-> Warning: 4 known vulnerabilities match the flask versions that could be
+   installed from your specifier: flask>=0 (unpinned). These vulnerabilities
+   are not reported by default. To report these vulnerabilities set 'ignore-
+   unpinned-requirements' to False under 'security' in your policy file. See
+   https://docs.pyup.io/docs/safety-20-policy-file for more information.
+   It is recommended to pin your dependencies unless this is a library meant
+   for distribution. To learn more about reporting these, specifier range
+   handling, and options for scanning unpinned packages visit
+   https://docs.pyup.io/docs/safety-range-specs
+-> Warning: 1 known vulnerability matches the loguru versions that could be
+   installed from your specifier: loguru>=0 (unpinned). These vulnerabilities
+   are not reported by default. To report these vulnerabilities set 'ignore-
+   unpinned-requirements' to False under 'security' in your policy file. See
+   https://docs.pyup.io/docs/safety-20-policy-file for more information.
+   It is recommended to pin your dependencies unless this is a library meant
+   for distribution. To learn more about reporting these, specifier range
+   handling, and options for scanning unpinned packages visit
+   https://docs.pyup.io/docs/safety-range-specs
+-> Warning: 4 known vulnerabilities match the pyyaml versions that could be
+   installed from your specifier: pyyaml>=0 (unpinned). These vulnerabilities
+   are not reported by default. To report these vulnerabilities set 'ignore-
+   unpinned-requirements' to False under 'security' in your policy file. See
+   https://docs.pyup.io/docs/safety-20-policy-file for more information.
+   It is recommended to pin your dependencies unless this is a library meant
+   for distribution. To learn more about reporting these, specifier range
+   handling, and options for scanning unpinned packages visit
+   https://docs.pyup.io/docs/safety-range-specs
+
+
++==============================================================================+
+
+ Scan was completed. 0 vulnerabilities were reported. 9 vulnerabilities from 3
+ packages were ignored.
+
++==============================================================================+
+
+
++===========================================================================================================================================================================================+
+
+
+DEPRECATED: this command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.
+
+
+We highly encourage switching to the new `scan` command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.
+
+
++===========================================================================================================================================================================================+
