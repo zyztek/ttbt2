@@ -156,6 +156,8 @@ Incluye [GitHub Actions](.github/workflows/ci.yml) para tests automáticos con p
   <img src="docs/img/bot_flow.png" width="600" alt="Flujo del bot">
 </div>
 
+**Nota sobre los diagramas:** Estos diagramas proporcionan una visión general de alto nivel de la arquitectura y el flujo del bot. Desde su creación, se han realizado refactorizaciones y se han añadido componentes más detallados (como `core/behavior.py` para la simulación de comportamiento humano y una distinción más clara entre `core/evasion.py` y `core/evasion_system.py`). Para obtener la comprensión más actualizada de los componentes específicos y sus interacciones, se recomienda consultar las docstrings del código fuente y el `PROJECT_STATUS_REPORT.md`.
+
 ---
 
 ## Herramientas y servicios recomendados
