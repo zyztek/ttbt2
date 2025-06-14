@@ -9,7 +9,7 @@ def index():
 
 @app.route("/status")
 def status():
-    # Simula status de bots. Integra tu sistema aquí.
+    # Simulates bot status. You may want to integrate your status-checking system here.
     return jsonify({"bots": [
         {"name": "bot1", "status": "ok"},
         {"name": "bot2", "status": "running"}

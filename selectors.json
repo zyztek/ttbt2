@@ -1,0 +1,33 @@
+{
+  "common": {
+    "login_page_url": "https://www.tiktok.com/login"
+  },
+  "login_page": {
+    "username_field": {
+      "by": "xpath",
+      "value": "//form[contains(@class, 'tiktok-login-form-placeholder')]//input[@name='username' and @type='text']"
+    },
+    "password_field": {
+      "by": "xpath",
+      "value": "//form[contains(@class, 'tiktok-login-form-placeholder')]//input[@name='password' and @type='password']"
+    },
+    "submit_button": {
+      "by": "xpath",
+      "value": "//form[contains(@class, 'tiktok-login-form-placeholder')]//button[@type='submit' and contains(normalize-space(.), 'Log in')]"
+    },
+    "error_message_generic": {
+      "by": "xpath",
+      "value": "//div[contains(@class, 'tiktok-login-form-placeholder')]//div[@role='alert' and contains(@class, 'error-message')]"
+    }
+  },
+  "feed_page": {
+    "like_button_placeholder": {
+      "by": "xpath",
+      "value": ".//button[contains(@aria-label, 'Like') and @data-e2e-test='like-button']"
+    },
+    "video_container": {
+      "by": "xpath",
+      "value": "//div[@data-e2e-test='video-feed-item' and contains(@class, 'DivItemContainer')]"
+    }
+  }
+}
