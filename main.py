@@ -8,14 +8,44 @@ servidor Flask en un hilo separado para exponer una API (definida en api.app).
 import os
 import sys
 import argparse
+import threading # Added
 from core.bot import TikTokBot
 from threading import Thread
-from api.app import app
+from api.app import app # Flask app for the dashboard
+from core.logger import get_logger
+from selenium.common.exceptions import WebDriverException
+from config.settings import ( # Added
+    DEFAULT_BOT_MODE, MAX_VIEWS_DEFAULT_ARG,
+    FLASK_HOST, FLASK_PORT
+)
+
+# Initialize logger for the main runner
+logger = get_logger("main_runner")
 
 def parse_args():
+    """
+    Defines and parses command-line arguments for the bot.
+
+    Current arguments:
+    --mode: Defines the operational mode of the bot (e.g., 'safe', 'balanced', 'aggressive').
+    --max-views: Sets the maximum number of views the bot should attempt in a session.
+
+    Returns:
+        argparse.Namespace: An object containing the parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="TikTok Bot")
-    parser.add_argument("--mode", choices=["safe", "balanced", "aggressive"], default="balanced")
-    parser.add_argument("--max-views", type=int, default=5000)
+    parser.add_argument(
+        "--mode",
+        choices=["safe", "balanced", "aggressive"],
+        default=DEFAULT_BOT_MODE, # Used settings constant
+        help=f"Operational mode for the bot (default: {DEFAULT_BOT_MODE})."
+    )
+    parser.add_argument(
+        "--max-views",
+        type=int,
+        default=MAX_VIEWS_DEFAULT_ARG, # Used settings constant
+        help=f"Maximum number of views to attempt in a session (default: {MAX_VIEWS_DEFAULT_ARG})."
+    )
     return parser.parse_args()
 
 def run_flask():
@@ -54,11 +84,16 @@ def main_script_logic(args):
             sys.exit(1) # Changed to sys.exit(1)
         bot.run_session()
     except Exception as e:
-        print(f"Error crítico: {str(e)}")
+        # Catch any other unhandled exceptions during bot setup or execution
+        logger.exception("An unhandled exception occurred in the main execution block:")
     finally:
         if bot and hasattr(bot, 'driver') and bot.driver: # Check hasattr for driver
             try:
+                logger.info("Attempting to close WebDriver.")
                 bot.driver.quit()
+                logger.info("WebDriver closed successfully.")
+            except WebDriverException as cleanup_wd_error:
+                logger.error(f"WebDriver error during cleanup: {cleanup_wd_error}")
             except Exception as cleanup_error:
                 print(f"Error closing driver: {cleanup_error}")
         # Clarify end of bot session

@@ -8,21 +8,18 @@ básico y una ruta índice.
 import os
 from flask import Flask, jsonify
 
-app = Flask(__name__)
+# Assuming api/app.py is in the 'api/' directory, and templates are in 'dashboard/templates/'
+# The path '../dashboard/templates' should correctly point to the templates directory
+# relative to the 'api' directory where app.py resides.
+app = Flask(__name__, template_folder='../dashboard/templates')
 
 @app.route("/")
 def index():
     """
-    Ruta índice de la API.
-
-    Retorna un mensaje JSON simple indicando que la API del TikTok Bot está en
-    funcionamiento.
-
-    Returns:
-        Response: Un objeto de respuesta Flask con contenido JSON.
-                  Ej: {"status": "TikTok Bot API running"}
+    Serves the main dashboard page (index.html).
+    The dashboard will then use JavaScript to fetch data from the /status endpoint.
     """
-    return jsonify({"status": "TikTok Bot API running"})
+    return render_template("index.html")
 
 @app.route("/status")
 def status():

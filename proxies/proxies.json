@@ -1,6 +1,6 @@
 {
-    "proxies": [
-        "http://proxy1.ejemplo.com:8080",
-        "http://proxy2.ejemplo.com:3128"
-    ]
+  "proxies": [
+    "http://proxy1.example.com:8080",
+    "http://user:pass@proxy2.example.com:8080"
+  ]
 }
