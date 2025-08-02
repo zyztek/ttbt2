@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-07-27T19:19:54.830559",
+  "python": {
+    "version": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+    "executable": "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Scripts\\python.exe",
+    "platform": "win32"
+  },
+  "system": {
+    "platform": "Windows-11-10.0.22621-SP0",
+    "architecture": [
+      "64bit",
+      "WindowsPE"
+    ],
+    "processor": "Intel64 Family 6 Model 42 Stepping 7, GenuineIntel",
+    "machine": "AMD64"
+  }
+}

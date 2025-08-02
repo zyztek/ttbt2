@@ -33,7 +33,7 @@ class TestTikTokBot: # New class for TikTokBot tests
     # --- Start of new TikTokBot tests ---
 
     @mock.patch('core.bot.HumanBehaviorSimulator')
-    @mock.patch('core.bot.AccountManager')
+    @mock.patch('core.bot.CoreAccountManager')
     @mock.patch.object(TikTokBot, '_init_driver') # Mocking the method on the class
     def test_tiktokbot_init(self, mock_init_driver, mock_account_manager, mock_human_behavior_simulator):
         mock_driver_instance = mock.Mock()
@@ -56,8 +56,8 @@ class TestTikTokBot: # New class for TikTokBot tests
         mock_options_instance = mock.Mock()
         mock_chrome_options.return_value = mock_options_instance
 
-        # Need to ensure AccountManager and HumanBehaviorSimulator are also mocked if __init__ calls them
-        with mock.patch('core.bot.AccountManager'), \
+        # Need to ensure CoreAccountManager and HumanBehaviorSimulator are also mocked if __init__ calls them
+        with mock.patch('core.bot.CoreAccountManager'), \
              mock.patch('core.bot.HumanBehaviorSimulator'):
             bot = TikTokBot() # This will call _init_driver
 
@@ -76,7 +76,7 @@ class TestTikTokBot: # New class for TikTokBot tests
         # Mock _init_driver directly on the class for this instance
         with mock.patch.object(TikTokBot, '_init_driver', return_value=mock.MagicMock()) as mock_init_driver_method:
             # Mock other dependencies that are instantiated in __init__
-            with mock.patch('core.bot.AccountManager') as MockAccountManager, \
+            with mock.patch('core.bot.CoreAccountManager') as MockAccountManager, \
                  mock.patch('core.bot.HumanBehaviorSimulator') as MockBehaviorSimulator:
 
                 mock_am_instance = mock.MagicMock(spec=AccountManager)

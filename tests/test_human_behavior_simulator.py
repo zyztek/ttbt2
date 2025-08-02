@@ -1,11 +1,11 @@
 """
-Unit tests for the HumanBehaviorSimulator class in core.evasion.
+Unit tests for the HumanBehaviorSimulator class in core.behavior.
 """
 import pytest
 from unittest import mock
 import time # For time.sleep, even if mocked
 import random # For random.uniform, random.randint, random.random
-from core.evasion import HumanBehaviorSimulator
+from core.behavior import HumanBehaviorSimulator
 from config import settings # To access BEHAVIOR_PROFILES for expected values
 
 # Mock Selenium WebElement that can be passed to methods needing an element

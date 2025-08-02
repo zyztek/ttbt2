@@ -18,7 +18,6 @@ import random
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from core.account_manager import AccountManager
-from core.behavior import HumanBehaviorSimulator
 
 class TikTokBot:
     """
@@ -47,7 +46,7 @@ class TikTokBot:
         self.behavior = HumanBehaviorSimulator(self.driver)
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from core.account_manager import CoreAccountManager
-from core.evasion import HumanBehaviorSimulator
+from core.behavior import HumanBehaviorSimulator
 from core.logger import get_logger
 from core.config_loader import ConfigLoader
 from interactions.engagement import EngagementManager # Added
@@ -235,6 +234,7 @@ class TikTokBot:
         Returns:
             bool: True si la autenticación fue exitosa, False en caso contrario.
         """
+        auth_start_time = time.monotonic()  # Track authentication duration
         account = self.account_manager.get_next_account()
         # Ensure account has 'username' and 'password' keys.
         if not account or not account.get("username") or not account.get("password"):

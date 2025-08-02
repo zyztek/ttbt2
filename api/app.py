@@ -6,7 +6,7 @@ controlar la actividad del bot. Actualmente, proporciona un endpoint de estado
 básico y una ruta índice.
 """
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 # Assuming api/app.py is in the 'api/' directory, and templates are in 'dashboard/templates/'
 # The path '../dashboard/templates' should correctly point to the templates directory
@@ -16,10 +16,9 @@ app = Flask(__name__, template_folder='../dashboard/templates')
 @app.route("/")
 def index():
     """
-    Serves the main dashboard page (index.html).
-    The dashboard will then use JavaScript to fetch data from the /status endpoint.
+    Returns the API status in JSON format.
     """
-    return render_template("index.html")
+    return jsonify({"status": "TikTok Bot API running"})
 
 @app.route("/status")
 def status():

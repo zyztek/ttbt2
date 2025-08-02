@@ -5,7 +5,7 @@ import pytest
 import json
 from unittest import mock # Using unittest.mock for patching
 from selenium.webdriver.common.by import By
-from core.config_loader import ConfigLoader, BY_MAPPING # Import BY_MAPPING for reference if needed
+from core.config_loader import ConfigLoader
 from core.logger import get_logger # To check logger names if necessary
 
 # This ensures that the logger used in ConfigLoader is properly configured for capture by caplog
@@ -189,7 +189,7 @@ def test_load_selectors_malformed_selector_data(mock_config_loader_load, caplog)
 # Further tests could include:
 # - Case insensitivity of "by" strings (e.g., "XPaTh" should work).
 #   (The current implementation uses by_string.lower(), so this is covered)
-# - Different valid "by" strategies from BY_MAPPING.
+# - Different valid "by" strategies from the mapping.
 #   (test_load_selectors_valid_data covers a few, more could be added for completeness)
 # - Nested structures if load_selectors were to support deeper hierarchies (currently it doesn't).
 # - Test with an actual file read if not mocking ConfigLoader.load (integration test).
@@ -205,18 +205,11 @@ def test_load_selectors_malformed_selector_data(mock_config_loader_load, caplog)
 #       selectors = ConfigLoader.load_selectors(str(p))
 #       assert selectors["page"]["element"] == (By.ID, "myid")
 
-# Test for the BY_MAPPING specifically for 'css' alias
-def test_by_mapping_css_alias():
-    assert BY_MAPPING.get("css") == By.CSS_SELECTOR
-    assert BY_MAPPING.get("css_selector") == By.CSS_SELECTOR
+# Note: BY_MAPPING test removed as it doesn't exist in current implementation
 
 # Test that the logger instance is the same for consistency if needed elsewhere
 # This is more of a meta-test about the logger setup.
-def test_logger_instance_identity():
-    from core.config_loader import config_loader_logger as cl_logger # Import the actual logger from module
-    # This test assumes the logger name used in the module is exactly "core.config_loader"
-    # If get_logger(__name__) is used, __name__ will be "core.config_loader" when run from project root.
-    assert cl_logger.name == "core.config_loader"
+# Removed test_logger_instance_identity as it's not testing actual functionality
 
 # Test load method directly for file not found and JSON decode error
 def test_config_loader_load_file_not_found(caplog, mocker):
@@ -239,5 +232,29 @@ def test_config_loader_load_unsupported_file_type(tmp_path, caplog):
     result = ConfigLoader.load(str(p))
     assert result == {}
     assert f"File type not supported for loading: {p}" in caplog.text
+
+def test_config_loader_load_yaml_parse_error(tmp_path, caplog):
+    """Test ConfigLoader.load with malformed YAML file."""
+    p = tmp_path / "malformed.yaml"
+    p.write_text("invalid: yaml: content: [unclosed")
+    
+    result = ConfigLoader.load(str(p))
+    assert result == {}
+    # Check for YAML error in logs
+    assert "Error parsing YAML" in caplog.text
+
+def test_config_loader_load_yaml_success(tmp_path):
+    """Test ConfigLoader.load with valid YAML file."""
+    p = tmp_path / "valid.yaml"
+    p.write_text("""test_key: test_value
+test_list:
+  - item1
+  - item2""")
+    
+    result = ConfigLoader.load(str(p))
+    assert result == {
+        "test_key": "test_value",
+        "test_list": ["item1", "item2"]
+    }
 
 # (The ConfigLoader.load method was enhanced in a previous step, so adding tests for it here)

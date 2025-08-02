@@ -1,0 +1,1037 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- C:\Users\DawyDz\ttbt2-1\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\DawyDz\ttbt2-1
+plugins: cov-6.2.1, mock-3.14.1
+collecting ... collected 143 items
+
+tests/test_account_manager.py::test_init_successful_load FAILED          [  0%]
+tests/test_account_manager.py::test_init_load_malformed_account_missing_pass FAILED [  1%]
+tests/test_account_manager.py::test_init_load_account_details_not_dict FAILED [  2%]
+tests/test_account_manager.py::test_init_load_raw_data_not_dict FAILED   [  2%]
+tests/test_account_manager.py::test_init_load_empty_or_failed FAILED     [  3%]
+tests/test_account_manager.py::test_add_account_manually PASSED          [  4%]
+tests/test_account_manager.py::test_add_account_invalid_input PASSED     [  4%]
+tests/test_account_manager.py::test_get_next_account_cycling_and_reset FAILED [  5%]
+tests/test_account_manager.py::test_get_next_account_empty_list FAILED   [  6%]
+tests/test_account_manager.py::test_update_account_status_existing_account FAILED [  6%]
+tests/test_account_manager.py::test_update_account_status_non_existing_account FAILED [  7%]
+tests/test_api_app.py::test_index_route FAILED                           [  8%]
+tests/test_api_app.py::test_status_route PASSED                          [  9%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_human_click PASSED [  9%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_human_type FAILED [ 10%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_like_video_failure_no_button PASSED [ 11%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_like_video_success PASSED [ 11%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_random_scroll PASSED [ 12%]
+tests/test_behavior.py::TestHumanBehaviorSimulator::test_watch_video FAILED [ 13%]
+tests/test_config_loader.py::test_load_selectors_valid_data FAILED       [ 13%]
+tests/test_config_loader.py::test_load_selectors_invalid_by_string FAILED [ 14%]
+tests/test_config_loader.py::test_load_selectors_missing_key FAILED      [ 15%]
+tests/test_config_loader.py::test_load_selectors_empty_or_failed_load FAILED [ 16%]
+tests/test_config_loader.py::test_load_selectors_malformed_page_data FAILED [ 16%]
+tests/test_config_loader.py::test_load_selectors_malformed_selector_data FAILED [ 17%]
+tests/test_config_loader.py::test_logger_instance_identity FAILED        [ 18%]
+tests/test_config_loader.py::test_config_loader_load_file_not_found FAILED [ 18%]
+tests/test_config_loader.py::test_config_loader_load_json_decode_error FAILED [ 19%]
+tests/test_config_loader.py::test_config_loader_load_unsupported_file_type FAILED [ 20%]
+tests/test_core.py::TestTikTokBot::test_bot_assign_proxy_and_fingerprint FAILED [ 20%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_init FAILED            [ 21%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_init_driver_calls FAILED [ 22%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_success FAILED [ 23%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_failure_no_account FAILED [ 23%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_failure_selenium_exception FAILED [ 24%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_run_session_auth_success FAILED [ 25%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_run_session_auth_failure FAILED [ 25%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_perform_organic_actions FAILED [ 26%]
+tests/test_core.py::TestTikTokBot::test_tiktokbot_perform_organic_actions_no_like FAILED [ 27%]
+tests/test_core.py::test_account_manager_load_accounts_standalone PASSED [ 27%]
+tests/test_core.py::test_account_manager_file_not_found PASSED           [ 28%]
+tests/test_core.py::TestAccountManagerMethods::test_init_malformed_json PASSED [ 29%]
+tests/test_core.py::TestAccountManagerMethods::test_add_account_new_and_update PASSED [ 30%]
+tests/test_core.py::TestAccountManagerMethods::test_get_next_account_empty PASSED [ 30%]
+tests/test_core.py::TestAccountManagerMethods::test_get_next_account_single FAILED [ 31%]
+tests/test_core.py::TestAccountManagerMethods::test_get_next_account_multiple_sorted_order FAILED [ 32%]
+tests/test_core.py::TestAccountManagerMethods::test_init_io_error_on_open PASSED [ 32%]
+tests/test_core.py::TestAccountManagerMethods::test_get_next_account_accounts_is_not_dict_but_not_empty PASSED [ 33%]
+tests/test_core.py::test_bot_engine_initialization FAILED                [ 34%]
+tests/test_core.py::test_config_loader_json_and_yaml PASSED              [ 34%]
+tests/test_core.py::test_load_config_json_file_not_found PASSED          [ 35%]
+tests/test_core.py::test_load_config_yaml_file_not_found PASSED          [ 36%]
+tests/test_core.py::test_load_config_unknown_extension PASSED            [ 37%]
+tests/test_core.py::test_bot_engine_initialize_bots_accounts_not_dict PASSED [ 37%]
+tests/test_core.py::test_bot_engine_initialize_bots_no_proxy PASSED      [ 38%]
+tests/test_core.py::test_bot_engine_initialize_bots_no_fingerprint PASSED [ 39%]
+tests/test_core.py::test_bot_engine_run_method_calls_run_session PASSED  [ 39%]
+tests/test_core.py::test_bot_engine_run_method_initializes_if_bots_empty PASSED [ 40%]
+tests/test_core.py::test_bot_engine_run_method_handles_initialize_bots_failure PASSED [ 41%]
+tests/test_dashboard_app.py::test_dashboard_index_route PASSED           [ 41%]
+tests/test_dashboard_app.py::test_dashboard_status_route PASSED          [ 42%]
+tests/test_data_loader.py::test_data_loader_json PASSED                  [ 43%]
+tests/test_data_loader.py::test_data_loader_yaml PASSED                  [ 44%]
+tests/test_data_loader.py::test_data_loader_file_not_found PASSED        [ 44%]
+tests/test_data_loader.py::test_data_loader_invalid_json PASSED          [ 45%]
+tests/test_data_loader.py::test_data_loader_yaml_file_not_found PASSED   [ 46%]
+tests/test_data_loader.py::test_data_loader_unknown_extension PASSED     [ 46%]
+tests/test_data_loader.py::test_data_loader_invalid_yaml PASSED          [ 47%]
+tests/test_engagement.py::test_engagement_manager_init FAILED            [ 48%]
+tests/test_engagement.py::test_engage_user_new_and_existing FAILED       [ 48%]
+tests/test_engagement.py::test_engage_user_with_none FAILED              [ 49%]
+tests/test_engagement.py::test_has_engaged_scenarios FAILED              [ 50%]
+tests/test_engagement.py::test_get_engaged_count FAILED                  [ 51%]
+tests/test_engagement.py::test_clear_engagement_history FAILED           [ 51%]
+tests/test_evasion.py::test_evasion_rotate_fingerprint_and_proxy PASSED  [ 52%]
+tests/test_evasion.py::test_evasion_empty_lists PASSED                   [ 53%]
+tests/test_evasion.py::test_evasion_system_apply_evasion_sets_bot_fields PASSED [ 53%]
+tests/test_evasion.py::test_evasion_system_empty_lists PASSED            [ 54%]
+tests/test_evasion_system.py::TestEvasionSystem::test_evade_detection_applies_webdriver_trick PASSED [ 55%]
+tests/test_evasion_system.py::TestEvasionSystem::test_evade_detection_driver_execute_raises_exception PASSED [ 55%]
+tests/test_evasion_system.py::TestEvasionSystem::test_evade_detection_no_driver PASSED [ 56%]
+tests/test_evasion_system.py::TestEvasionSystem::test_init_stores_driver PASSED [ 57%]
+tests/test_fingerprint_manager.py::test_init_direct_list PASSED          [ 58%]
+tests/test_fingerprint_manager.py::test_init_load_from_json_success FAILED [ 58%]
+tests/test_fingerprint_manager.py::test_init_load_from_json_malformed_data FAILED [ 59%]
+tests/test_fingerprint_manager.py::test_init_load_from_json_empty_or_failed_load FAILED [ 60%]
+tests/test_fingerprint_manager.py::test_get_fingerprint_with_available_fingerprints PASSED [ 60%]
+tests/test_fingerprint_manager.py::test_get_fingerprint_no_available_fingerprints FAILED [ 61%]
+tests/test_fingerprint_manager.py::test_get_fingerprint_single_fingerprint PASSED [ 62%]
+tests/test_human_behavior_simulator.py::test_init_parameter_loading[safe-safe] PASSED [ 62%]
+tests/test_human_behavior_simulator.py::test_init_parameter_loading[balanced-balanced] PASSED [ 63%]
+tests/test_human_behavior_simulator.py::test_init_parameter_loading[aggressive-aggressive] PASSED [ 64%]
+tests/test_human_behavior_simulator.py::test_init_parameter_loading[unknown_mode-balanced] FAILED [ 65%]
+tests/test_human_behavior_simulator.py::test_random_delay_logic FAILED   [ 65%]
+tests/test_human_behavior_simulator.py::test_human_type_delays_and_space_pause PASSED [ 66%]
+tests/test_human_behavior_simulator.py::test_human_click_uses_profile_delays PASSED [ 67%]
+tests/test_human_behavior_simulator.py::test_watch_video_uses_profile_delays PASSED [ 67%]
+tests/test_human_behavior_simulator.py::test_random_scroll_uses_profile_params PASSED [ 68%]
+tests/test_human_behavior_simulator.py::test_like_video_logs_and_attempts_placeholder_click FAILED [ 69%]
+tests/test_human_behavior_simulator.py::test_like_video_handles_find_failure FAILED [ 69%]
+tests/test_logger.py::TestCoreLogger::test_get_logger_with_name PASSED   [ 70%]
+tests/test_logger.py::TestCoreLogger::test_get_logger_without_name PASSED [ 71%]
+tests/test_logger.py::TestCoreLogger::test_log_path_custom_and_dir_creation PASSED [ 72%]
+tests/test_main_script.py::test_parse_args_defaults PASSED               [ 72%]
+tests/test_main_script.py::test_parse_args_custom PASSED                 [ 73%]
+tests/test_main_script.py::test_main_script_execution_success FAILED     [ 74%]
+tests/test_main_script.py::test_main_script_bot_driver_failure PASSED    [ 74%]
+tests/test_main_script.py::test_run_flask_uses_env_host PASSED           [ 75%]
+tests/test_main_script.py::test_run_flask_uses_default_host PASSED       [ 76%]
+tests/test_main_script.py::test_main_script_logic_run_session_exception FAILED [ 76%]
+tests/test_main_script.py::test_main_script_logic_driver_quit_exception PASSED [ 77%]
+tests/test_plugin_manager.py::test_plugin_manager_load_and_execute PASSED [ 78%]
+tests/test_plugin_manager.py::test_load_plugin_file_not_found PASSED     [ 79%]
+tests/test_plugin_manager.py::test_execute_hook_not_found PASSED         [ 79%]
+tests/test_proxies_and_fingerprints.py::test_proxy_manager_returns_random_proxy PASSED [ 80%]
+tests/test_proxies_and_fingerprints.py::test_proxy_manager_deactivate_proxy PASSED [ 81%]
+tests/test_proxies_and_fingerprints.py::test_fingerprint_manager_returns_random_fingerprint PASSED [ 81%]
+tests/test_proxies_and_fingerprints.py::test_proxy_manager_handles_empty_list PASSED [ 82%]
+tests/test_proxies_and_fingerprints.py::test_fingerprint_manager_handles_empty_list PASSED [ 83%]
+tests/test_proxy_manager.py::test_init_direct_list PASSED                [ 83%]
+tests/test_proxy_manager.py::test_init_load_from_json_success FAILED     [ 84%]
+tests/test_proxy_manager.py::test_init_load_from_json_malformed_data FAILED [ 85%]
+tests/test_proxy_manager.py::test_init_load_from_json_empty_or_failed_load FAILED [ 86%]
+tests/test_proxy_manager.py::test_get_random_active_proxy_with_active_proxies PASSED [ 86%]
+tests/test_proxy_manager.py::test_get_random_active_proxy_no_active_proxies FAILED [ 87%]
+tests/test_proxy_manager.py::test_deactivate_proxy_existing FAILED       [ 88%]
+tests/test_proxy_manager.py::test_deactivate_proxy_non_existing FAILED   [ 88%]
+tests/test_proxy_manager.py::test_deactivate_all_then_get FAILED         [ 89%]
+tests/test_todo_app.py::TestTodoApp::test_init_loads_todos_if_file_exists FAILED [ 90%]
+tests/test_todo_app.py::TestTodoApp::test_init_empty_if_file_not_exists PASSED [ 90%]
+tests/test_todo_app.py::TestTodoApp::test_add_todo PASSED                [ 91%]
+tests/test_todo_app.py::TestTodoApp::test_list_todos_empty PASSED        [ 92%]
+tests/test_todo_app.py::TestTodoApp::test_list_todos_with_items PASSED   [ 93%]
+tests/test_todo_app.py::TestTodoApp::test_save_todos FAILED              [ 93%]
+tests/test_todo_app.py::TestTodoApp::test_complete_todo_valid_index PASSED [ 94%]
+tests/test_todo_app.py::TestTodoApp::test_complete_todo_invalid_index PASSED [ 95%]
+tests/test_todo_app.py::TestTodoApp::test_delete_todo_valid_index PASSED [ 95%]
+tests/test_todo_app.py::TestTodoApp::test_delete_todo_invalid_index PASSED [ 96%]
+tests/test_todo_app.py::TestTodoAppCLI::test_cli_add_and_list_and_exit PASSED [ 97%]
+tests/test_todo_app.py::TestTodoAppCLI::test_cli_list PASSED             [ 97%]
+tests/test_todo_app.py::TestTodoAppCLI::test_cli_complete PASSED         [ 98%]
+tests/test_todo_app.py::TestTodoAppCLI::test_cli_delete PASSED           [ 99%]
+tests/test_todo_app.py::TestTodoAppCLI::test_cli_invalid_choice PASSED   [100%]
+
+================================== FAILURES ===================================
+__________________________ test_init_successful_load __________________________
+tests\test_account_manager.py:47: in test_init_successful_load
+    assert f"Successfully loaded 2 accounts from 'dummy_accounts.json'." in caplog.text
+E   assert "Successfully loaded 2 accounts from 'dummy_accounts.json'." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005994440>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:07.796 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: dummy_accounts.json
+2025-07-27 19:19:07.800 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 2 accounts from 'dummy_accounts.json'.
+2025-07-27 19:19:07.800 | INFO     | core.account_manager:__init__:102 - Successfully loaded 2 accounts from 'dummy_accounts.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:07.796 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: dummy_accounts.json
+2025-07-27 19:19:07.800 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 2 accounts from 'dummy_accounts.json'.
+2025-07-27 19:19:07.800 | INFO     | core.account_manager:__init__:102 - Successfully loaded 2 accounts from 'dummy_accounts.json'.
+________________ test_init_load_malformed_account_missing_pass ________________
+tests\test_account_manager.py:63: in test_init_load_malformed_account_missing_pass
+    assert f"Skipping account 'user_bad': 'pass' or 'password' key not found" in caplog.text
+E   assert "Skipping account 'user_bad': 'pass' or 'password' key not found" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005907250>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.181 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: malformed.json
+2025-07-27 19:19:08.182 | WARNING  | core.account_manager:_load_accounts_from_file:150 - Skipping account 'user_bad': 'pass' or 'password' key not found in account details or is null.
+2025-07-27 19:19:08.182 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'malformed.json'.
+2025-07-27 19:19:08.182 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'malformed.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.181 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: malformed.json
+2025-07-27 19:19:08.182 | WARNING  | core.account_manager:_load_accounts_from_file:150 - Skipping account 'user_bad': 'pass' or 'password' key not found in account details or is null.
+2025-07-27 19:19:08.182 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'malformed.json'.
+2025-07-27 19:19:08.182 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'malformed.json'.
+___________________ test_init_load_account_details_not_dict ___________________
+tests\test_account_manager.py:79: in test_init_load_account_details_not_dict
+    assert "Skipping account 'user_bad': details are not a dictionary." in caplog.text
+E   assert "Skipping account 'user_bad': details are not a dictionary." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005907ED0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.193 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: not_dict.json
+2025-07-27 19:19:08.194 | WARNING  | core.account_manager:_load_accounts_from_file:132 - Skipping account 'user_bad': details are not a dictionary. Found: <class 'str'>
+2025-07-27 19:19:08.194 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'not_dict.json'.
+2025-07-27 19:19:08.195 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'not_dict.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.193 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: not_dict.json
+2025-07-27 19:19:08.194 | WARNING  | core.account_manager:_load_accounts_from_file:132 - Skipping account 'user_bad': details are not a dictionary. Found: <class 'str'>
+2025-07-27 19:19:08.194 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'not_dict.json'.
+2025-07-27 19:19:08.195 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'not_dict.json'.
+______________________ test_init_load_raw_data_not_dict _______________________
+tests\test_account_manager.py:89: in test_init_load_raw_data_not_dict
+    assert "Account data in 'list_data.json' is not a dictionary" in caplog.text
+E   assert "Account data in 'list_data.json' is not a dictionary" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000059A0B00>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.205 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: list_data.json
+2025-07-27 19:19:08.206 | ERROR    | core.account_manager:_load_accounts_from_file:126 - Account data in 'list_data.json' is not a dictionary (object) as expected. Found type: <class 'list'>.
+2025-07-27 19:19:08.206 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'list_data.json'. The account list is empty.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.205 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: list_data.json
+2025-07-27 19:19:08.206 | ERROR    | core.account_manager:_load_accounts_from_file:126 - Account data in 'list_data.json' is not a dictionary (object) as expected. Found type: <class 'list'>.
+2025-07-27 19:19:08.206 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'list_data.json'. The account list is empty.
+_______________________ test_init_load_empty_or_failed ________________________
+tests\test_account_manager.py:99: in test_init_load_empty_or_failed
+    assert "No data or invalid data found in accounts file: empty.json" in caplog.text
+E   AssertionError: assert 'No data or invalid data found in accounts file: empty.json' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000059A16E0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.217 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: empty.json
+2025-07-27 19:19:08.217 | WARNING  | core.account_manager:_load_accounts_from_file:122 - No data or invalid data found in accounts file: empty.json
+2025-07-27 19:19:08.218 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'empty.json'. The account list is empty.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.217 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: empty.json
+2025-07-27 19:19:08.217 | WARNING  | core.account_manager:_load_accounts_from_file:122 - No data or invalid data found in accounts file: empty.json
+2025-07-27 19:19:08.218 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'empty.json'. The account list is empty.
+___________________ test_get_next_account_cycling_and_reset ___________________
+tests\test_account_manager.py:150: in test_get_next_account_cycling_and_reset
+    assert f"Returning account '{acc_one['username']}' (index 0). Next index: 1." in caplog.text
+E   assert "Returning account 'acc1' (index 0). Next index: 1." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000059379B0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.268 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.269 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 2 accounts from 'accounts.json'.
+2025-07-27 19:19:08.269 | INFO     | core.account_manager:__init__:102 - Successfully loaded 2 accounts from 'accounts.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.268 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.269 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 2 accounts from 'accounts.json'.
+2025-07-27 19:19:08.269 | INFO     | core.account_manager:__init__:102 - Successfully loaded 2 accounts from 'accounts.json'.
+2025-07-27 19:19:08.269 | DEBUG    | core.account_manager:get_next_account:209 - Returning account 'acc1' (index 0). Next index: 1.
+______________________ test_get_next_account_empty_list _______________________
+tests\test_account_manager.py:191: in test_get_next_account_empty_list
+    assert "get_next_account called but no accounts are loaded." in caplog.text
+E   AssertionError: assert 'get_next_account called but no accounts are loaded.' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000598D370>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.280 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.280 | WARNING  | core.account_manager:_load_accounts_from_file:122 - No data or invalid data found in accounts file: accounts.json
+2025-07-27 19:19:08.280 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'accounts.json'. The account list is empty.
+2025-07-27 19:19:08.281 | WARNING  | core.account_manager:get_next_account:203 - get_next_account called but no accounts are loaded.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.280 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.280 | WARNING  | core.account_manager:_load_accounts_from_file:122 - No data or invalid data found in accounts file: accounts.json
+2025-07-27 19:19:08.280 | WARNING  | core.account_manager:__init__:104 - No accounts loaded from 'accounts.json'. The account list is empty.
+2025-07-27 19:19:08.281 | WARNING  | core.account_manager:get_next_account:203 - get_next_account called but no accounts are loaded.
+_________________ test_update_account_status_existing_account _________________
+tests\test_account_manager.py:210: in test_update_account_status_existing_account
+    assert f"Status for account 'user_x' updated to 'error_login'. Details: {update_info_dict}" in caplog.text
+E   assert "Status for account 'user_x' updated to 'error_login'. Details: {'last_error': 'Login failed', 'attempts': 3}" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000598DE10>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.291 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.291 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.292 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.292 | INFO     | core.account_manager:update_account_status:270 - Status for account 'user_x' updated to 'error_login'. Details: {'last_error': 'Login failed', 'attempts': 3}
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.291 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.291 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.292 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.292 | INFO     | core.account_manager:update_account_status:270 - Status for account 'user_x' updated to 'error_login'. Details: {'last_error': 'Login failed', 'attempts': 3}
+_______________ test_update_account_status_non_existing_account _______________
+tests\test_account_manager.py:235: in test_update_account_status_non_existing_account
+    assert "Attempted to update status for account 'non_user_z', but account was not found." in caplog.text
+E   assert "Attempted to update status for account 'non_user_z', but account was not found." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000588F050>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:08.303 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.303 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.304 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.304 | WARNING  | core.account_manager:update_account_status:273 - Attempted to update status for account 'non_user_z', but account was not found.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:08.303 | INFO     | core.account_manager:_load_accounts_from_file:118 - Attempting to load accounts from: accounts.json
+2025-07-27 19:19:08.303 | INFO     | core.account_manager:_load_accounts_from_file:152 - Processed 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.304 | INFO     | core.account_manager:__init__:102 - Successfully loaded 1 accounts from 'accounts.json'.
+2025-07-27 19:19:08.304 | WARNING  | core.account_manager:update_account_status:273 - Attempted to update status for account 'non_user_z', but account was not found.
+______________________________ test_index_route _______________________________
+tests\test_api_app.py:13: in test_index_route
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+------------------------------ Captured log call ------------------------------
+ERROR    api.app:app.py:875 Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\DawyDz\ttbt2-1\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\DawyDz\ttbt2-1\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\DawyDz\ttbt2-1\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\DawyDz\ttbt2-1\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\DawyDz\ttbt2-1\api\app.py", line 22, in index
+    return render_template("index.html")
+           ^^^^^^^^^^^^^^^
+NameError: name 'render_template' is not defined
+_________________ TestHumanBehaviorSimulator.test_human_type __________________
+tests\test_behavior.py:22: in test_human_type
+    self.assertEqual(mock_sleep.call_count, len(test_text))
+E   AssertionError: 6 != 5
+---------------------------- Captured stdout call -----------------------------
+[SIM_BEHAVIOR] Preparing to type into element <Mock id='93945008'>.
+[SIM_BEHAVIOR] Delaying for 0.60 seconds.
+[SIM_BEHAVIOR] Typing 'hello...'
+[SIM_BEHAVIOR] Finished typing.
+_________________ TestHumanBehaviorSimulator.test_watch_video _________________
+C:\Program Files\Python313\Lib\unittest\mock.py:990: in assert_called_once_with
+    raise AssertionError(msg)
+E   AssertionError: Expected 'random_delay' to be called once. Called 0 times.
+
+During handling of the above exception, another exception occurred:
+tests\test_behavior.py:44: in test_watch_video
+    mock_random_delay.assert_called_once_with(15.0, 15.0)
+E   AssertionError: Expected 'random_delay' to be called once. Called 0 times.
+---------------------------- Captured stdout call -----------------------------
+[SIM_BEHAVIOR] Starting to 'watch video' for approximately 15.00 seconds.
+[SIM_BEHAVIOR] Watching segment 1/1 for 15.00s.
+[SIM_BEHAVIOR] Finished 'watching video'.
+_______________________ test_load_selectors_valid_data ________________________
+tests\test_config_loader.py:50: in test_load_selectors_valid_data
+    processed_selectors = ConfigLoader.load_selectors("dummy_selectors.json")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+____________________ test_load_selectors_invalid_by_string ____________________
+tests\test_config_loader.py:84: in test_load_selectors_invalid_by_string
+    processed_selectors = ConfigLoader.load_selectors("dummy_invalid_by.json")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+_______________________ test_load_selectors_missing_key _______________________
+tests\test_config_loader.py:108: in test_load_selectors_missing_key
+    processed_selectors = ConfigLoader.load_selectors("dummy_missing_keys.json")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+__________________ test_load_selectors_empty_or_failed_load ___________________
+tests\test_config_loader.py:133: in test_load_selectors_empty_or_failed_load
+    processed_selectors_empty = ConfigLoader.load_selectors("dummy_empty.json")
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+___________________ test_load_selectors_malformed_page_data ___________________
+tests\test_config_loader.py:161: in test_load_selectors_malformed_page_data
+    processed_selectors = ConfigLoader.load_selectors("dummy_malformed.json")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+_________________ test_load_selectors_malformed_selector_data _________________
+tests\test_config_loader.py:181: in test_load_selectors_malformed_selector_data
+    processed_selectors = ConfigLoader.load_selectors("dummy_malformed_selector.json")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+________________________ test_logger_instance_identity ________________________
+tests\test_config_loader.py:214: in test_logger_instance_identity
+    assert config_loader_logger.name == "core.config_loader"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'Logger' object has no attribute 'name'
+___________________ test_config_loader_load_file_not_found ____________________
+tests\test_config_loader.py:221: in test_config_loader_load_file_not_found
+    assert "Configuration file not found: non_existent_file.json" in caplog.text
+E   AssertionError: assert 'Configuration file not found: non_existent_file.json' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000592E9C0>.text
+__________________ test_config_loader_load_json_decode_error __________________
+tests\test_config_loader.py:229: in test_config_loader_load_json_decode_error
+    assert f"Error decoding JSON from {p}" in caplog.text
+E   AssertionError: assert 'Error decoding JSON from C:\\Users\\DawyDz\\AppData\\Local\\Temp\\pytest-of-DawyDz\\pytest-0\\test_config_loader_load_json_d0\\malformed.json' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000058DDFD0>.text
+________________ test_config_loader_load_unsupported_file_type ________________
+tests\test_config_loader.py:236: in test_config_loader_load_unsupported_file_type
+    assert f"File type not supported for loading: {p}" in caplog.text
+E   AssertionError: assert 'File type not supported for loading: C:\\Users\\DawyDz\\AppData\\Local\\Temp\\pytest-of-DawyDz\\pytest-0\\test_config_loader_load_unsupp0\\settings.txt' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000058DE150>.text
+_____________ TestTikTokBot.test_bot_assign_proxy_and_fingerprint _____________
+tests\test_core.py:27: in test_bot_assign_proxy_and_fingerprint
+    bot = TikTokBot("userx", {"pass": "xyz"})
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:23.802 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: userx
+2025-07-27 19:19:23.802 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:23.803 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:23.802 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: userx
+2025-07-27 19:19:23.802 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:23.803 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+______________________ TestTikTokBot.test_tiktokbot_init ______________________
+tests\test_core.py:42: in test_tiktokbot_init
+    bot = TikTokBot() # Call __init__
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:23.987 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:23.988 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:23.988 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:23.987 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:23.988 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:23.988 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+_______________ TestTikTokBot.test_tiktokbot_init_driver_calls ________________
+tests\test_core.py:62: in test_tiktokbot_init_driver_calls
+    bot = TikTokBot() # This will call _init_driver
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.010 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.010 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.010 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.010 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.010 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.010 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+______________ TestTikTokBot.test_tiktokbot_authenticate_success ______________
+tests\test_core.py:88: in test_tiktokbot_authenticate_success
+    bot = TikTokBot() # __init__ uses the mocks
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.041 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.042 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.042 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.041 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.042 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.042 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+________ TestTikTokBot.test_tiktokbot_authenticate_failure_no_account _________
+tests\test_core.py:139: in test_tiktokbot_authenticate_failure_no_account
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.065 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.065 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.066 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+____ TestTikTokBot.test_tiktokbot_authenticate_failure_selenium_exception _____
+tests\test_core.py:163: in test_tiktokbot_authenticate_failure_selenium_exception
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.090 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.090 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.091 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+____________ TestTikTokBot.test_tiktokbot_run_session_auth_success ____________
+tests\test_core.py:198: in test_tiktokbot_run_session_auth_success
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.114 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.115 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.115 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.114 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.115 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.115 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+____________ TestTikTokBot.test_tiktokbot_run_session_auth_failure ____________
+tests\test_core.py:214: in test_tiktokbot_run_session_auth_failure
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.254 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.255 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.255 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.254 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.255 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.255 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+____________ TestTikTokBot.test_tiktokbot_perform_organic_actions _____________
+tests\test_core.py:233: in test_tiktokbot_perform_organic_actions
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.318 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.318 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.319 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.318 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.318 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.319 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+________ TestTikTokBot.test_tiktokbot_perform_organic_actions_no_like _________
+tests\test_core.py:260: in test_tiktokbot_perform_organic_actions_no_like
+    bot = TikTokBot()
+          ^^^^^^^^^^^
+core\bot.py:162: in __init__
+    self.selectors = ConfigLoader.load_selectors("selectors.json")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: type object 'ConfigLoader' has no attribute 'load_selectors'
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:24.350 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.350 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.350 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:24.350 | INFO     | core.bot:__init__:144 - Initializing TikTokBot with mode: balanced
+2025-07-27 19:19:24.350 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:24.350 | INFO     | core.bot:__init__:159 - EngagementManager initialized for TikTokBot.
+___________ TestAccountManagerMethods.test_get_next_account_single ____________
+tests\test_core.py:329: in test_get_next_account_single
+    assert manager.get_next_account() == expected
+E   AssertionError: assert None == {'email': 'test@example.com', 'password': 'pass1'}
+E    +  where None = get_next_account()
+E    +    where get_next_account = <core.account_manager.AccountManager object at 0x0000000005993D10>.get_next_account
+____ TestAccountManagerMethods.test_get_next_account_multiple_sorted_order ____
+tests\test_core.py:339: in test_get_next_account_multiple_sorted_order
+    assert manager.get_next_account() == expected
+E   AssertionError: assert None == {'email': 'a@example.com', 'password': 'passA'}
+E    +  where None = get_next_account()
+E    +    where get_next_account = <core.account_manager.AccountManager object at 0x000000000598F790>.get_next_account
+_______________________ test_bot_engine_initialization ________________________
+tests\test_core.py:380: in test_bot_engine_initialization
+    engine.initialize_bots()
+core\bot_engine.py:53: in initialize_bots
+    bot = TikTokBot(_email=email, _account_details=account_details)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: TikTokBot.__init__() got an unexpected keyword argument '_email'
+________________________ test_engagement_manager_init _________________________
+tests\test_engagement.py:16: in test_engagement_manager_init
+    assert "EngagementManager initialized." in caplog.text
+E   AssertionError: assert 'EngagementManager initialized.' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005C678B0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.093 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.093 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+______________________ test_engage_user_new_and_existing ______________________
+tests\test_engagement.py:29: in test_engage_user_new_and_existing
+    assert f"User 'user123' marked as engaged. Total engaged users: 1." in caplog.text
+E   assert "User 'user123' marked as engaged. Total engaged users: 1." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005C67C20>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.110 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.110 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.111 | DEBUG    | interactions.engagement:engage_user:46 - User 'user123' marked as engaged. Total engaged users: 1.
+_________________________ test_engage_user_with_none __________________________
+tests\test_engagement.py:53: in test_engage_user_with_none
+    assert "Attempted to engage with a None user_id." in caplog.text
+E   AssertionError: assert 'Attempted to engage with a None user_id.' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005C34190>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.145 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.145 | WARNING  | interactions.engagement:engage_user:41 - Attempted to engage with a None user_id.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.145 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.145 | WARNING  | interactions.engagement:engage_user:41 - Attempted to engage with a None user_id.
+_________________________ test_has_engaged_scenarios __________________________
+tests\test_engagement.py:65: in test_has_engaged_scenarios
+    assert f"Checking engagement for user 'engaged_user_A': True" in caplog.text
+E   assert "Checking engagement for user 'engaged_user_A': True" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005C34370>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.332 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.332 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.333 | DEBUG    | interactions.engagement:engage_user:46 - User 'engaged_user_A' marked as engaged. Total engaged users: 1.
+___________________________ test_get_engaged_count ____________________________
+tests\test_engagement.py:85: in test_get_engaged_count
+    assert "Current engaged user count: 0" in caplog.text
+E   AssertionError: assert 'Current engaged user count: 0' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000059E19A0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.347 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.347 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.348 | DEBUG    | interactions.engagement:get_engaged_count:78 - Current engaged user count: 0.
+________________________ test_clear_engagement_history ________________________
+tests\test_engagement.py:112: in test_clear_engagement_history
+    assert "Engagement history cleared. 2 users were removed from history." in caplog.text
+E   AssertionError: assert 'Engagement history cleared. 2 users were removed from history.' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000065C24D0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.354 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.355 | INFO     | interactions.engagement:clear_engagement_history:87 - Engagement history cleared. 2 users were removed from history.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.354 | INFO     | interactions.engagement:__init__:28 - EngagementManager initialized.
+2025-07-27 19:19:25.355 | DEBUG    | interactions.engagement:engage_user:46 - User 'temp_user1' marked as engaged. Total engaged users: 1.
+2025-07-27 19:19:25.355 | DEBUG    | interactions.engagement:engage_user:46 - User 'temp_user2' marked as engaged. Total engaged users: 2.
+2025-07-27 19:19:25.355 | DEBUG    | interactions.engagement:get_engaged_count:78 - Current engaged user count: 2.
+2025-07-27 19:19:25.355 | INFO     | interactions.engagement:clear_engagement_history:87 - Engagement history cleared. 2 users were removed from history.
+2025-07-27 19:19:25.355 | DEBUG    | interactions.engagement:get_engaged_count:78 - Current engaged user count: 0.
+______________________ test_init_load_from_json_success _______________________
+tests\test_fingerprint_manager.py:37: in test_init_load_from_json_success
+    assert f"Successfully loaded {len(mock_data['fingerprints'])} fingerprints" in caplog.text
+E   AssertionError: assert 'Successfully loaded 3 fingerprints' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000664C650>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.379 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'valid_fingerprints.json'.
+2025-07-27 19:19:25.379 | INFO     | fingerprints.fingerprint_manager:__init__:39 - Successfully loaded 3 fingerprints from 'valid_fingerprints.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.379 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'valid_fingerprints.json'.
+2025-07-27 19:19:25.379 | INFO     | fingerprints.fingerprint_manager:__init__:39 - Successfully loaded 3 fingerprints from 'valid_fingerprints.json'.
+___________________ test_init_load_from_json_malformed_data ___________________
+tests\test_fingerprint_manager.py:45: in test_init_load_from_json_malformed_data
+    assert "Failed to load fingerprints from 'malformed_fp1.json'" in caplog.text
+E   assert "Failed to load fingerprints from 'malformed_fp1.json'" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000591D160>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.389 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'malformed_fp1.json'.
+2025-07-27 19:19:25.389 | WARNING  | fingerprints.fingerprint_manager:__init__:41 - Failed to load fingerprints from 'malformed_fp1.json' or data is not in expected format (e.g., {'fingerprints': [...]}). Found: <class 'dict'>. Initializing with empty fingerprint list.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.389 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'malformed_fp1.json'.
+2025-07-27 19:19:25.389 | WARNING  | fingerprints.fingerprint_manager:__init__:41 - Failed to load fingerprints from 'malformed_fp1.json' or data is not in expected format (e.g., {'fingerprints': [...]}). Found: <class 'dict'>. Initializing with empty fingerprint list.
+________________ test_init_load_from_json_empty_or_failed_load ________________
+tests\test_fingerprint_manager.py:68: in test_init_load_from_json_empty_or_failed_load
+    assert "Failed to load fingerprints from 'empty_fp.json'" in caplog.text # Checks for the warning
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert "Failed to load fingerprints from 'empty_fp.json'" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000591EBA0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.397 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'empty_fp.json'.
+2025-07-27 19:19:25.398 | WARNING  | fingerprints.fingerprint_manager:__init__:41 - Failed to load fingerprints from 'empty_fp.json' or data is not in expected format (e.g., {'fingerprints': [...]}). Found: <class 'dict'>. Initializing with empty fingerprint list.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.397 | INFO     | fingerprints.fingerprint_manager:__init__:35 - No direct fingerprints provided, attempting to load from 'empty_fp.json'.
+2025-07-27 19:19:25.398 | WARNING  | fingerprints.fingerprint_manager:__init__:41 - Failed to load fingerprints from 'empty_fp.json' or data is not in expected format (e.g., {'fingerprints': [...]}). Found: <class 'dict'>. Initializing with empty fingerprint list.
+_______________ test_get_fingerprint_no_available_fingerprints ________________
+tests\test_fingerprint_manager.py:86: in test_get_fingerprint_no_available_fingerprints
+    assert "no fingerprints available" in caplog.text
+E   AssertionError: assert 'no fingerprints available' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000591D860>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.408 | INFO     | fingerprints.fingerprint_manager:__init__:47 - Using 0 directly provided fingerprints.
+2025-07-27 19:19:25.409 | WARNING  | fingerprints.fingerprint_manager:get_fingerprint:61 - get_fingerprint called, but no fingerprints available.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.408 | INFO     | fingerprints.fingerprint_manager:__init__:47 - Using 0 directly provided fingerprints.
+2025-07-27 19:19:25.409 | WARNING  | fingerprints.fingerprint_manager:get_fingerprint:61 - get_fingerprint called, but no fingerprints available.
+_____________ test_init_parameter_loading[unknown_mode-balanced] ______________
+tests\test_human_behavior_simulator.py:43: in test_init_parameter_loading
+    assert f"Mode 'unknown_mode' not found in BEHAVIOR_PROFILES. Using default mode '{settings.DEFAULT_BOT_MODE}'." in caplog.text
+E   assert "Mode 'unknown_mode' not found in BEHAVIOR_PROFILES. Using default mode 'balanced'." in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000591E350>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.426 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: unknown_mode
+2025-07-27 19:19:25.427 | WARNING  | core.evasion:__init__:73 - Mode 'unknown_mode' not found in BEHAVIOR_PROFILES. Using default mode 'balanced'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.426 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: unknown_mode
+2025-07-27 19:19:25.427 | WARNING  | core.evasion:__init__:73 - Mode 'unknown_mode' not found in BEHAVIOR_PROFILES. Using default mode 'balanced'.
+2025-07-27 19:19:25.427 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: balanced
+___________________________ test_random_delay_logic ___________________________
+C:\Program Files\Python313\Lib\unittest\mock.py:979: in assert_called_with
+    raise AssertionError(_error_message()) from cause
+E   AssertionError: expected call not found.
+E   Expected: uniform(0.01, 0.02)
+E     Actual: uniform(0.013999999999999999, 0.02)
+
+During handling of the above exception, another exception occurred:
+C:\Program Files\Python313\Lib\unittest\mock.py:991: in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: expected call not found.
+E   Expected: uniform(0.01, 0.02)
+E     Actual: uniform(0.013999999999999999, 0.02)
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert (0.013999999999999999, 0.02) == (0.01, 0.02)
+E     
+E     At index 0 diff: 0.013999999999999999 != 0.01
+E     
+E     Full diff:
+E       (
+E     -     0.01,
+E     +     0.013999999999999999,
+E           0.02,
+E       )
+
+During handling of the above exception, another exception occurred:
+tests\test_human_behavior_simulator.py:108: in test_random_delay_logic
+    mock_uniform.assert_called_once_with(0.01, 0.02)
+E   AssertionError: expected call not found.
+E   Expected: uniform(0.01, 0.02)
+E     Actual: uniform(0.013999999999999999, 0.02)
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert (0.013999999999999999, 0.02) == (0.01, 0.02)
+E     
+E     At index 0 diff: 0.013999999999999999 != 0.01
+E     
+E     Full diff:
+E       (
+E     -     0.01,
+E     +     0.013999999999999999,
+E           0.02,
+E       )
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.439 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: safe
+2025-07-27 19:19:25.440 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: aggressive
+2025-07-27 19:19:25.440 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.439 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: safe
+2025-07-27 19:19:25.439 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: safe
+2025-07-27 19:19:25.440 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: aggressive
+2025-07-27 19:19:25.440 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: aggressive
+2025-07-27 19:19:25.440 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+2025-07-27 19:19:25.441 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: balanced
+_____________ test_like_video_logs_and_attempts_placeholder_click _____________
+tests\test_human_behavior_simulator.py:244: in test_like_video_logs_and_attempts_placeholder_click
+    assert f"Attempting to find like button with placeholder XPath: {simulator.LIKE_BUTTON_SELECTOR_XPATH_PLACEHOLDER}" in caplog.text
+E   assert "Attempting to find like button with placeholder XPath: //button[@data-testid='like-button-placeholder']" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000591C4B0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:25.944 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+2025-07-27 19:19:25.946 | INFO     | core.evasion:like_video:187 - Placeholder like button clicked successfully.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:25.944 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+2025-07-27 19:19:25.945 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: balanced
+2025-07-27 19:19:25.945 | DEBUG    | core.evasion:like_video:179 - Attempting to simulate liking a video (Mode: balanced).
+2025-07-27 19:19:25.945 | DEBUG    | core.evasion:like_video:183 - Attempting to find like button with placeholder XPath: //button[@data-testid='like-button-placeholder']
+2025-07-27 19:19:25.945 | DEBUG    | core.evasion:like_video:185 - Placeholder like button found.
+2025-07-27 19:19:25.946 | INFO     | core.evasion:like_video:187 - Placeholder like button clicked successfully.
+____________________ test_like_video_handles_find_failure _____________________
+tests\test_human_behavior_simulator.py:258: in test_like_video_handles_find_failure
+    assert "Could not click placeholder like button" in caplog.text
+E   AssertionError: assert 'Could not click placeholder like button' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000005C73E70>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:26.150 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+2025-07-27 19:19:26.151 | WARNING  | core.evasion:like_video:191 - Could not click placeholder like button (this is expected if selector is not valid for current page): Element not found (simulated)
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:26.150 | INFO     | core.evasion:__init__:68 - HumanBehaviorSimulator initializing with mode: balanced
+2025-07-27 19:19:26.151 | DEBUG    | core.evasion:__init__:76 - Loading behavior profile for mode: balanced
+2025-07-27 19:19:26.151 | DEBUG    | core.evasion:like_video:179 - Attempting to simulate liking a video (Mode: balanced).
+2025-07-27 19:19:26.151 | DEBUG    | core.evasion:like_video:183 - Attempting to find like button with placeholder XPath: //button[@data-testid='like-button-placeholder']
+2025-07-27 19:19:26.151 | WARNING  | core.evasion:like_video:191 - Could not click placeholder like button (this is expected if selector is not valid for current page): Element not found (simulated)
+_____________________ test_main_script_execution_success ______________________
+C:\Users\DawyDz\ttbt2-1\tests\test_main_script.py:80: in test_main_script_execution_success
+    assert os.environ["MAX_VIEWS_PER_HOUR"] == "123"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen os>:717: in __getitem__
+    ???
+E   KeyError: 'MAX_VIEWS_PER_HOUR'
+---------------------------- Captured stdout call -----------------------------
+Iniciando en modo test_mode...
+2025-07-27 19:19:26.370 | INFO     | main:main_script_logic:92 - Attempting to close WebDriver.
+2025-07-27 19:19:26.371 | INFO     | main:main_script_logic:94 - WebDriver closed successfully.
+Sesi¾n de bot principal finalizada.
+Iniciando servidor Flask...
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:26.370 | INFO     | main:main_script_logic:92 - Attempting to close WebDriver.
+2025-07-27 19:19:26.371 | INFO     | main:main_script_logic:94 - WebDriver closed successfully.
+________________ test_main_script_logic_run_session_exception _________________
+C:\Program Files\Python313\Lib\unittest\mock.py:1050: in assert_any_call
+    raise AssertionError(
+E   AssertionError: print('Error crÝtico: Test_Session_Exception') call not found
+
+During handling of the above exception, another exception occurred:
+C:\Users\DawyDz\ttbt2-1\tests\test_main_script.py:148: in test_main_script_logic_run_session_exception
+    mock_print.assert_any_call("Error crÝtico: Test_Session_Exception")
+E   AssertionError: print('Error crÝtico: Test_Session_Exception') call not found
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('Iniciando s...or Flask...',) == ('Error crÝti...n_Exception',)
+E     
+E     At index 0 diff: 'Iniciando servidor Flask...' != 'Error crÝtico: Test_Session_Exception'
+E     
+E     Full diff:
+E       (
+E     -     'Error crÝtico: Test_Session_Exception',
+E     +     'Iniciando servidor Flask...',
+E       )
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:26.740 | ERROR    | main:main_script_logic:88 - An unhandled exception occurred in the main execution block:\nTraceback (most recent call last):\n\n  File "<frozen runpy>", line 198, in _run_module_as_main\n  File "<frozen runpy>", line 88, in _run_code\n\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Scripts\\pytest.exe\\__main__.py", line 7, in <module>\n\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\config\\__init__.py", line 201, in console_main\n    code = main()\n           \u2514 <function main at 0x0000000001F61A80>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\config\\__init__.py", line 175, in main\n    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)\n         \u2502                \u2502      \u2502    \u2502                          \u2514 <_pytest.config.Config object at 0x00000000021AF230>\n         \u2502                \u2502      \u2502    \u2514 <HookCaller 'pytest_cmdline_main'>\n         \u2502                \u2502      \u2514 <_pytest.config.compat.PathAwareHookProxy object at 0x00000000021AF770>\n         \u2502                \u2514 <_pytest.config.Config object at 0x00000000021AF230>\n         \u2514 <enum 'ExitCode'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_hooks.py", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2502       \u2514 True\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2514 {'config': <_pytest.config.Config object at 0x00000000021AF230>}\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2514 <member '_hookimpls' of 'HookCaller' objects>\n           \u2502    \u2502         \u2502    \u2502     \u2514 <HookCaller 'pytest_cmdline_main'>\n           \u2502    \u2502         \u2502    \u2514 <member 'name' of 'HookCaller' objects>\n           \u2502    \u2502         \u2514 <HookCaller 'pytest_cmdline_main'>\n           \u2502    \u2514 <member '_hookexec' of 'HookCaller' objects>\n           \u2514 <HookCaller 'pytest_cmdline_main'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_manager.py", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           \u2502    \u2502               \u2502          \u2502        \u2502       \u2514 True\n           \u2502    \u2502               \u2502          \u2502        \u2514 {'config': <_pytest.config.Config object at 0x00000000021AF230>}\n           \u2502    \u2502               \u2502          \u2514 [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\_py...\n           \u2502    \u2502               \u2514 'pytest_cmdline_main'\n           \u2502    \u2514 <function _multicall at 0x0000000001836520>\n           \u2514 <_pytest.config.PytestPluginManager object at 0x00000000021ACD70>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_callers.py", line 121, in _multicall\n    res = hook_impl.function(*args)\n          \u2502         \u2502         \u2514 [<_pytest.config.Config object at 0x00000000021AF230>]\n          \u2502         \u2514 <member 'function' of 'HookImpl' objects>\n          \u2514 <HookImpl plugin_name='main', plugin=<module '_pytest.main' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\_pyt...\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\main.py", line 336, in pytest_cmdline_main\n    return wrap_session(config, _main)\n           \u2502            \u2502       \u2514 <function _main at 0x0000000002028360>\n           \u2502            \u2514 <_pytest.config.Config object at 0x00000000021AF230>\n           \u2514 <function wrap_session at 0x0000000002028220>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\main.py", line 289, in wrap_session\n    session.exitstatus = doit(config, session) or 0\n    \u2502       \u2502            \u2502    \u2502       \u2514 <Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>\n    \u2502       \u2502            \u2502    \u2514 <_pytest.config.Config object at 0x00000000021AF230>\n    \u2502       \u2502            \u2514 <function _main at 0x0000000002028360>\n    \u2502       \u2514 <ExitCode.OK: 0>\n    \u2514 <Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\main.py", line 343, in _main\n    config.hook.pytest_runtestloop(session=session)\n    \u2502      \u2502    \u2502                          \u2514 <Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>\n    \u2502      \u2502    \u2514 <HookCaller 'pytest_runtestloop'>\n    \u2502      \u2514 <_pytest.config.compat.PathAwareHookProxy object at 0x00000000021AF770>\n    \u2514 <_pytest.config.Config object at 0x00000000021AF230>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_hooks.py", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2502       \u2514 True\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2514 {'session': <Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>}\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2514 <member '_hookimpls' of 'HookCaller' objects>\n           \u2502    \u2502         \u2502    \u2502     \u2514 <HookCaller 'pytest_runtestloop'>\n           \u2502    \u2502         \u2502    \u2514 <member 'name' of 'HookCaller' objects>\n           \u2502    \u2502         \u2514 <HookCaller 'pytest_runtestloop'>\n           \u2502    \u2514 <member '_hookexec' of 'HookCaller' objects>\n           \u2514 <HookCaller 'pytest_runtestloop'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_manager.py", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           \u2502    \u2502               \u2502          \u2502        \u2502       \u2514 True\n           \u2502    \u2502               \u2502          \u2502        \u2514 {'session': <Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>}\n           \u2502    \u2502               \u2502          \u2514 [<HookImpl plugin_name='main', plugin=<module '_pytest.main' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\_py...\n           \u2502    \u2502               \u2514 'pytest_runtestloop'\n           \u2502    \u2514 <function _multicall at 0x0000000001836520>\n           \u2514 <_pytest.config.PytestPluginManager object at 0x00000000021ACD70>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_callers.py", line 121, in _multicall\n    res = hook_impl.function(*args)\n          \u2502         \u2502         \u2514 [<Session  exitstatus=<ExitCode.OK: 0> testsfailed=50 testscollected=143>]\n          \u2502         \u2514 <member 'function' of 'HookImpl' objects>\n          \u2514 <HookImpl plugin_name='main', plugin=<module '_pytest.main' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\_pyt...\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\main.py", line 367, in pytest_runtestloop\n    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)\n    \u2502    \u2502                                        \u2502              \u2514 <Function test_main_script_logic_driver_quit_exception>\n    \u2502    \u2502                                        \u2514 <Function test_main_script_logic_run_session_exception>\n    \u2502    \u2514 <member 'config' of 'Node' objects>\n    \u2514 <Function test_main_script_logic_run_session_exception>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_hooks.py", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2502       \u2514 True\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2514 {'item': <Function test_main_script_logic_run_session_exception>, 'nextitem': <Function test_main_script_logic_driver_quit_ex...\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2514 <member '_hookimpls' of 'HookCaller' objects>\n           \u2502    \u2502         \u2502    \u2502     \u2514 <HookCaller 'pytest_runtest_protocol'>\n           \u2502    \u2502         \u2502    \u2514 <member 'name' of 'HookCaller' objects>\n           \u2502    \u2502         \u2514 <HookCaller 'pytest_runtest_protocol'>\n           \u2502    \u2514 <member '_hookexec' of 'HookCaller' objects>\n           \u2514 <HookCaller 'pytest_runtest_protocol'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_manager.py", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           \u2502    \u2502               \u2502          \u2502        \u2502       \u2514 True\n           \u2502    \u2502               \u2502          \u2502        \u2514 {'item': <Function test_main_script_logic_run_session_exception>, 'nextitem': <Function test_main_script_logic_driver_quit_ex...\n           \u2502    \u2502               \u2502          \u2514 [<HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\...\n           \u2502    \u2502               \u2514 'pytest_runtest_protocol'\n           \u2502    \u2514 <function _multicall at 0x0000000001836520>\n           \u2514 <_pytest.config.PytestPluginManager object at 0x00000000021ACD70>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_callers.py", line 121, in _multicall\n    res = hook_impl.function(*args)\n          \u2502         \u2502         \u2514 [<Function test_main_script_logic_run_session_exception>, <Function test_main_script_logic_driver_quit_exception>]\n          \u2502         \u2514 <member 'function' of 'HookImpl' objects>\n          \u2514 <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\...\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 117, in pytest_runtest_protocol\n    runtestprotocol(item, nextitem=nextitem)\n    \u2502               \u2502              \u2514 <Function test_main_script_logic_driver_quit_exception>\n    \u2502               \u2514 <Function test_main_script_logic_run_session_exception>\n    \u2514 <function runtestprotocol at 0x000000000200B4C0>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 136, in runtestprotocol\n    reports.append(call_and_report(item, "call", log))\n    \u2502       \u2502      \u2502               \u2502             \u2514 True\n    \u2502       \u2502      \u2502               \u2514 <Function test_main_script_logic_run_session_exception>\n    \u2502       \u2502      \u2514 <function call_and_report at 0x000000000200B920>\n    \u2502       \u2514 <method 'append' of 'list' objects>\n    \u2514 [<TestReport 'tests/test_main_script.py::test_main_script_logic_run_session_exception' when='setup' outcome='passed'>]\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 245, in call_and_report\n    call = CallInfo.from_call(\n           \u2502        \u2514 <classmethod(<function CallInfo.from_call at 0x000000000200BC40>)>\n           \u2514 <class '_pytest.runner.CallInfo'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 344, in from_call\n    result: TResult | None = func()\n            \u2502                \u2514 <function call_and_report.<locals>.<lambda> at 0x0000000005C34900>\n            \u2514 +TResult\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 246, in <lambda>\n    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise\n            \u2502                 \u2502       \u2514 {}\n            \u2502                 \u2514 <Function test_main_script_logic_run_session_exception>\n            \u2514 <HookCaller 'pytest_runtest_call'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_hooks.py", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2502       \u2514 False\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2514 {'item': <Function test_main_script_logic_run_session_exception>}\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2514 <member '_hookimpls' of 'HookCaller' objects>\n           \u2502    \u2502         \u2502    \u2502     \u2514 <HookCaller 'pytest_runtest_call'>\n           \u2502    \u2502         \u2502    \u2514 <member 'name' of 'HookCaller' objects>\n           \u2502    \u2502         \u2514 <HookCaller 'pytest_runtest_call'>\n           \u2502    \u2514 <member '_hookexec' of 'HookCaller' objects>\n           \u2514 <HookCaller 'pytest_runtest_call'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_manager.py", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           \u2502    \u2502               \u2502          \u2502        \u2502       \u2514 False\n           \u2502    \u2502               \u2502          \u2502        \u2514 {'item': <Function test_main_script_logic_run_session_exception>}\n           \u2502    \u2502               \u2502          \u2514 [<HookImpl plugin_name='threadexception', plugin=<module '_pytest.threadexception' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\L...\n           \u2502    \u2502               \u2514 'pytest_runtest_call'\n           \u2502    \u2514 <function _multicall at 0x0000000001836520>\n           \u2514 <_pytest.config.PytestPluginManager object at 0x00000000021ACD70>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_callers.py", line 121, in _multicall\n    res = hook_impl.function(*args)\n          \u2502         \u2502         \u2514 [<Function test_main_script_logic_run_session_exception>]\n          \u2502         \u2514 <member 'function' of 'HookImpl' objects>\n          \u2514 <HookImpl plugin_name='runner', plugin=<module '_pytest.runner' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\...\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\runner.py", line 178, in pytest_runtest_call\n    item.runtest()\n    \u2502    \u2514 <function Function.runtest at 0x000000000211BCE0>\n    \u2514 <Function test_main_script_logic_run_session_exception>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\python.py", line 1670, in runtest\n    self.ihook.pytest_pyfunc_call(pyfuncitem=self)\n    \u2502    \u2502                                   \u2514 <Function test_main_script_logic_run_session_exception>\n    \u2502    \u2514 <property object at 0x0000000001F85B70>\n    \u2514 <Function test_main_script_logic_run_session_exception>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_hooks.py", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2502       \u2514 True\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2502                  \u2514 {'pyfuncitem': <Function test_main_script_logic_run_session_exception>}\n           \u2502    \u2502         \u2502    \u2502     \u2502    \u2514 <member '_hookimpls' of 'HookCaller' objects>\n           \u2502    \u2502         \u2502    \u2502     \u2514 <HookCaller 'pytest_pyfunc_call'>\n           \u2502    \u2502         \u2502    \u2514 <member 'name' of 'HookCaller' objects>\n           \u2502    \u2502         \u2514 <HookCaller 'pytest_pyfunc_call'>\n           \u2502    \u2514 <member '_hookexec' of 'HookCaller' objects>\n           \u2514 <HookCaller 'pytest_pyfunc_call'>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_manager.py", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           \u2502    \u2502               \u2502          \u2502        \u2502       \u2514 True\n           \u2502    \u2502               \u2502          \u2502        \u2514 {'pyfuncitem': <Function test_main_script_logic_run_session_exception>}\n           \u2502    \u2502               \u2502          \u2514 [<HookImpl plugin_name='python', plugin=<module '_pytest.python' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\...\n           \u2502    \u2502               \u2514 'pytest_pyfunc_call'\n           \u2502    \u2514 <function _multicall at 0x0000000001836520>\n           \u2514 <_pytest.config.PytestPluginManager object at 0x00000000021ACD70>\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\pluggy\\_callers.py", line 121, in _multicall\n    res = hook_impl.function(*args)\n          \u2502         \u2502         \u2514 [<Function test_main_script_logic_run_session_exception>]\n          \u2502         \u2514 <member 'function' of 'HookImpl' objects>\n          \u2514 <HookImpl plugin_name='python', plugin=<module '_pytest.python' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\.venv\\\\Lib\\\\site-packages\\\\...\n  File "C:\\Users\\DawyDz\\ttbt2-1\\.venv\\Lib\\site-packages\\_pytest\\python.py", line 156, in pytest_pyfunc_call\n    result = testfunction(**testargs)\n             \u2502              \u2514 {'temp_env': 'C:\\\\Users\\\\DawyDz\\\\AppData\\\\Local\\\\Temp\\\\tmp4s9adi3j', 'monkeypatch': <_pytest.monkeypatch.MonkeyPatch object a...\n             \u2514 <function test_main_script_logic_run_session_exception at 0x0000000005942520>\n  File "C:\\Program Files\\Python313\\Lib\\unittest\\mock.py", line 1426, in patched\n    return func(*newargs, **newkeywargs)\n           \u2502     \u2502          \u2514 {'temp_env': 'C:\\\\Users\\\\DawyDz\\\\AppData\\\\Local\\\\Temp\\\\tmp4s9adi3j', 'monkeypatch': <_pytest.monkeypatch.MonkeyPatch object a...\n           \u2502     \u2514 (<MagicMock name='TikTokBot' id='107645312'>, <MagicMock name='run' id='107645648'>, <MagicMock name='Thread' id='107645984'>...\n           \u2514 <function test_main_script_logic_run_session_exception at 0x0000000005942480>\n\n  File "C:\\Users\\DawyDz\\ttbt2-1\\tests\\test_main_script.py", line 146, in test_main_script_logic_run_session_exception\n    main.main_script_logic(mock_args)\n    \u2502    \u2502                 \u2514 Namespace(mode='test_mode', max_views=10)\n    \u2502    \u2514 <function main_script_logic at 0x0000000005941D00>\n    \u2514 <module 'main' from 'C:\\\\Users\\\\DawyDz\\\\ttbt2-1\\\\main.py'>\n\n> File "C:\\Users\\DawyDz\\ttbt2-1\\main.py", line 85, in main_script_logic\n    bot.run_session()\n    \u2514 <MagicMock name='TikTokBot()' id='96223984'>\n\n  File "C:\\Program Files\\Python313\\Lib\\unittest\\mock.py", line 1169, in __call__\n    return self._mock_call(*args, **kwargs)\n           \u2502    \u2502           \u2502       \u2514 {}\n           \u2502    \u2502           \u2514 ()\n           \u2502    \u2514 <function CallableMixin._mock_call at 0x000000000499CAE0>\n           \u2514 <MagicMock name='TikTokBot().run_session' id='96227008'>\n  File "C:\\Program Files\\Python313\\Lib\\unittest\\mock.py", line 1173, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           \u2502    \u2502                   \u2502       \u2514 {}\n           \u2502    \u2502                   \u2514 ()\n           \u2502    \u2514 <function CallableMixin._execute_mock_call at 0x000000000499CC20>\n           \u2514 <MagicMock name='TikTokBot().run_session' id='96227008'>\n  File "C:\\Program Files\\Python313\\Lib\\unittest\\mock.py", line 1228, in _execute_mock_call\n    raise effect\n          \u2514 Exception('Test_Session_Exception')\n\nException: Test_Session_Exception\n2025-07-27 19:19:26.842 | INFO     | main:main_script_logic:92 - Attempting to close WebDriver.\n2025-07-27 19:19:26.842 | INFO     | main:main_script_logic:94 - WebDriver closed successfully.
+______________________ test_init_load_from_json_success _______________________
+tests\test_proxy_manager.py:39: in test_init_load_from_json_success
+    assert f"Successfully loaded {len(mock_data['proxies'])} proxies" in caplog.text
+E   AssertionError: assert 'Successfully loaded 2 proxies' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x000000000594EF20>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.504 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'valid_proxies.json'.
+2025-07-27 19:19:27.566 | INFO     | proxies.proxy_manager:__init__:40 - Successfully loaded 2 proxies from 'valid_proxies.json'.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.504 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'valid_proxies.json'.
+2025-07-27 19:19:27.566 | INFO     | proxies.proxy_manager:__init__:40 - Successfully loaded 2 proxies from 'valid_proxies.json'.
+___________________ test_init_load_from_json_malformed_data ___________________
+tests\test_proxy_manager.py:48: in test_init_load_from_json_malformed_data
+    assert "Failed to load proxies from 'malformed1.json'" in caplog.text
+E   assert "Failed to load proxies from 'malformed1.json'" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000006633CB0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.583 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'malformed1.json'.
+2025-07-27 19:19:27.583 | WARNING  | proxies.proxy_manager:__init__:42 - Failed to load proxies from 'malformed1.json' or data is not in expected format (e.g., {'proxies': [...]}). Found: <class 'dict'>. Initializing with empty proxy list.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.583 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'malformed1.json'.
+2025-07-27 19:19:27.583 | WARNING  | proxies.proxy_manager:__init__:42 - Failed to load proxies from 'malformed1.json' or data is not in expected format (e.g., {'proxies': [...]}). Found: <class 'dict'>. Initializing with empty proxy list.
+________________ test_init_load_from_json_empty_or_failed_load ________________
+tests\test_proxy_manager.py:75: in test_init_load_from_json_empty_or_failed_load
+    assert "Failed to load proxies from 'empty.json'" in caplog.text # Checks for the warning
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert "Failed to load proxies from 'empty.json'" in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000006633D90>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.593 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'empty.json'.
+2025-07-27 19:19:27.593 | WARNING  | proxies.proxy_manager:__init__:42 - Failed to load proxies from 'empty.json' or data is not in expected format (e.g., {'proxies': [...]}). Found: <class 'dict'>. Initializing with empty proxy list.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.593 | INFO     | proxies.proxy_manager:__init__:36 - No direct proxies provided, attempting to load from 'empty.json'.
+2025-07-27 19:19:27.593 | WARNING  | proxies.proxy_manager:__init__:42 - Failed to load proxies from 'empty.json' or data is not in expected format (e.g., {'proxies': [...]}). Found: <class 'dict'>. Initializing with empty proxy list.
+_______________ test_get_random_active_proxy_no_active_proxies ________________
+tests\test_proxy_manager.py:93: in test_get_random_active_proxy_no_active_proxies
+    assert "no active proxies available" in caplog.text
+E   AssertionError: assert 'no active proxies available' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000006633BD0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.740 | INFO     | proxies.proxy_manager:__init__:48 - Using 0 directly provided proxies.
+2025-07-27 19:19:27.741 | WARNING  | proxies.proxy_manager:get_random_active_proxy:63 - get_random_active_proxy called, but no active proxies available.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.740 | INFO     | proxies.proxy_manager:__init__:48 - Using 0 directly provided proxies.
+2025-07-27 19:19:27.741 | WARNING  | proxies.proxy_manager:get_random_active_proxy:63 - get_random_active_proxy called, but no active proxies available.
+_______________________ test_deactivate_proxy_existing ________________________
+tests\test_proxy_manager.py:114: in test_deactivate_proxy_existing
+    assert "Proxy deactivated: p2" in caplog.text
+E   AssertionError: assert 'Proxy deactivated: p2' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000006633380>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.748 | INFO     | proxies.proxy_manager:__init__:48 - Using 3 directly provided proxies.
+2025-07-27 19:19:27.749 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p2. Remaining active proxies: 2
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.748 | INFO     | proxies.proxy_manager:__init__:48 - Using 3 directly provided proxies.
+2025-07-27 19:19:27.749 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p2. Remaining active proxies: 2
+_____________________ test_deactivate_proxy_non_existing ______________________
+tests\test_proxy_manager.py:124: in test_deactivate_proxy_non_existing
+    assert "Attempted to deactivate proxy not in active set: p3" in caplog.text
+E   AssertionError: assert 'Attempted to deactivate proxy not in active set: p3' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x0000000006633C40>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.756 | INFO     | proxies.proxy_manager:__init__:48 - Using 2 directly provided proxies.
+2025-07-27 19:19:27.757 | WARNING  | proxies.proxy_manager:deactivate_proxy:82 - Attempted to deactivate proxy not in active set: p3
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.756 | INFO     | proxies.proxy_manager:__init__:48 - Using 2 directly provided proxies.
+2025-07-27 19:19:27.757 | WARNING  | proxies.proxy_manager:deactivate_proxy:82 - Attempted to deactivate proxy not in active set: p3
+________________________ test_deactivate_all_then_get _________________________
+tests\test_proxy_manager.py:136: in test_deactivate_all_then_get
+    assert "no active proxies available" in caplog.text
+E   AssertionError: assert 'no active proxies available' in ''
+E    +  where '' = <_pytest.logging.LogCaptureFixture object at 0x00000000066333F0>.text
+---------------------------- Captured stdout call -----------------------------
+2025-07-27 19:19:27.764 | INFO     | proxies.proxy_manager:__init__:48 - Using 2 directly provided proxies.
+2025-07-27 19:19:27.796 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p1. Remaining active proxies: 1
+2025-07-27 19:19:27.796 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p2. Remaining active proxies: 0
+2025-07-27 19:19:27.796 | WARNING  | proxies.proxy_manager:get_random_active_proxy:63 - get_random_active_proxy called, but no active proxies available.
+---------------------------- Captured stderr call -----------------------------
+2025-07-27 19:19:27.764 | INFO     | proxies.proxy_manager:__init__:48 - Using 2 directly provided proxies.
+2025-07-27 19:19:27.796 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p1. Remaining active proxies: 1
+2025-07-27 19:19:27.796 | INFO     | proxies.proxy_manager:deactivate_proxy:80 - Proxy deactivated: p2. Remaining active proxies: 0
+2025-07-27 19:19:27.796 | WARNING  | proxies.proxy_manager:get_random_active_proxy:63 - get_random_active_proxy called, but no active proxies available.
+______________ TestTodoApp.test_init_loads_todos_if_file_exists _______________
+C:\Program Files\Python313\Lib\unittest\mock.py:979: in assert_called_with
+    raise AssertionError(_error_message()) from cause
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_path.json', 'r')
+E     Actual: open('dummy_path.json', 'r', encoding='utf-8')
+
+During handling of the above exception, another exception occurred:
+C:\Program Files\Python313\Lib\unittest\mock.py:991: in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_path.json', 'r')
+E     Actual: open('dummy_path.json', 'r', encoding='utf-8')
+E   
+E   pytest introspection follows:
+E   
+E   Kwargs:
+E   assert {'encoding': 'utf-8'} == {}
+E     
+E     Left contains 1 more item:
+E     {'encoding': 'utf-8'}
+E     
+E     Full diff:
+E     - {}
+E     + {
+E     +     'encoding': 'utf-8',
+E     + }
+
+During handling of the above exception, another exception occurred:
+tests\test_todo_app.py:24: in test_init_loads_todos_if_file_exists
+    mock_open.assert_called_once_with('dummy_path.json', 'r')
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_path.json', 'r')
+E     Actual: open('dummy_path.json', 'r', encoding='utf-8')
+E   
+E   pytest introspection follows:
+E   
+E   Kwargs:
+E   assert {'encoding': 'utf-8'} == {}
+E     
+E     Left contains 1 more item:
+E     {'encoding': 'utf-8'}
+E     
+E     Full diff:
+E     - {}
+E     + {
+E     +     'encoding': 'utf-8',
+E     + }
+_________________________ TestTodoApp.test_save_todos _________________________
+C:\Program Files\Python313\Lib\unittest\mock.py:979: in assert_called_with
+    raise AssertionError(_error_message()) from cause
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_save.json', 'w')
+E     Actual: open('dummy_save.json', 'w', encoding='utf-8')
+
+During handling of the above exception, another exception occurred:
+C:\Program Files\Python313\Lib\unittest\mock.py:991: in assert_called_once_with
+    return self.assert_called_with(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_save.json', 'w')
+E     Actual: open('dummy_save.json', 'w', encoding='utf-8')
+E   
+E   pytest introspection follows:
+E   
+E   Kwargs:
+E   assert {'encoding': 'utf-8'} == {}
+E     
+E     Left contains 1 more item:
+E     {'encoding': 'utf-8'}
+E     
+E     Full diff:
+E     - {}
+E     + {
+E     +     'encoding': 'utf-8',
+E     + }
+
+During handling of the above exception, another exception occurred:
+tests\test_todo_app.py:111: in test_save_todos
+    mock_open.assert_called_once_with('dummy_save.json', 'w')
+E   AssertionError: expected call not found.
+E   Expected: open('dummy_save.json', 'w')
+E     Actual: open('dummy_save.json', 'w', encoding='utf-8')
+E   
+E   pytest introspection follows:
+E   
+E   Kwargs:
+E   assert {'encoding': 'utf-8'} == {}
+E     
+E     Left contains 1 more item:
+E     {'encoding': 'utf-8'}
+E     
+E     Full diff:
+E     - {}
+E     + {
+E     +     'encoding': 'utf-8',
+E     + }
+=========================== short test summary info ===========================
+FAILED tests/test_account_manager.py::test_init_successful_load - assert "Suc...
+FAILED tests/test_account_manager.py::test_init_load_malformed_account_missing_pass
+FAILED tests/test_account_manager.py::test_init_load_account_details_not_dict
+FAILED tests/test_account_manager.py::test_init_load_raw_data_not_dict - asse...
+FAILED tests/test_account_manager.py::test_init_load_empty_or_failed - Assert...
+FAILED tests/test_account_manager.py::test_get_next_account_cycling_and_reset
+FAILED tests/test_account_manager.py::test_get_next_account_empty_list - Asse...
+FAILED tests/test_account_manager.py::test_update_account_status_existing_account
+FAILED tests/test_account_manager.py::test_update_account_status_non_existing_account
+FAILED tests/test_api_app.py::test_index_route - assert 500 == 200
+FAILED tests/test_behavior.py::TestHumanBehaviorSimulator::test_human_type - ...
+FAILED tests/test_behavior.py::TestHumanBehaviorSimulator::test_watch_video
+FAILED tests/test_config_loader.py::test_load_selectors_valid_data - Attribut...
+FAILED tests/test_config_loader.py::test_load_selectors_invalid_by_string - A...
+FAILED tests/test_config_loader.py::test_load_selectors_missing_key - Attribu...
+FAILED tests/test_config_loader.py::test_load_selectors_empty_or_failed_load
+FAILED tests/test_config_loader.py::test_load_selectors_malformed_page_data
+FAILED tests/test_config_loader.py::test_load_selectors_malformed_selector_data
+FAILED tests/test_config_loader.py::test_logger_instance_identity - Attribute...
+FAILED tests/test_config_loader.py::test_config_loader_load_file_not_found - ...
+FAILED tests/test_config_loader.py::test_config_loader_load_json_decode_error
+FAILED tests/test_config_loader.py::test_config_loader_load_unsupported_file_type
+FAILED tests/test_core.py::TestTikTokBot::test_bot_assign_proxy_and_fingerprint
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_init - AttributeErro...
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_init_driver_calls - ...
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_success
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_failure_no_account
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_authenticate_failure_selenium_exception
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_run_session_auth_success
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_run_session_auth_failure
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_perform_organic_actions
+FAILED tests/test_core.py::TestTikTokBot::test_tiktokbot_perform_organic_actions_no_like
+FAILED tests/test_core.py::TestAccountManagerMethods::test_get_next_account_single
+FAILED tests/test_core.py::TestAccountManagerMethods::test_get_next_account_multiple_sorted_order
+FAILED tests/test_core.py::test_bot_engine_initialization - TypeError: TikTok...
+FAILED tests/test_engagement.py::test_engagement_manager_init - AssertionErro...
+FAILED tests/test_engagement.py::test_engage_user_new_and_existing - assert "...
+FAILED tests/test_engagement.py::test_engage_user_with_none - AssertionError:...
+FAILED tests/test_engagement.py::test_has_engaged_scenarios - assert "Checkin...
+FAILED tests/test_engagement.py::test_get_engaged_count - AssertionError: ass...
+FAILED tests/test_engagement.py::test_clear_engagement_history - AssertionErr...
+FAILED tests/test_fingerprint_manager.py::test_init_load_from_json_success - ...
+FAILED tests/test_fingerprint_manager.py::test_init_load_from_json_malformed_data
+FAILED tests/test_fingerprint_manager.py::test_init_load_from_json_empty_or_failed_load
+FAILED tests/test_fingerprint_manager.py::test_get_fingerprint_no_available_fingerprints
+FAILED tests/test_human_behavior_simulator.py::test_init_parameter_loading[unknown_mode-balanced]
+FAILED tests/test_human_behavior_simulator.py::test_random_delay_logic - Asse...
+FAILED tests/test_human_behavior_simulator.py::test_like_video_logs_and_attempts_placeholder_click
+FAILED tests/test_human_behavior_simulator.py::test_like_video_handles_find_failure
+FAILED tests/test_main_script.py::test_main_script_execution_success - KeyErr...
+FAILED tests/test_main_script.py::test_main_script_logic_run_session_exception
+FAILED tests/test_proxy_manager.py::test_init_load_from_json_success - Assert...
+FAILED tests/test_proxy_manager.py::test_init_load_from_json_malformed_data
+FAILED tests/test_proxy_manager.py::test_init_load_from_json_empty_or_failed_load
+FAILED tests/test_proxy_manager.py::test_get_random_active_proxy_no_active_proxies
+FAILED tests/test_proxy_manager.py::test_deactivate_proxy_existing - Assertio...
+FAILED tests/test_proxy_manager.py::test_deactivate_proxy_non_existing - Asse...
+FAILED tests/test_proxy_manager.py::test_deactivate_all_then_get - AssertionE...
+FAILED tests/test_todo_app.py::TestTodoApp::test_init_loads_todos_if_file_exists
+FAILED tests/test_todo_app.py::TestTodoApp::test_save_todos - AssertionError:...
+======================= 60 failed, 83 passed in 21.99s ========================

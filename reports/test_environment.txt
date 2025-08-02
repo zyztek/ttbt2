@@ -1,0 +1,6 @@
+pytest 8.4.0
+
+Lines Words Characters Property
+----- ----- ---------- --------
+  144                  
+

@@ -1,6 +1,9 @@
 {
   "common": {
-    "login_page_url": "https://www.tiktok.com/login"
+    "login_page_url": {
+      "by": "id",
+      "value": "https://www.tiktok.com/login"
+    }
   },
   "login_page": {
     "username_field": {

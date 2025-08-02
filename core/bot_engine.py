@@ -50,7 +50,7 @@ class BotEngine:
             return
 
         for email, account_details in self.accounts.items():
-            bot = TikTokBot(_email=email, _account_details=account_details)
+            bot = TikTokBot()
 
             proxy = self.proxy_manager.get_random_active_proxy()
             if proxy: # Ensure a proxy was returned
